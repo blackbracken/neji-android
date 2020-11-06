@@ -27,15 +27,32 @@
         app:layout_constraintTop_toBottomOf="@id/icon" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/input_firebase_id"
+        android:id="@+id/input_firebase_api_key"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/margin_medium"
-        android:hint="@string/setup_hint_firebase_id"
+        android:hint="@string/setup_hint_firebase_api_key"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_title"
-        app:suffixText="@string/setup_firebase_project_suffix">
+        app:layout_constraintTop_toBottomOf="@+id/text_title">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:maxLines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/input_firebase_database_url"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_medium"
+        android:layout_marginTop="@dimen/margin_medium"
+        android:hint="@string/setup_hint_firebase_database_url"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/input_firebase_api_key">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
@@ -53,7 +70,7 @@
         android:hint="@string/setup_hint_email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/input_firebase_id">
+        app:layout_constraintTop_toBottomOf="@+id/input_firebase_database_url">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
