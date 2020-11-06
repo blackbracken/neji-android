@@ -22,6 +22,7 @@ class SetupFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        super.onCreateView(inflater, container, savedInstanceState)
         _binding = SetupFragmentBinding.inflate(inflater, container, false)
 
         return binding.root

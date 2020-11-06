@@ -7,4 +7,5 @@ import androidx.lifecycle.ViewModel
 
 class SetupViewModel @ViewModelInject constructor(
     @Assisted private val savedState: SavedStateHandle
-) : ViewModel()
+) : ViewModel() {
+}
