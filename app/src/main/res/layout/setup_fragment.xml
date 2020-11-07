@@ -27,16 +27,17 @@
         app:layout_constraintTop_toBottomOf="@id/icon" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/input_firebase_api_key"
+        android:id="@+id/input_firebase_project_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/margin_medium"
-        android:hint="@string/setup_hint_firebase_api_key"
+        android:hint="@string/setup_hint_firebase_project_id"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_title">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_firebase_project_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
@@ -44,17 +45,37 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/input_firebase_database_url"
+        android:id="@+id/input_firebase_api_key"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/margin_medium"
         android:layout_marginTop="@dimen/margin_medium"
-        android:hint="@string/setup_hint_firebase_database_url"
+        android:hint="@string/setup_hint_firebase_api_key"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/input_firebase_project_id">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_firebase_api_key"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:maxLines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/input_firebase_application_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_medium"
+        android:layout_marginTop="@dimen/margin_medium"
+        android:hint="@string/setup_hint_firebase_application_id"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/input_firebase_api_key">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_firebase_app_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
@@ -70,9 +91,10 @@
         android:hint="@string/setup_hint_email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/input_firebase_database_url">
+        app:layout_constraintTop_toBottomOf="@+id/input_firebase_application_id">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editLoginEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
@@ -91,6 +113,7 @@
         app:layout_constraintTop_toBottomOf="@+id/input_login_email">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editLoginPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"

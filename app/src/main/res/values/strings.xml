@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">Neji</string>
+    <string name="setup_hint_firebase_project_id">FirebaseのプロジェクトID</string>
     <string name="setup_hint_firebase_api_key">FirebaseのAPIキー</string>
-    <string name="setup_hint_firebase_database_url">FirebaseのDatabaseURL</string>
+    <string name="setup_hint_firebase_application_id">FirebaseのアプリID</string>
     <string name="setup_hint_email">Email</string>
     <string name="setup_hint_password">Password</string>
     <string name="setup_text_login">Login</string>
