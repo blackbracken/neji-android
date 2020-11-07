@@ -15,7 +15,7 @@ object SecurityModule {
     const val KEY_STORE_NAME = "Key Store Name"
 
     private const val ANDROID_KEY_STORE_TYPE = "AndroidKeyStore"
-    private const val SIMPLE_DATA_KEY_NAME = "SimpleDataKey"
+    private const val NEJI_SECURE_KEY_NAME = "NejiSecureKey"
 
     @Provides
     fun provideKeyStore(): KeyStore =
@@ -23,7 +23,7 @@ object SecurityModule {
 
     @Provides
     @Named(KEY_NAME)
-    fun providesKeyName(): String = SIMPLE_DATA_KEY_NAME
+    fun providesKeyName(): String = NEJI_SECURE_KEY_NAME
 
     @Provides
     @Named(KEY_STORE_NAME)

@@ -3,6 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-android-extensions'
     id 'kotlin-kapt'
+    id 'com.google.protobuf'
     id 'dagger.hilt.android.plugin'
 }
 
@@ -36,12 +37,27 @@ android {
         jvmTarget = '1.8'
     }
 
-    dataBinding {
-        enabled = true
+    buildFeatures {
+        dataBinding = true
+        viewBinding = true
     }
+}
 
-    viewBinding {
-        enabled = true
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.0.0"
+    }
+    plugins {
+        lite {
+            artifact = "com.google.protobuf:protoc-gen-javalite:3.0.0"
+        }
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.plugins {
+                lite {}
+            }
+        }
     }
 }
 
@@ -63,6 +79,11 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.1'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.1'
     androidTestImplementation 'androidx.navigation:navigation-testing:2.3.1'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
+
+    // datastore
+    implementation 'com.google.protobuf:protobuf-lite:3.0.1'
+    implementation 'androidx.datastore:datastore-preferences:1.0.0-alpha02'
     implementation 'androidx.datastore:datastore-core:1.0.0-alpha02'
 
     // material design

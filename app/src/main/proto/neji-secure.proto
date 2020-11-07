@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+option java_package = "black.bracken.neji";
+option java_multiple_files = true;
+
+message NejiSecure {
+  message Firebase {
+    string apiKey = 1;
+    string databaseUrl = 2;
+    string userToken = 3;
+  }
+
+  repeated Firebase firebase = 4;
+}
