@@ -52,10 +52,10 @@ class SetupFragment : Fragment() {
                             // TODO: navigate
                             Snackbar.make(binding.root, "navigate", Snackbar.LENGTH_SHORT).show()
                         }
-                        is FirebaseSignInResult.InvalidUsernameOrPassword -> {
+                        is FirebaseSignInResult.InvalidValue -> {
                             Snackbar.make(
                                 binding.root,
-                                R.string.snackbar_invalid_username_or_password,
+                                R.string.snackbar_invalid_value,
                                 Snackbar.LENGTH_SHORT
                             ).show()
                         }

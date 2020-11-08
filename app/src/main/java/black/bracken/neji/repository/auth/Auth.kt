@@ -105,7 +105,7 @@ class AuthImpl @Inject constructor(
 
             FirebaseAuth.getInstance(app).signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener { continuation.resume(FirebaseSignInResult.Success(app)) }
-                .addOnFailureListener { continuation.resume(FirebaseSignInResult.InvalidUsernameOrPassword) }
+                .addOnFailureListener { continuation.resume(FirebaseSignInResult.InvalidValue) }
         }
     }
 

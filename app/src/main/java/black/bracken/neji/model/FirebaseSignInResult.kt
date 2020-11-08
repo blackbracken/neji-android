@@ -4,6 +4,6 @@ import com.google.firebase.FirebaseApp
 
 sealed class FirebaseSignInResult {
     data class Success(val firebaseApp: FirebaseApp) : FirebaseSignInResult()
-    object InvalidUsernameOrPassword : FirebaseSignInResult()
+    object InvalidValue : FirebaseSignInResult()
     object MustNotBeBlank : FirebaseSignInResult()
 }
