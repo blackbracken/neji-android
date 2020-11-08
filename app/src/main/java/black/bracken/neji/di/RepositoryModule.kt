@@ -1,4 +1,4 @@
-package black.bracken.neji.repository
+package black.bracken.neji.di
 
 import android.content.Context
 import androidx.datastore.DataStore

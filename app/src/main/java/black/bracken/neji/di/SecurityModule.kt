@@ -1,5 +1,9 @@
-package black.bracken.neji.security
+package black.bracken.neji.di
 
+import black.bracken.neji.security.AESCipherProvider
+import black.bracken.neji.security.CipherProvider
+import black.bracken.neji.security.Crypto
+import black.bracken.neji.security.CryptoImpl
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -23,11 +27,13 @@ object SecurityModule {
 
     @Provides
     @Named(KEY_NAME)
-    fun providesKeyName(): String = NEJI_SECURE_KEY_NAME
+    fun providesKeyName(): String =
+        NEJI_SECURE_KEY_NAME
 
     @Provides
     @Named(KEY_STORE_NAME)
-    fun providesKeyStoreName(): String = ANDROID_KEY_STORE_TYPE
+    fun providesKeyStoreName(): String =
+        ANDROID_KEY_STORE_TYPE
 
     @Module
     @InstallIn(ApplicationComponent::class)

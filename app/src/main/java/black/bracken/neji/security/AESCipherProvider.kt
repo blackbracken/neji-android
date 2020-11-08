@@ -2,6 +2,7 @@ package black.bracken.neji.security
 
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
+import black.bracken.neji.di.SecurityModule
 import java.security.KeyStore
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
