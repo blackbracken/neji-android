@@ -1,28 +1,24 @@
 package black.bracken.neji.ui.setup
 
 import android.content.Context
-import androidx.datastore.DataStore
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
-import black.bracken.neji.NejiSecure
-import com.google.firebase.FirebaseApp
-import com.google.firebase.FirebaseOptions
-import com.google.firebase.auth.FirebaseAuth
+import black.bracken.neji.model.FirebaseSignInResult
+import black.bracken.neji.repository.auth.Auth
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withTimeoutOrNull
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 class SetupViewModel @ViewModelInject constructor(
     @ApplicationContext private val context: Context,
     @Assisted private val savedState: SavedStateHandle,
-    private val nejiSecure: DataStore<NejiSecure>
+    private val auth: Auth
 ) : ViewModel() {
 
-    private val _verifyResult = MutableLiveData<VerifyResult>()
-    val verifyResult: LiveData<VerifyResult> get() = _verifyResult
+    private val _verifyResult = MutableLiveData<SignInState>()
+    val signInState: LiveData<SignInState> get() = _verifyResult
 
     fun verifyFirebase(
         projectId: String,
@@ -31,43 +27,25 @@ class SetupViewModel @ViewModelInject constructor(
         email: String,
         password: String
     ) {
-        val app = try {
-            FirebaseApp.initializeApp(
-                context,
-                FirebaseOptions.Builder()
-                    .setApplicationId(appId)
-                    .setProjectId(projectId)
-                    .setApiKey(apiKey)
-                    .build(),
-                Math.random().toString()
-            )
-        } catch (ex: IllegalArgumentException) {
-            _verifyResult.value = VerifyResult.Failure(ex.message.toString())
-            return
-        }
 
+        _verifyResult.value = SignInState.Loading
         viewModelScope.launch {
-            _verifyResult.postValue(
-                withTimeoutOrNull(50_000) {
-                    suspendCoroutine<VerifyResult> { continuation ->
-                        val auth = FirebaseAuth.getInstance(app)
-
-                        auth.signInWithEmailAndPassword(email, password)
-                            .addOnSuccessListener { continuation.resume(VerifyResult.Success) }
-                            .addOnFailureListener { x ->
-                                continuation.resume(VerifyResult.Failure("Invalid email or username"))
-                                x.printStackTrace()
-                            }
+            auth.getSignInCaches()
+                .mapLatest { caches ->
+                    // TODO: sign in every time
+                    if (caches.isEmpty()) {
+                        auth.signInAndCacheIfSucceed(projectId, apiKey, appId, email, password)
+                    } else {
+                        auth.signInByCache(caches.first())
                     }
-                } ?: VerifyResult.Timeout
-            )
+                }
+                .collect { _verifyResult.postValue(SignInState.Done(it)) }
         }
     }
 
-    sealed class VerifyResult {
-        object Success : VerifyResult()
-        data class Failure(val message: String) : VerifyResult()
-        object Timeout : VerifyResult()
+    sealed class SignInState {
+        data class Done(val result: FirebaseSignInResult) : SignInState()
+        object Loading : SignInState()
     }
 
 }

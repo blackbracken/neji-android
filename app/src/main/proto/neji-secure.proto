@@ -4,11 +4,13 @@ option java_package = "black.bracken.neji";
 option java_multiple_files = true;
 
 message NejiSecure {
-  message Firebase {
-    string apiKey = 1;
-    string databaseUrl = 2;
-    string userToken = 3;
+  message SignInCache {
+    string projectId = 1;
+    string apiKey = 2;
+    string appId = 3;
+    string email = 4;
+    string password = 5;
   }
 
-  repeated Firebase firebase = 4;
+  repeated SignInCache signInCache = 6;
 }

@@ -1,14 +1,16 @@
 package black.bracken.neji.ui.setup
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
+import black.bracken.neji.R
 import black.bracken.neji.databinding.SetupFragmentBinding
+import black.bracken.neji.model.FirebaseSignInResult
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -37,11 +39,35 @@ class SetupFragment : Fragment() {
             viewModel.verifyFirebase(projectId, apiKey, appId, email, password)
         }
 
-        viewModel.verifyResult.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is SetupViewModel.VerifyResult.Success -> Log.i("aaa", "success")
-                is SetupViewModel.VerifyResult.Failure -> Log.i("aaa", "failed, ${result.message}")
-                is SetupViewModel.VerifyResult.Timeout -> Log.i("aaa", "timeout!")
+        viewModel.signInState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is SetupViewModel.SignInState.Loading -> {
+                    binding.buttonLogin.isEnabled = false
+                }
+                is SetupViewModel.SignInState.Done -> {
+                    binding.buttonLogin.isEnabled = true
+
+                    when (state.result) {
+                        is FirebaseSignInResult.Success -> {
+                            // TODO: navigate
+                            Snackbar.make(binding.root, "navigate", Snackbar.LENGTH_SHORT).show()
+                        }
+                        is FirebaseSignInResult.InvalidUsernameOrPassword -> {
+                            Snackbar.make(
+                                binding.root,
+                                R.string.snackbar_invalid_username_or_password,
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+                        }
+                        is FirebaseSignInResult.MustNotBeBlank -> {
+                            Snackbar.make(
+                                binding.root,
+                                R.string.snackbar_must_not_be_blank,
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }
             }
         }
 
