@@ -1,10 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_graph"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
     app:startDestination="@id/setupFragment">
 
     <fragment
         android:id="@+id/setupFragment"
         android:name="black.bracken.neji.ui.setup.SetupFragment"
-        android:label="SetupFragment" />
+        android:label="SetupFragment">
+        <action
+            android:id="@+id/action_setupFragment_to_topFragment"
+            app:destination="@id/topFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/topFragment"
+        android:name="black.bracken.neji.ui.top.TopFragment"
+        android:label="TopFragment" />
 </navigation>
