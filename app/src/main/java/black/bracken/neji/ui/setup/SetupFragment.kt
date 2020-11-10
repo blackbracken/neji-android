@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
+import androidx.navigation.fragment.findNavController
 import black.bracken.neji.R
 import black.bracken.neji.databinding.SetupFragmentBinding
 import black.bracken.neji.model.FirebaseSignInResult
@@ -49,8 +50,9 @@ class SetupFragment : Fragment() {
 
                     when (state.result) {
                         is FirebaseSignInResult.Success -> {
-                            // TODO: navigate
-                            Snackbar.make(binding.root, "navigate", Snackbar.LENGTH_SHORT).show()
+                            findNavController().navigate(
+                                SetupFragmentDirections.actionSetupFragmentToTopFragment()
+                            )
                         }
                         is FirebaseSignInResult.InvalidValue -> {
                             Snackbar.make(
@@ -60,6 +62,11 @@ class SetupFragment : Fragment() {
                             ).show()
                         }
                         is FirebaseSignInResult.MustNotBeBlank -> {
+                            // TODO: remove
+                            findNavController().navigate(
+                                SetupFragmentDirections.actionSetupFragmentToTopFragment()
+                            )
+
                             Snackbar.make(
                                 binding.root,
                                 R.string.snackbar_must_not_be_blank,
