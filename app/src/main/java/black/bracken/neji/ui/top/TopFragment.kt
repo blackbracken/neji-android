@@ -29,12 +29,12 @@ class TopFragment : Fragment() {
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         _binding = TopFragmentBinding.inflate(inflater, container, false)
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
 
         val adapter = GroupAdapter<GroupieViewHolder>()
         binding.recycler.adapter = adapter
