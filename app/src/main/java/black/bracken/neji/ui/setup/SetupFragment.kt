@@ -5,12 +5,14 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import black.bracken.neji.R
 import black.bracken.neji.databinding.SetupFragmentBinding
 import black.bracken.neji.model.FirebaseSignInResult
+import black.bracken.neji.ui.UserViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.wada811.viewbinding.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -19,6 +21,8 @@ import dagger.hilt.android.AndroidEntryPoint
 class SetupFragment : Fragment(R.layout.setup_fragment) {
 
     private val viewModel by viewModels<SetupViewModel>()
+    private val userViewModel by activityViewModels<UserViewModel>()
+
     private val binding by viewBinding(SetupFragmentBinding::bind)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -44,6 +48,9 @@ class SetupFragment : Fragment(R.layout.setup_fragment) {
 
                     when (state.result) {
                         is FirebaseSignInResult.Success -> {
+                            // TODO: consider to set to viewModel from fragment :/
+                            userViewModel.setFirebaseApp(state.result.firebaseApp)
+
                             findNavController().navigate(
                                 SetupFragmentDirections.actionSetupFragmentToTopFragment()
                             )
@@ -69,6 +76,7 @@ class SetupFragment : Fragment(R.layout.setup_fragment) {
                         }
                     }
                 }
+                else -> Unit
             }
         }
     }
