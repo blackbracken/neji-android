@@ -2,8 +2,16 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/setupFragment">
+    app:startDestination="@id/topFragment">
 
+    <fragment
+        android:id="@+id/topFragment"
+        android:name="black.bracken.neji.ui.top.TopFragment"
+        android:label="TopFragment">
+        <action
+            android:id="@+id/action_topFragment_to_setupFragment"
+            app:destination="@id/setupFragment" />
+    </fragment>
     <fragment
         android:id="@+id/setupFragment"
         android:name="black.bracken.neji.ui.setup.SetupFragment"
@@ -14,8 +22,4 @@
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
     </fragment>
-    <fragment
-        android:id="@+id/topFragment"
-        android:name="black.bracken.neji.ui.top.TopFragment"
-        android:label="TopFragment" />
 </navigation>

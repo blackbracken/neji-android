@@ -17,7 +17,7 @@ class SetupViewModel @ViewModelInject constructor(
     private val auth: Auth
 ) : ViewModel() {
 
-    private val _verifyResult = MutableLiveData<SignInState>()
+    private val _verifyResult = MutableLiveData<SignInState>(SignInState.Unauthenticated)
     val signInState: LiveData<SignInState> get() = _verifyResult
 
     fun verifyFirebase(
@@ -27,8 +27,8 @@ class SetupViewModel @ViewModelInject constructor(
         email: String,
         password: String
     ) {
-
         _verifyResult.value = SignInState.Loading
+
         viewModelScope.launch {
             auth.getSignInCaches()
                 .mapLatest { caches ->
@@ -46,6 +46,7 @@ class SetupViewModel @ViewModelInject constructor(
     sealed class SignInState {
         data class Done(val result: FirebaseSignInResult) : SignInState()
         object Loading : SignInState()
+        object Unauthenticated : SignInState()
     }
 
 }
