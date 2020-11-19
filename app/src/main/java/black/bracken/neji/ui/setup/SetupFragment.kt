@@ -2,6 +2,8 @@ package black.bracken.neji.ui.setup
 
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
@@ -69,6 +71,20 @@ class SetupFragment : Fragment(R.layout.setup_fragment) {
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        (requireActivity() as AppCompatActivity)
+            .findViewById<Toolbar>(R.id.toolbar).visibility = View.GONE
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        (requireActivity() as AppCompatActivity)
+            .findViewById<Toolbar>(R.id.toolbar).visibility = View.VISIBLE
     }
 
 }
