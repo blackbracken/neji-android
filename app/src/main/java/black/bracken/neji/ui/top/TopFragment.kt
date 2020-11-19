@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import black.bracken.neji.R
 import black.bracken.neji.databinding.TopFragmentBinding
 import black.bracken.neji.ui.top.item.TopCardItem
@@ -21,6 +22,11 @@ class TopFragment : Fragment(R.layout.top_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val navController = findNavController()
+        if (true) { // TODO: observe LiveData
+            navController.navigate(TopFragmentDirections.actionTopFragmentToSetupFragment())
+        }
 
         val adapter = GroupAdapter<GroupieViewHolder>()
         binding.recycler.adapter = adapter
