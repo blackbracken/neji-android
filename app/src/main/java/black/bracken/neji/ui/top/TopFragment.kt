@@ -29,8 +29,6 @@ class TopFragment : Fragment(R.layout.top_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val navController = findNavController()
-
         userViewModel.firebaseApp.observe(viewLifecycleOwner) { firebaseApp ->
             if (firebaseApp != null) {
                 Snackbar.make(
@@ -39,7 +37,7 @@ class TopFragment : Fragment(R.layout.top_fragment) {
                     Snackbar.LENGTH_SHORT
                 ).show()
             } else {
-                navController.navigate(TopFragmentDirections.actionTopFragmentToSetupFragment())
+                findNavController().navigate(TopFragmentDirections.actionTopFragmentToSetupFragment())
             }
         }
 

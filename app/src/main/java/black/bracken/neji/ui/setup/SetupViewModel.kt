@@ -7,8 +7,6 @@ import androidx.lifecycle.*
 import black.bracken.neji.model.FirebaseSignInResult
 import black.bracken.neji.repository.auth.Auth
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
 
 class SetupViewModel @ViewModelInject constructor(
@@ -17,7 +15,7 @@ class SetupViewModel @ViewModelInject constructor(
     private val auth: Auth
 ) : ViewModel() {
 
-    private val _verifyResult = MutableLiveData<SignInState>(SignInState.Unauthenticated)
+    private val _verifyResult = MutableLiveData<SignInState>()
     val signInState: LiveData<SignInState> get() = _verifyResult
 
     fun verifyFirebase(
@@ -30,23 +28,20 @@ class SetupViewModel @ViewModelInject constructor(
         _verifyResult.value = SignInState.Loading
 
         viewModelScope.launch {
-            auth.getSignInCaches()
-                .mapLatest { caches ->
-                    // TODO: sign in every time
-                    if (caches.isEmpty()) {
-                        auth.signInAndCacheIfSucceed(projectId, apiKey, appId, email, password)
-                    } else {
-                        auth.signInByCache(caches.first())
-                    }
-                }
-                .collect { _verifyResult.postValue(SignInState.Done(it)) }
+            val signInResult = auth.signInAndCacheIfSucceed(
+                projectId,
+                apiKey,
+                appId,
+                email,
+                password
+            )
+            _verifyResult.postValue(SignInState.Done(signInResult))
         }
     }
 
     sealed class SignInState {
         data class Done(val result: FirebaseSignInResult) : SignInState()
         object Loading : SignInState()
-        object Unauthenticated : SignInState()
     }
 
 }

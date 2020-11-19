@@ -63,11 +63,6 @@ class SetupFragment : Fragment(R.layout.setup_fragment) {
                             ).show()
                         }
                         is FirebaseSignInResult.MustNotBeBlank -> {
-                            // TODO: remove
-                            findNavController().navigate(
-                                SetupFragmentDirections.actionSetupFragmentToTopFragment()
-                            )
-
                             Snackbar.make(
                                 binding.root,
                                 R.string.snackbar_must_not_be_blank,
@@ -76,7 +71,6 @@ class SetupFragment : Fragment(R.layout.setup_fragment) {
                         }
                     }
                 }
-                else -> Unit
             }
         }
     }
