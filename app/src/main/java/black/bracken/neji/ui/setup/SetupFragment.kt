@@ -1,9 +1,7 @@
 package black.bracken.neji.ui.setup
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
@@ -12,23 +10,17 @@ import black.bracken.neji.R
 import black.bracken.neji.databinding.SetupFragmentBinding
 import black.bracken.neji.model.FirebaseSignInResult
 import com.google.android.material.snackbar.Snackbar
+import com.wada811.viewbinding.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SetupFragment : Fragment() {
+class SetupFragment : Fragment(R.layout.setup_fragment) {
 
     private val viewModel by viewModels<SetupViewModel>()
+    private val binding by viewBinding(SetupFragmentBinding::bind)
 
-    private var _binding: SetupFragmentBinding? = null
-    private val binding get() = _binding!!
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        super.onCreateView(inflater, container, savedInstanceState)
-        _binding = SetupFragmentBinding.inflate(inflater, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         binding.buttonLogin.setOnClickListener {
             val projectId = binding.editFirebaseProjectId.text?.toString() ?: ""
@@ -77,13 +69,6 @@ class SetupFragment : Fragment() {
                 }
             }
         }
-
-        return binding.root
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
 }

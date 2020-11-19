@@ -88,6 +88,9 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
 
+    // viewbinding-ktx
+    implementation 'com.github.wada811:ViewBinding-ktx:1.1.1'
+
     // datastore
     implementation 'com.google.protobuf:protobuf-lite:3.0.1'
     implementation 'androidx.datastore:datastore-preferences:1.0.0-alpha02'
