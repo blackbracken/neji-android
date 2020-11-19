@@ -29,6 +29,7 @@ class TopFragment : Fragment(R.layout.top_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.indicator.isIndeterminate = true
         userViewModel.firebaseApp.observe(viewLifecycleOwner) { firebaseApp ->
             if (firebaseApp != null) {
                 Snackbar.make(
@@ -39,6 +40,8 @@ class TopFragment : Fragment(R.layout.top_fragment) {
             } else {
                 findNavController().navigate(TopFragmentDirections.actionTopFragmentToSetupFragment())
             }
+
+            binding.indicator.isIndeterminate = false
         }
 
         val adapter = GroupAdapter<GroupieViewHolder>()
