@@ -6,6 +6,7 @@ import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import black.bracken.neji.R
 import black.bracken.neji.databinding.AddPartsFragmentBinding
+import coil.load
 import com.wada811.viewbinding.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -20,6 +21,9 @@ class AddPartsFragment : Fragment(R.layout.add_parts_fragment) {
         val items = (1..30).map { "ねじ ${it}型" } // TODO: replace correct parts
         val adapter = ArrayAdapter(requireContext(), R.layout.list_item, items)
         binding.autoCompleteTextPartsType.setAdapter(adapter)
+
+        binding.imageParts.load("file:///android_asset/sample.png")
+
     }
 
 }

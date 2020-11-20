@@ -53,7 +53,7 @@ class TopFragment : Fragment(R.layout.top_fragment) {
             )
         )
 
-        binding.fab.setOnClickListener {
+        binding.fabAddParts.setOnClickListener {
             findNavController().navigate(TopFragmentDirections.actionTopFragmentToAddPartsFragment())
         }
 
