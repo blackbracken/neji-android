@@ -54,11 +54,9 @@ class TopFragment : Fragment(R.layout.top_fragment) {
     private fun onSignedIn() {
         Snackbar.make(binding.root, R.string.top_success_sign_in, Snackbar.LENGTH_SHORT).show()
 
-        adapter.clear()
         viewModel.regions.observe(viewLifecycleOwner) { regions ->
-            regions.forEach { region ->
-                adapter.add(TopCardItem(region.name))
-            }
+            adapter.clear()
+            regions.forEach { region -> adapter.add(TopCardItem(requireContext(), region)) }
         }
 
         binding.fabAddParts.setOnClickListener {
