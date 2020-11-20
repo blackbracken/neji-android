@@ -100,6 +100,7 @@ class AuthImpl @Inject constructor(
                     .setApplicationId(appId)
                     .setProjectId(projectId)
                     .setApiKey(apiKey)
+                    .setDatabaseUrl("https://${projectId}.firebaseio.com")
                     .build(),
                 Auth.FIREBASE_NAME
             )
