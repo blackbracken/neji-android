@@ -110,6 +110,7 @@ class AuthImpl @Inject constructor(
                     continuation.resume(FirebaseSignInResult.Success(app))
                 }
                 .addOnFailureListener {
+                    app.delete()
                     continuation.resume(FirebaseSignInResult.InvalidValue)
                 }
         }
