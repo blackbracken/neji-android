@@ -6,6 +6,14 @@
     <string name="setup_hint_email">Email</string>
     <string name="setup_hint_password">Password</string>
     <string name="setup_text_login">Login</string>
+    <string name="add_parts_name">パーツ名</string>
+    <string name="add_parts_amount">個数</string>
+    <string name="add_parts_type">パーツの種類</string>
+    <string name="add_parts_comment">コメント</string>
+    <string name="add_parts_box_to_save">保存するボックス</string>
+    <string name="add_parts_adding">追加</string>
     <string name="snackbar_invalid_value">エラー: 不正な値が存在します</string>
     <string name="snackbar_must_not_be_blank">エラー: 空欄が存在します</string>
+    <string name="nav_name_top">場所一覧</string>
+    <string name="nav_name_add_parts">パーツの追加</string>
 </resources>

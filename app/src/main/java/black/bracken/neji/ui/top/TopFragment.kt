@@ -54,7 +54,7 @@ class TopFragment : Fragment(R.layout.top_fragment) {
         )
 
         binding.fab.setOnClickListener {
-            Snackbar.make(binding.root, "you clicked fab", Snackbar.LENGTH_SHORT).show() // TODO: remove
+            findNavController().navigate(TopFragmentDirections.actionTopFragmentToAddPartsFragment())
         }
 
         // TODO: remove
