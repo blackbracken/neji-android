@@ -94,7 +94,8 @@ class AuthImpl @Inject constructor(
                 .setApplicationId(appId)
                 .setProjectId(projectId)
                 .setApiKey(apiKey)
-                .build()
+                .build(),
+            Math.random().toString()
         )
 
         return suspendCoroutine { continuation ->
