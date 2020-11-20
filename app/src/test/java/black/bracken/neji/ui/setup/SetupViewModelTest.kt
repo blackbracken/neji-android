@@ -2,7 +2,7 @@ package black.bracken.neji.ui.setup
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import black.bracken.neji.repository.auth.Auth
+import black.bracken.neji.repository.Auth
 import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.spyk

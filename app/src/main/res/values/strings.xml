@@ -6,6 +6,7 @@
     <string name="setup_hint_email">Email</string>
     <string name="setup_hint_password">Password</string>
     <string name="setup_text_login">Login</string>
+    <string name="top_success_sign_in">ログインに成功しました</string>
     <string name="add_parts_name">パーツ名</string>
     <string name="add_parts_amount">個数</string>
     <string name="add_parts_type">パーツの種類</string>

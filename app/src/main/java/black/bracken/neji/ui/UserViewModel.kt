@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import black.bracken.neji.model.FirebaseSignInResult
-import black.bracken.neji.repository.auth.Auth
+import black.bracken.neji.repository.Auth
 import com.google.firebase.FirebaseApp
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch

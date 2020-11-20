@@ -1,7 +1,6 @@
 package black.bracken.neji.ui.top
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -50,24 +49,20 @@ class TopFragment : Fragment(R.layout.top_fragment) {
                 R.dimen.recycler_padding
             )
         )
-
-        binding.fabAddParts.setOnClickListener {
-            findNavController().navigate(TopFragmentDirections.actionTopFragmentToAddPartsFragment())
-        }
     }
 
     private fun onSignedIn() {
-        Snackbar.make(
-            binding.root,
-            "HELLLLLLLLLOOOOOOOOOOOO!!!!", // TODO: set correct text
-            Snackbar.LENGTH_SHORT
-        ).show()
+        Snackbar.make(binding.root, R.string.top_success_sign_in, Snackbar.LENGTH_SHORT).show()
 
         adapter.clear()
         viewModel.regions.observe(viewLifecycleOwner) { regions ->
             regions.forEach { region ->
                 adapter.add(TopCardItem(region.name))
             }
+        }
+
+        binding.fabAddParts.setOnClickListener {
+            findNavController().navigate(TopFragmentDirections.actionTopFragmentToAddPartsFragment())
         }
     }
 
