@@ -32,6 +32,10 @@ interface Auth {
 
     fun getSignInCaches(): Flow<List<SignInCache>>
 
+    companion object {
+        const val FIREBASE_NAME = "neji_instance"
+    }
+
 }
 
 @Singleton
@@ -88,15 +92,17 @@ class AuthImpl @Inject constructor(
             return FirebaseSignInResult.MustNotBeBlank
         }
 
-        val app = FirebaseApp.initializeApp(
-            context,
-            FirebaseOptions.Builder()
-                .setApplicationId(appId)
-                .setProjectId(projectId)
-                .setApiKey(apiKey)
-                .build(),
-            Math.random().toString()
-        )
+        val app = FirebaseApp.getApps(context)
+            .find { it.name == Auth.FIREBASE_NAME }
+            ?: FirebaseApp.initializeApp(
+                context,
+                FirebaseOptions.Builder()
+                    .setApplicationId(appId)
+                    .setProjectId(projectId)
+                    .setApiKey(apiKey)
+                    .build(),
+                Auth.FIREBASE_NAME
+            )
 
         return suspendCoroutine { continuation ->
             FirebaseAuth.getInstance(app).signInWithEmailAndPassword(email, password)
@@ -104,6 +110,7 @@ class AuthImpl @Inject constructor(
                     continuation.resume(FirebaseSignInResult.Success(app))
                 }
                 .addOnFailureListener {
+                    app.delete()
                     continuation.resume(FirebaseSignInResult.InvalidValue)
                 }
         }
