@@ -53,6 +53,10 @@ class TopFragment : Fragment(R.layout.top_fragment) {
             )
         )
 
+        binding.fab.setOnClickListener {
+            Snackbar.make(binding.root, "you clicked fab", Snackbar.LENGTH_SHORT).show() // TODO: remove
+        }
+
         // TODO: remove
         repeat(20) { adapter.add(TopCardItem()) }
     }
