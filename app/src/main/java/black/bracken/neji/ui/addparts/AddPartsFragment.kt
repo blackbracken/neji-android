@@ -37,6 +37,7 @@ class AddPartsFragment : Fragment(R.layout.add_parts_fragment) {
 
         viewModel.boxes.observe(viewLifecycleOwner) { boxes ->
             binding.inputBoxToSave.isEnabled = true
+            binding.autoCompleteTextBoxToSave.text.clear()
             binding.autoCompleteTextBoxToSave.setAdapter(
                 ArrayAdapter(requireContext(), R.layout.list_item, boxes)
             )
