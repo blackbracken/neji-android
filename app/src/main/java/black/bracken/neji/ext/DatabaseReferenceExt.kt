@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 
 @ExperimentalCoroutinesApi
-fun <T> DatabaseReference.createFlow(
+fun <T> DatabaseReference.createSimpleFlow(
     onChanged: ProducerScope<T>.(DataSnapshot) -> Unit,
     onCancelled: (DatabaseError) -> Unit = { error -> throw error.toException() }
 ): Flow<T> = channelFlow {
@@ -19,7 +19,7 @@ fun <T> DatabaseReference.createFlow(
         override fun onDataChange(snapshot: DataSnapshot) = onChanged(snapshot)
         override fun onCancelled(error: DatabaseError) = onCancelled(error)
     }
-    this@createFlow.addValueEventListener(listener)
+    this@createSimpleFlow.addValueEventListener(listener)
     awaitClose()
-    this@createFlow.removeEventListener(listener)
+    this@createSimpleFlow.removeEventListener(listener)
 }

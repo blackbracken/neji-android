@@ -12,6 +12,7 @@
     <string name="add_parts_amount">個数</string>
     <string name="add_parts_type">パーツの種類</string>
     <string name="add_parts_comment">コメント</string>
+    <string name="add_parts_region_of_box">ボックスのある場所</string>
     <string name="add_parts_box_to_save">保存するボックス</string>
     <string name="add_parts_adding">追加</string>
     <string name="snackbar_invalid_value">エラー: 不正な値が存在します</string>

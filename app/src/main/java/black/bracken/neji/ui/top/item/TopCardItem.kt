@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.View
 import black.bracken.neji.R
 import black.bracken.neji.databinding.CardItemTopBinding
-import black.bracken.neji.model.Region
+import black.bracken.neji.model.firebase.Region
 import com.xwray.groupie.viewbinding.BindableItem
 
 class TopCardItem(

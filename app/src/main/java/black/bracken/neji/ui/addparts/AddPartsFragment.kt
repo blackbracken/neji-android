@@ -3,6 +3,7 @@ package black.bracken.neji.ui.addparts
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
@@ -23,11 +24,34 @@ class AddPartsFragment : Fragment(R.layout.add_parts_fragment) {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.partsTypes.observe(viewLifecycleOwner) { partsTypes ->
-            val adapter = ArrayAdapter(requireContext(), R.layout.list_item, partsTypes)
-            binding.autoCompleteTextPartsType.setAdapter(adapter)
+            binding.autoCompleteTextPartsType.setAdapter(
+                ArrayAdapter(requireContext(), R.layout.list_item, partsTypes)
+            )
         }
 
-        binding.imageParts.load("file:///android_asset/sample.png")
+        viewModel.regions.observe(viewLifecycleOwner) { regions ->
+            binding.autoCompleteTextRegionOfBox.setAdapter(
+                ArrayAdapter(requireContext(), R.layout.list_item, regions)
+            )
+        }
+
+        viewModel.boxes.observe(viewLifecycleOwner) { boxes ->
+            binding.inputBoxToSave.isEnabled = true
+            binding.autoCompleteTextBoxToSave.setAdapter(
+                ArrayAdapter(requireContext(), R.layout.list_item, boxes)
+            )
+        }
+
+        binding.autoCompleteTextRegionOfBox.doOnTextChanged { regionText, _, _, _ ->
+            viewModel.fetchBoxesInRegion(
+                viewModel.regions.value?.find { it.name == regionText.toString() }
+                    ?: return@doOnTextChanged
+            )
+        }
+
+        binding.imageParts.load("file:///android_asset/sample.png") {
+            crossfade(true)
+        }
     }
 
 }
