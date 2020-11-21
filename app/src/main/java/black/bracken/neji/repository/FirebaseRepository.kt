@@ -34,7 +34,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
     override fun regions(): Flow<List<Region>> = database.child("region").createSimpleFlow(
         onChanged = { snapshot ->
             snapshot.children
-                .mapNotNull { child -> child.getValue<Region>() }
+                .mapNotNull { child -> child.getValue<Region>()?.copy(id = child.key!!) }
                 .also { regions -> launch { send(regions) } }
         }
     )
@@ -54,7 +54,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
                 suspendCoroutine<Box?> { continuation ->
                     child.addListenerForSingleValueEvent(object : ValueEventListener {
                         override fun onDataChange(snapshot: DataSnapshot) {
-                            continuation.resume(snapshot.getValue<Box>())
+                            continuation.resume(snapshot.getValue<Box>()?.copy(id = child.key!!))
                         }
 
                         override fun onCancelled(error: DatabaseError) {
