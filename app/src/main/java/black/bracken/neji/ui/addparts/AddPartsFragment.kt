@@ -7,6 +7,7 @@ import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
+import androidx.navigation.fragment.findNavController
 import black.bracken.neji.R
 import black.bracken.neji.databinding.AddPartsFragmentBinding
 import coil.load
@@ -50,54 +51,55 @@ class AddPartsFragment : Fragment(R.layout.add_parts_fragment) {
             )
         }
 
-        binding.imageParts.load("file:///android_asset/sample.png") {
-            crossfade(true)
-        }
+        binding.imageParts.load("file:///android_asset/sample.png") { crossfade(true) }
 
-        binding.buttonAdd.setOnClickListener {
-            val inputPartsName = binding.inputPartsName.apply { error = null }
-            val inputPartsAmount = binding.inputPartsAmount.apply { error = null }
-            val inputPartsType = binding.inputPartsType.apply { error = null }
-            val inputRegionOfBox = binding.inputRegionOfBox.apply { error = null }
-            val inputBoxToSave = binding.inputBoxToSave.apply { error = null }
+        binding.buttonAdd.setOnClickListener { onPushButtonToAdd() }
+    }
 
-            val errors = mutableListOf<() -> Unit>()
-                .apply {
-                    if (binding.editPartsName.text.isNullOrBlank())
-                        add { inputPartsName.error = getString(R.string.error_must_not_be_blank) }
+    private fun onPushButtonToAdd() {
+        val inputPartsName = binding.inputPartsName.apply { error = null }
+        val inputPartsAmount = binding.inputPartsAmount.apply { error = null }
+        val inputPartsType = binding.inputPartsType.apply { error = null }
+        val inputRegionOfBox = binding.inputRegionOfBox.apply { error = null }
+        val inputBoxToSave = binding.inputBoxToSave.apply { error = null }
 
-                    if (binding.editPartsAmount.text?.toString()
-                            ?.toIntOrNull()
-                            ?.takeIf { it >= 0 } == null
-                    )
-                        add {
-                            inputPartsAmount.error =
-                                getString(R.string.error_must_be_integer_and_at_least_zero)
-                        }
+        val errors = mutableListOf<() -> Unit>()
+            .apply {
+                if (binding.editPartsName.text.isNullOrBlank())
+                    add { inputPartsName.error = getString(R.string.error_must_not_be_blank) }
 
-                    if (binding.autoCompleteTextPartsType.text?.toString().isNullOrBlank())
-                        add { inputPartsType.error = getString(R.string.error_must_not_be_blank) }
-
-                    if (binding.autoCompleteTextRegionOfBox.text?.toString().isNullOrBlank())
-                        add { inputRegionOfBox.error = getString(R.string.error_must_not_be_blank) }
-
-                    if (binding.autoCompleteTextBoxToSave.text?.toString().isNullOrBlank())
-                        add { inputBoxToSave.error = getString(R.string.error_must_not_be_blank) }
-                }
-                .toList()
-
-            if (errors.isEmpty()) {
-                viewModel.addParts(
-                    name = binding.editPartsName.text.toString(),
-                    amount = binding.editPartsAmount.text.toString().toInt(),
-                    partsType = binding.autoCompleteTextPartsType.text.toString(),
-                    regionName = binding.autoCompleteTextRegionOfBox.text.toString(),
-                    boxName = binding.autoCompleteTextBoxToSave.text.toString(),
-                    comment = binding.editPartsComment.text.toString().takeIf { it.isNotBlank() }
+                if (binding.editPartsAmount.text?.toString()
+                        ?.toIntOrNull()
+                        ?.takeIf { it >= 0 } == null
                 )
-            } else {
-                errors.forEach { error -> error() }
+                    add {
+                        inputPartsAmount.error =
+                            getString(R.string.error_must_be_integer_and_at_least_zero)
+                    }
+
+                if (binding.autoCompleteTextPartsType.text?.toString().isNullOrBlank())
+                    add { inputPartsType.error = getString(R.string.error_must_not_be_blank) }
+
+                if (binding.autoCompleteTextRegionOfBox.text?.toString().isNullOrBlank())
+                    add { inputRegionOfBox.error = getString(R.string.error_must_not_be_blank) }
+
+                if (binding.autoCompleteTextBoxToSave.text?.toString().isNullOrBlank())
+                    add { inputBoxToSave.error = getString(R.string.error_must_not_be_blank) }
             }
+            .toList()
+
+        if (errors.isEmpty()) {
+            viewModel.addParts(
+                name = binding.editPartsName.text.toString(),
+                amount = binding.editPartsAmount.text.toString().toInt(),
+                partsType = binding.autoCompleteTextPartsType.text.toString(),
+                regionName = binding.autoCompleteTextRegionOfBox.text.toString(),
+                boxName = binding.autoCompleteTextBoxToSave.text.toString(),
+                comment = binding.editPartsComment.text.toString().takeIf { it.isNotBlank() }
+            )
+            findNavController().popBackStack()
+        } else {
+            errors.forEach { error -> error() }
         }
     }
 
