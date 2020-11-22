@@ -65,22 +65,24 @@ class AddPartsFragment : Fragment(R.layout.add_parts_fragment) {
             val errors = mutableListOf<() -> Unit>()
                 .apply {
                     if (binding.editPartsName.text.isNullOrBlank())
-                        add { inputPartsName.error = "未入力です" }
+                        add { inputPartsName.error = getString(R.string.error_must_not_be_blank) }
 
                     if (binding.editPartsAmount.text?.toString()
                             ?.toIntOrNull()
                             ?.takeIf { it >= 0 } == null
                     )
-                        add { inputPartsAmount.error = "0以上の数値にしてください" }
+                        add {
+                            inputPartsAmount.error = getString(R.string.error_must_be_at_least_zero)
+                        }
 
                     if (binding.autoCompleteTextPartsType.text?.toString().isNullOrBlank())
-                        add { inputPartsType.error = "指定してください" }
+                        add { inputPartsType.error = getString(R.string.error_must_not_be_blank) }
 
                     if (binding.autoCompleteTextRegionOfBox.text?.toString().isNullOrBlank())
-                        add { inputRegionOfBox.error = "指定してください" }
+                        add { inputRegionOfBox.error = getString(R.string.error_must_not_be_blank) }
 
                     if (binding.autoCompleteTextBoxToSave.text?.toString().isNullOrBlank())
-                        add { inputBoxToSave.error = "指定してください" }
+                        add { inputBoxToSave.error = getString(R.string.error_must_not_be_blank) }
                 }
                 .toList()
 
