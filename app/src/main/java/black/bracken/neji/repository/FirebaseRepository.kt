@@ -2,6 +2,7 @@ package black.bracken.neji.repository
 
 import black.bracken.neji.ext.createSimpleFlow
 import black.bracken.neji.model.firebase.Box
+import black.bracken.neji.model.firebase.Parts
 import black.bracken.neji.model.firebase.Region
 import com.google.firebase.FirebaseApp
 import com.google.firebase.database.*
@@ -20,6 +21,15 @@ interface FirebaseRepository {
     fun partTypes(): Flow<List<String>>
 
     suspend fun boxesInRegion(region: Region): List<Box>
+
+    suspend fun addParts(
+        name: String,
+        amount: Int,
+        partsType: String,
+        region: Region,
+        box: Box,
+        comment: String?
+    ): Parts?
 
 }
 
@@ -63,5 +73,36 @@ class FirebaseRepositoryImpl : FirebaseRepository {
                     })
                 }
             }
+
+    override suspend fun addParts(
+        name: String,
+        amount: Int,
+        partsType: String,
+        region: Region,
+        box: Box,
+        comment: String?
+    ): Parts? {
+        val ref = database.child("parts").push()
+        val key = ref.key ?: return null
+        val parts = Parts(
+            id = key,
+            name = name,
+            amount = amount,
+            partsType = partsType,
+            regionId = region.id,
+            boxId = box.id,
+            comment = comment
+        )
+
+        return suspendCoroutine { continuation ->
+            database.updateChildren(
+                mapOf(
+                    "parts/$key" to parts,
+                    "box/${box.id}/parts/$key" to true
+                )
+                // TODO: don't crush error
+            ) { error, _ -> continuation.resume(parts.takeIf { error != null }) }
+        }
+    }
 
 }

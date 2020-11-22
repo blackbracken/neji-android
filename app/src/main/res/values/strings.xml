@@ -16,7 +16,7 @@
     <string name="add_parts_box_to_save">保存するボックス</string>
     <string name="add_parts_adding">追加</string>
     <string name="error_must_not_be_blank">値を入力してください</string>
-    <string name="error_must_be_at_least_zero">数値は0以上である必要があります</string>
+    <string name="error_must_be_integer_and_at_least_zero">0以上の整数にしてください</string>
     <string name="snackbar_invalid_value">エラー: 不正な値が存在します</string>
     <string name="snackbar_must_not_be_blank">エラー: 空欄が存在します</string>
     <string name="nav_name_top">場所一覧</string>

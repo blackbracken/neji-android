@@ -10,7 +10,6 @@ import androidx.lifecycle.observe
 import black.bracken.neji.R
 import black.bracken.neji.databinding.AddPartsFragmentBinding
 import coil.load
-import com.google.android.material.snackbar.Snackbar
 import com.wada811.viewbinding.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -72,7 +71,8 @@ class AddPartsFragment : Fragment(R.layout.add_parts_fragment) {
                             ?.takeIf { it >= 0 } == null
                     )
                         add {
-                            inputPartsAmount.error = getString(R.string.error_must_be_at_least_zero)
+                            inputPartsAmount.error =
+                                getString(R.string.error_must_be_integer_and_at_least_zero)
                         }
 
                     if (binding.autoCompleteTextPartsType.text?.toString().isNullOrBlank())
@@ -87,7 +87,14 @@ class AddPartsFragment : Fragment(R.layout.add_parts_fragment) {
                 .toList()
 
             if (errors.isEmpty()) {
-                Snackbar.make(binding.root, "追加処理", Snackbar.LENGTH_SHORT).show()
+                viewModel.addParts(
+                    name = binding.editPartsName.text.toString(),
+                    amount = binding.editPartsAmount.text.toString().toInt(),
+                    partsType = binding.autoCompleteTextPartsType.text.toString(),
+                    regionName = binding.autoCompleteTextRegionOfBox.text.toString(),
+                    boxName = binding.autoCompleteTextBoxToSave.text.toString(),
+                    comment = binding.editPartsComment.text.toString().takeIf { it.isNotBlank() }
+                )
             } else {
                 errors.forEach { error -> error() }
             }

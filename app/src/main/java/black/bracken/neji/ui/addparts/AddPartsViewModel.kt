@@ -17,6 +17,31 @@ class AddPartsViewModel @ViewModelInject constructor(
     private val _boxes: MutableLiveData<List<Box>> = MutableLiveData()
     val boxes: LiveData<List<Box>> get() = _boxes
 
+    fun addParts(
+        name: String,
+        amount: Int,
+        partsType: String,
+        regionName: String,
+        boxName: String,
+        comment: String?
+    ) {
+        val region = regions.value?.find { it.name == regionName }
+            ?: throw IllegalStateException("failed to find region by name")
+        val box = boxes.value?.find { it.name == boxName }
+            ?: throw IllegalStateException("failed to find box by name")
+
+        viewModelScope.launch {
+            firebaseRepository.addParts(
+                name = name,
+                amount = amount,
+                partsType = partsType,
+                region = region,
+                box = box,
+                comment = comment
+            )
+        }
+    }
+
     fun fetchBoxesInRegion(region: Region) {
         viewModelScope.launch {
             _boxes.postValue(firebaseRepository.boxesInRegion(region))
