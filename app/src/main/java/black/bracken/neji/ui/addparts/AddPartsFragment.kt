@@ -10,6 +10,7 @@ import androidx.lifecycle.observe
 import black.bracken.neji.R
 import black.bracken.neji.databinding.AddPartsFragmentBinding
 import coil.load
+import com.google.android.material.snackbar.Snackbar
 import com.wada811.viewbinding.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -52,6 +53,42 @@ class AddPartsFragment : Fragment(R.layout.add_parts_fragment) {
 
         binding.imageParts.load("file:///android_asset/sample.png") {
             crossfade(true)
+        }
+
+        binding.buttonAdd.setOnClickListener {
+            val inputPartsName = binding.inputPartsName.apply { error = null }
+            val inputPartsAmount = binding.inputPartsAmount.apply { error = null }
+            val inputPartsType = binding.inputPartsType.apply { error = null }
+            val inputRegionOfBox = binding.inputRegionOfBox.apply { error = null }
+            val inputBoxToSave = binding.inputBoxToSave.apply { error = null }
+
+            val errors = mutableListOf<() -> Unit>()
+                .apply {
+                    if (binding.editPartsName.text.isNullOrBlank())
+                        add { inputPartsName.error = "未入力です" }
+
+                    if (binding.editPartsAmount.text?.toString()
+                            ?.toIntOrNull()
+                            ?.takeIf { it >= 0 } == null
+                    )
+                        add { inputPartsAmount.error = "0以上の数値にしてください" }
+
+                    if (binding.autoCompleteTextPartsType.text?.toString().isNullOrBlank())
+                        add { inputPartsType.error = "指定してください" }
+
+                    if (binding.autoCompleteTextRegionOfBox.text?.toString().isNullOrBlank())
+                        add { inputRegionOfBox.error = "指定してください" }
+
+                    if (binding.autoCompleteTextBoxToSave.text?.toString().isNullOrBlank())
+                        add { inputBoxToSave.error = "指定してください" }
+                }
+                .toList()
+
+            if (errors.isEmpty()) {
+                Snackbar.make(binding.root, "追加処理", Snackbar.LENGTH_SHORT).show()
+            } else {
+                errors.forEach { error -> error() }
+            }
         }
     }
 
