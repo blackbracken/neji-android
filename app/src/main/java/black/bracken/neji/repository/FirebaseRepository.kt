@@ -7,6 +7,8 @@ import black.bracken.neji.model.firebase.Region
 import com.google.firebase.FirebaseApp
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.getValue
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -39,6 +41,10 @@ class FirebaseRepositoryImpl : FirebaseRepository {
 
     private val database: DatabaseReference by lazy {
         FirebaseDatabase.getInstance(FirebaseApp.getInstance(Auth.FIREBASE_NAME)).reference
+    }
+
+    private val storage: StorageReference by lazy {
+        FirebaseStorage.getInstance(FirebaseApp.getInstance(Auth.FIREBASE_NAME)).reference
     }
 
     override fun regions(): Flow<List<Region>> = database.child("region").createSimpleFlow(
