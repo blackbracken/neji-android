@@ -7,10 +7,13 @@
     <fragment
         android:id="@+id/topFragment"
         android:name="black.bracken.neji.ui.top.TopFragment"
-        android:label="TopFragment">
+        android:label="@string/nav_name_top">
         <action
             android:id="@+id/action_topFragment_to_setupFragment"
             app:destination="@id/setupFragment" />
+        <action
+            android:id="@+id/action_topFragment_to_addPartsFragment"
+            app:destination="@id/addPartsFragment" />
     </fragment>
     <fragment
         android:id="@+id/setupFragment"
@@ -22,4 +25,8 @@
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
     </fragment>
+    <fragment
+        android:id="@+id/addPartsFragment"
+        android:name="black.bracken.neji.ui.addparts.AddPartsFragment"
+        android:label="@string/nav_name_add_parts" />
 </navigation>

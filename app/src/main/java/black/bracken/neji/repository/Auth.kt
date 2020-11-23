@@ -1,4 +1,4 @@
-package black.bracken.neji.repository.auth
+package black.bracken.neji.repository
 
 import android.content.Context
 import androidx.datastore.DataStore
@@ -100,6 +100,8 @@ class AuthImpl @Inject constructor(
                     .setApplicationId(appId)
                     .setProjectId(projectId)
                     .setApiKey(apiKey)
+                    .setDatabaseUrl("https://${projectId}.firebaseio.com")
+                    .setStorageBucket("${projectId}.appspot.com")
                     .build(),
                 Auth.FIREBASE_NAME
             )

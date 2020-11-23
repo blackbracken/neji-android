@@ -26,17 +26,15 @@ class TopFragment : Fragment(R.layout.top_fragment) {
 
     private val binding by viewBinding(TopFragmentBinding::bind)
 
+    private val adapter = GroupAdapter<GroupieViewHolder>()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.indicator.isIndeterminate = true
         userViewModel.firebaseApp.observe(viewLifecycleOwner) { firebaseApp ->
             if (firebaseApp != null) {
-                Snackbar.make(
-                    binding.root,
-                    "HELLLLLLLLLOOOOOOOOOOOO!!!!", // TODO: set correct text
-                    Snackbar.LENGTH_SHORT
-                ).show()
+                onSignedIn()
             } else {
                 findNavController().navigate(TopFragmentDirections.actionTopFragmentToSetupFragment())
             }
@@ -44,7 +42,6 @@ class TopFragment : Fragment(R.layout.top_fragment) {
             binding.indicator.isIndeterminate = false
         }
 
-        val adapter = GroupAdapter<GroupieViewHolder>()
         binding.recycler.adapter = adapter
         binding.recycler.addItemDecoration(
             ItemOffsetDecoration(
@@ -52,9 +49,19 @@ class TopFragment : Fragment(R.layout.top_fragment) {
                 R.dimen.recycler_padding
             )
         )
+    }
 
-        // TODO: remove
-        repeat(20) { adapter.add(TopCardItem()) }
+    private fun onSignedIn() {
+        Snackbar.make(binding.root, R.string.top_success_sign_in, Snackbar.LENGTH_SHORT).show()
+
+        viewModel.regions.observe(viewLifecycleOwner) { regions ->
+            adapter.clear()
+            regions.forEach { region -> adapter.add(TopCardItem(requireContext(), region)) }
+        }
+
+        binding.fabAddParts.setOnClickListener {
+            findNavController().navigate(TopFragmentDirections.actionTopFragmentToAddPartsFragment())
+        }
     }
 
 }

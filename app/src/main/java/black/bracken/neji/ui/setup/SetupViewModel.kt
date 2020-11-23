@@ -5,7 +5,7 @@ import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import black.bracken.neji.model.FirebaseSignInResult
-import black.bracken.neji.repository.auth.Auth
+import black.bracken.neji.repository.Auth
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 
