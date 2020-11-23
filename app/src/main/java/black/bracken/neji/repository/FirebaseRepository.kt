@@ -1,5 +1,6 @@
 package black.bracken.neji.repository
 
+import android.net.Uri
 import black.bracken.neji.ext.createSimpleFlow
 import black.bracken.neji.model.firebase.Box
 import black.bracken.neji.model.firebase.Parts
@@ -26,6 +27,7 @@ interface FirebaseRepository {
 
     suspend fun addParts(
         name: String,
+        imageUri: Uri?,
         amount: Int,
         partsType: String,
         region: Region,
@@ -82,6 +84,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
 
     override suspend fun addParts(
         name: String,
+        imageUri: Uri?,
         amount: Int,
         partsType: String,
         region: Region,
@@ -90,9 +93,24 @@ class FirebaseRepositoryImpl : FirebaseRepository {
     ): Parts? {
         val ref = database.child("parts").push()
         val key = ref.key ?: return null
+
+        val imageUrl = suspendCoroutine<String?> { continuation ->
+            if (imageUri == null) {
+                continuation.resume(null)
+                return@suspendCoroutine
+            }
+
+            val url = "parts/$key/image.jpg"
+            storage.child(url)
+                .putFile(imageUri)
+                .addOnSuccessListener { continuation.resume(url) }
+                .addOnFailureListener { continuation.resume(null) }
+        }
+
         val parts = Parts(
             id = key,
             name = name,
+            imageUrl = imageUrl,
             amount = amount,
             partsType = partsType,
             regionId = region.id,

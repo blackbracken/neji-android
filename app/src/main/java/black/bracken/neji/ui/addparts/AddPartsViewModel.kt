@@ -1,5 +1,6 @@
 package black.bracken.neji.ui.addparts
 
+import android.net.Uri
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import black.bracken.neji.model.firebase.Box
@@ -17,6 +18,13 @@ class AddPartsViewModel @ViewModelInject constructor(
     private val _boxes: MutableLiveData<List<Box>> = MutableLiveData()
     val boxes: LiveData<List<Box>> get() = _boxes
 
+    private val _imageUri: MutableLiveData<Uri?> = MutableLiveData(null)
+    val imageUri: LiveData<Uri?> get() = _imageUri
+
+    fun setPartsImage(uri: Uri?) {
+        _imageUri.value = uri
+    }
+
     fun addParts(
         name: String,
         amount: Int,
@@ -33,6 +41,7 @@ class AddPartsViewModel @ViewModelInject constructor(
         viewModelScope.launch {
             firebaseRepository.addParts(
                 name = name,
+                imageUri = imageUri.value,
                 amount = amount,
                 partsType = partsType,
                 region = region,

@@ -1,9 +1,9 @@
 package black.bracken.neji.ui.addparts
 
-import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
+import androidx.core.net.toUri
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -25,6 +25,10 @@ class AddPartsFragment : Fragment(R.layout.add_parts_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel.imageUri.observe(viewLifecycleOwner) { imageUri ->
+            binding.imageParts.load(imageUri ?: "file:///android_asset/sample.png".toUri())
+        }
 
         viewModel.partsTypes.observe(viewLifecycleOwner) { partsTypes ->
             binding.autoCompleteTextPartsType.setAdapter(
@@ -53,17 +57,12 @@ class AddPartsFragment : Fragment(R.layout.add_parts_fragment) {
             )
         }
 
-        binding.imageParts.load("file:///android_asset/sample.png") { crossfade(true) }
         binding.fabAddImage.setOnClickListener {
             ImagePicker.with(this)
                 .cropSquare()
                 .compress(2048)
                 .maxResultSize(512, 512)
-                .start { requestCode, data ->
-                    if (requestCode == Activity.RESULT_OK) {
-                        binding.imageParts.load(data!!.data)
-                    }
-                }
+                .start { _, data -> viewModel.setPartsImage(data?.data) }
         }
 
         binding.buttonAdd.setOnClickListener { onPushButtonToAdd() }

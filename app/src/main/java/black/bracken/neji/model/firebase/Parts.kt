@@ -9,6 +9,7 @@ data class Parts(
     @get:Exclude val id: String = "",
     var name: String = "",
     var amount: Int = 0,
+    var imageUrl: String? = null,
     @get:PropertyName("parts-type") var partsType: String = "",
     @get:PropertyName("region") var regionId: String = "",
     @get:PropertyName("box") var boxId: String = "",
