@@ -1,5 +1,6 @@
 package black.bracken.neji.ui.addparts
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
@@ -11,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import black.bracken.neji.R
 import black.bracken.neji.databinding.AddPartsFragmentBinding
 import coil.load
+import com.github.dhaval2404.imagepicker.ImagePicker
 import com.wada811.viewbinding.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -52,6 +54,17 @@ class AddPartsFragment : Fragment(R.layout.add_parts_fragment) {
         }
 
         binding.imageParts.load("file:///android_asset/sample.png") { crossfade(true) }
+        binding.fabAddImage.setOnClickListener {
+            ImagePicker.with(this)
+                .cropSquare()
+                .compress(2048)
+                .maxResultSize(512, 512)
+                .start { requestCode, data ->
+                    if (requestCode == Activity.RESULT_OK) {
+                        binding.imageParts.load(data!!.data)
+                    }
+                }
+        }
 
         binding.buttonAdd.setOnClickListener { onPushButtonToAdd() }
     }
