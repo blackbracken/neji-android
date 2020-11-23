@@ -45,6 +45,8 @@ class SetupViewModelTest {
             onChanged(ofType(SetupViewModel.SignInState.Loading::class))
             onChanged(ofType(SetupViewModel.SignInState.Done::class))
         }
+
+        viewModel.signInState.removeObserver(onChanged)
     }
 
 }
