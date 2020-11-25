@@ -13,4 +13,7 @@ data class Box(
 
     override fun toString() = name
 
+    @Exclude
+    fun partsList(): Set<String> = parts.keys
+
 }

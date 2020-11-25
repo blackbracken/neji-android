@@ -12,4 +12,7 @@ data class Region(
 
     override fun toString(): String = name
 
+    @Exclude
+    fun boxList(): Set<String> = box.keys
+
 }
