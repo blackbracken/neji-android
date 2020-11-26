@@ -14,6 +14,6 @@ data class Box(
     override fun toString() = name
 
     @Exclude
-    fun partsList(): Set<String> = parts.keys
+    fun itemIdSet(): Set<String> = parts.keys
 
 }

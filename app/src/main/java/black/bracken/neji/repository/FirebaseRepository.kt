@@ -3,7 +3,7 @@ package black.bracken.neji.repository
 import android.net.Uri
 import black.bracken.neji.ext.createSimpleFlow
 import black.bracken.neji.model.firebase.Box
-import black.bracken.neji.model.firebase.Parts
+import black.bracken.neji.model.firebase.Item
 import black.bracken.neji.model.firebase.Region
 import com.google.firebase.FirebaseApp
 import com.google.firebase.database.*
@@ -21,19 +21,19 @@ interface FirebaseRepository {
 
     fun regions(): Flow<List<Region>>
 
-    fun partTypes(): Flow<List<String>>
+    fun itemTypes(): Flow<List<String>>
 
     suspend fun boxesInRegion(region: Region): List<Box>
 
-    suspend fun addParts(
+    suspend fun addItem(
         name: String,
         imageUri: Uri?,
         amount: Int,
-        partsType: String,
+        itemType: String,
         region: Region,
         box: Box,
         comment: String?
-    ): Parts?
+    ): Item?
 
 }
 
@@ -57,7 +57,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         }
     )
 
-    override fun partTypes(): Flow<List<String>> = database.child("parts-type").createSimpleFlow(
+    override fun itemTypes(): Flow<List<String>> = database.child("parts-type").createSimpleFlow(
         onChanged = { snapshot ->
             snapshot.children
                 .mapNotNull { child -> child.key }
@@ -82,15 +82,15 @@ class FirebaseRepositoryImpl : FirebaseRepository {
                 }
             }
 
-    override suspend fun addParts(
+    override suspend fun addItem(
         name: String,
         imageUri: Uri?,
         amount: Int,
-        partsType: String,
+        itemType: String,
         region: Region,
         box: Box,
         comment: String?
-    ): Parts? {
+    ): Item? {
         val ref = database.child("parts").push()
         val key = ref.key ?: return null
 
@@ -107,12 +107,12 @@ class FirebaseRepositoryImpl : FirebaseRepository {
                 .addOnFailureListener { continuation.resume(null) }
         }
 
-        val parts = Parts(
+        val item = Item(
             id = key,
             name = name,
             imageUrl = imageUrl,
             amount = amount,
-            partsType = partsType,
+            partsType = itemType,
             regionId = region.id,
             boxId = box.id,
             comment = comment
@@ -121,11 +121,11 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         return suspendCoroutine { continuation ->
             database.updateChildren(
                 mapOf(
-                    "parts/$key" to parts,
+                    "parts/$key" to item,
                     "box/${box.id}/parts/$key" to true
                 )
                 // TODO: don't crush error
-            ) { error, _ -> continuation.resume(parts.takeIf { error != null }) }
+            ) { error, _ -> continuation.resume(item.takeIf { error != null }) }
         }
     }
 

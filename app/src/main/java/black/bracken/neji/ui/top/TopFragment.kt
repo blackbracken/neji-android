@@ -59,8 +59,8 @@ class TopFragment : Fragment(R.layout.top_fragment) {
             regions.forEach { region -> adapter.add(TopCardItem(requireContext(), region)) }
         }
 
-        binding.fabAddParts.setOnClickListener {
-            findNavController().navigate(TopFragmentDirections.actionTopFragmentToAddPartsFragment())
+        binding.fabAddItem.setOnClickListener {
+            findNavController().navigate(TopFragmentDirections.actionTopFragmentToAddItemFragment())
         }
     }
 

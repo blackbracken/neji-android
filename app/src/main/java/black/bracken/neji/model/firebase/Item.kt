@@ -5,7 +5,7 @@ import com.google.firebase.database.IgnoreExtraProperties
 import com.google.firebase.database.PropertyName
 
 @IgnoreExtraProperties
-data class Parts(
+data class Item(
     @get:Exclude val id: String = "",
     var name: String = "",
     var amount: Int = 0,
