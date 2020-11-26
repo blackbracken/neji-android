@@ -57,7 +57,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         }
     )
 
-    override fun itemTypes(): Flow<List<String>> = database.child("item-type").createSimpleFlow(
+    override fun itemTypes(): Flow<List<String>> = database.child("itemType").createSimpleFlow(
         onChanged = { snapshot ->
             snapshot.children
                 .mapNotNull { child -> child.key }
@@ -66,8 +66,8 @@ class FirebaseRepositoryImpl : FirebaseRepository {
     )
 
     override suspend fun boxesInRegion(region: Region): List<Box> =
-        region.box
-            .map { boxIdPair -> database.child("box/${boxIdPair.key}") }
+        region.boxIdSet()
+            .map { boxId -> database.child("box/$boxId") }
             .mapNotNull { child ->
                 suspendCoroutine<Box?> { continuation ->
                     child.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -122,7 +122,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
             database.updateChildren(
                 mapOf(
                     "item/$key" to item,
-                    "box/${box.id}/item/$key" to true
+                    "box/${box.id}/itemIds/$key" to true
                 )
                 // TODO: don't crush error
             ) { error, _ -> continuation.resume(item.takeIf { error != null }) }

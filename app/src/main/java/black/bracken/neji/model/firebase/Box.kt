@@ -7,7 +7,7 @@ import com.google.firebase.database.IgnoreExtraProperties
 data class Box(
     @get:Exclude val id: String = "",
     var name: String = "",
-    var region: String = "",
+    var regionId: String = "",
     var item: Map<String, Boolean> = mapOf()
 ) {
 
