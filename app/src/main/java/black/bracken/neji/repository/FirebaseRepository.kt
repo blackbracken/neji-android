@@ -57,11 +57,11 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         }
     )
 
-    override fun itemTypes(): Flow<List<String>> = database.child("parts-type").createSimpleFlow(
+    override fun itemTypes(): Flow<List<String>> = database.child("item-type").createSimpleFlow(
         onChanged = { snapshot ->
             snapshot.children
                 .mapNotNull { child -> child.key }
-                .also { partsTypes -> launch { send(partsTypes) } }
+                .also { itemTypes -> launch { send(itemTypes) } }
         }
     )
 
@@ -91,7 +91,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         box: Box,
         comment: String?
     ): Item? {
-        val ref = database.child("parts").push()
+        val ref = database.child("item").push()
         val key = ref.key ?: return null
 
         val imageUrl = suspendCoroutine<String?> { continuation ->
@@ -100,7 +100,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
                 return@suspendCoroutine
             }
 
-            val url = "parts/$key/image.jpg"
+            val url = "item/$key/image.jpg"
             storage.child(url)
                 .putFile(imageUri)
                 .addOnSuccessListener { continuation.resume(url) }
@@ -112,7 +112,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
             name = name,
             imageUrl = imageUrl,
             amount = amount,
-            partsType = itemType,
+            itemType = itemType,
             regionId = region.id,
             boxId = box.id,
             comment = comment
@@ -121,8 +121,8 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         return suspendCoroutine { continuation ->
             database.updateChildren(
                 mapOf(
-                    "parts/$key" to item,
-                    "box/${box.id}/parts/$key" to true
+                    "item/$key" to item,
+                    "box/${box.id}/item/$key" to true
                 )
                 // TODO: don't crush error
             ) { error, _ -> continuation.resume(item.takeIf { error != null }) }

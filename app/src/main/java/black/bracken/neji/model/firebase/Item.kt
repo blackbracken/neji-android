@@ -10,7 +10,7 @@ data class Item(
     var name: String = "",
     var amount: Int = 0,
     var imageUrl: String? = null,
-    @get:PropertyName("parts-type") var partsType: String = "",
+    @get:PropertyName("item-type") var itemType: String = "",
     @get:PropertyName("region") var regionId: String = "",
     @get:PropertyName("box") var boxId: String = "",
     var comment: String? = null

@@ -2,7 +2,7 @@
   "box": {
     "de49304a-b0f3-4555-9070-be9173b69b02": {
       "name": "ボックス1",
-      "parts": {
+      "item": {
         "5e4dac2d-a9f4-44ec-9675-788a82a5bc67": true,
         "6fa656f5-3823-4be7-8155-ae06cd5f782c": true,
         "f9ef2854-4e9e-4620-b63e-cec47d6b1c87": true
@@ -10,13 +10,13 @@
       "region": "b23a399e-4762-4521-a79b-2b841b7461c3"
     }
   },
-  "parts": {
+  "item": {
     "5e4dac2d-a9f4-44ec-9675-788a82a5bc67": {
       "amount": 346,
       "box": "de49304a-b0f3-4555-9070-be9173b69b02",
       "comment": "samplesamplesample",
       "name": "サンプルアイテム2",
-      "parts-type": "type1",
+      "item-type": "type1",
       "region": "b23a399e-4762-4521-a79b-2b841b7461c3"
     },
     "6fa656f5-3823-4be7-8155-ae06cd5f782c": {
@@ -24,7 +24,7 @@
       "box": "de49304a-b0f3-4555-9070-be9173b69b02",
       "comment": "samplesamplesample",
       "name": "サンプルアイテム3",
-      "parts-type": "type1",
+      "item-type": "type1",
       "region": "b23a399e-4762-4521-a79b-2b841b7461c3"
     },
     "f9ef2854-4e9e-4620-b63e-cec47d6b1c87": {
@@ -32,11 +32,11 @@
       "box": "de49304a-b0f3-4555-9070-be9173b69b02",
       "comment": "samplesamplesample",
       "name": "サンプルアイテム1",
-      "parts-type": "type2",
+      "item-type": "type2",
       "region": "b23a399e-4762-4521-a79b-2b841b7461c3"
     }
   },
-  "parts-type": {
+  "item-type": {
     "type1": true,
     "type2": true,
     "type3": true
