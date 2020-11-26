@@ -7,13 +7,13 @@ import com.google.firebase.database.IgnoreExtraProperties
 data class Box(
     @get:Exclude val id: String = "",
     var name: String = "",
-    var region: String = "",
-    var parts: Map<String, Boolean> = mapOf()
+    var regionId: String = "",
+    var item: Map<String, Boolean> = mapOf()
 ) {
 
     override fun toString() = name
 
     @Exclude
-    fun partsList(): Set<String> = parts.keys
+    fun itemIdSet(): Set<String> = item.keys
 
 }

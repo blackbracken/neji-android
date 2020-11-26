@@ -1,4 +1,4 @@
-package black.bracken.neji.ui.addparts
+package black.bracken.neji.ui.additem
 
 import android.net.Uri
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
@@ -13,27 +13,27 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class AddPartsViewModelTest {
+class AddItemViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var mockkFirebase: FirebaseRepository
-    private lateinit var viewModel: AddPartsViewModel
+    private lateinit var viewModel: AddItemViewModel
 
     @Before
     fun setup() {
         mockkFirebase = mockk(relaxed = true)
-        viewModel = AddPartsViewModel(mockkFirebase)
+        viewModel = AddItemViewModel(mockkFirebase)
     }
 
     @Test
-    fun `setPartsImage sets actual uri`() {
+    fun `setItemImage sets actual uri`() {
         val onChanged = spyk<(Uri?) -> Unit>({})
         viewModel.imageUri.observeForever(onChanged)
 
         val uri = mockk<Uri>()
-        viewModel.setPartsImage(uri)
+        viewModel.setItemImage(uri)
 
         verifyOrder {
             onChanged(isNull())
@@ -44,11 +44,11 @@ class AddPartsViewModelTest {
     }
 
     @Test
-    fun `setPartsImage sets uri as null`() {
+    fun `setItemImage sets uri as null`() {
         val onChanged = spyk<(Uri?) -> Unit>({})
         viewModel.imageUri.observeForever(onChanged)
 
-        viewModel.setPartsImage(null)
+        viewModel.setItemImage(null)
 
         verifyOrder {
             onChanged(isNull())

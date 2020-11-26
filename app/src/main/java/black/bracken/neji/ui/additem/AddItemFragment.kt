@@ -1,4 +1,4 @@
-package black.bracken.neji.ui.addparts
+package black.bracken.neji.ui.additem
 
 import android.os.Bundle
 import android.view.View
@@ -10,29 +10,29 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import black.bracken.neji.R
-import black.bracken.neji.databinding.AddPartsFragmentBinding
+import black.bracken.neji.databinding.AddItemFragmentBinding
 import coil.load
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.wada811.viewbinding.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class AddPartsFragment : Fragment(R.layout.add_parts_fragment) {
+class AddItemFragment : Fragment(R.layout.add_item_fragment) {
 
-    private val binding by viewBinding(AddPartsFragmentBinding::bind)
+    private val binding by viewBinding(AddItemFragmentBinding::bind)
 
-    private val viewModel by viewModels<AddPartsViewModel>()
+    private val viewModel by viewModels<AddItemViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.imageUri.observe(viewLifecycleOwner) { imageUri ->
-            binding.imageParts.load(imageUri ?: "file:///android_asset/sample.png".toUri())
+            binding.imageItem.load(imageUri ?: "file:///android_asset/sample.png".toUri())
         }
 
-        viewModel.partsTypes.observe(viewLifecycleOwner) { partsTypes ->
-            binding.autoCompleteTextPartsType.setAdapter(
-                ArrayAdapter(requireContext(), R.layout.list_item, partsTypes)
+        viewModel.itemTypes.observe(viewLifecycleOwner) { itemTypes ->
+            binding.autoCompleteTextItemType.setAdapter(
+                ArrayAdapter(requireContext(), R.layout.list_item, itemTypes)
             )
         }
 
@@ -62,35 +62,35 @@ class AddPartsFragment : Fragment(R.layout.add_parts_fragment) {
                 .cropSquare()
                 .compress(2048)
                 .maxResultSize(512, 512)
-                .start { _, data -> viewModel.setPartsImage(data?.data) }
+                .start { _, data -> viewModel.setItemImage(data?.data) }
         }
 
         binding.buttonAdd.setOnClickListener { onPushButtonToAdd() }
     }
 
     private fun onPushButtonToAdd() {
-        val inputPartsName = binding.inputPartsName.apply { error = null }
-        val inputPartsAmount = binding.inputPartsAmount.apply { error = null }
-        val inputPartsType = binding.inputPartsType.apply { error = null }
+        val inputItemName = binding.inputItemName.apply { error = null }
+        val inputItemAmount = binding.inputItemAmount.apply { error = null }
+        val inputItemType = binding.inputItemType.apply { error = null }
         val inputRegionOfBox = binding.inputRegionOfBox.apply { error = null }
         val inputBoxToSave = binding.inputBoxToSave.apply { error = null }
 
         val errors = mutableListOf<() -> Unit>()
             .apply {
-                if (binding.editPartsName.text.isNullOrBlank())
-                    add { inputPartsName.error = getString(R.string.error_must_not_be_blank) }
+                if (binding.editItemName.text.isNullOrBlank())
+                    add { inputItemName.error = getString(R.string.error_must_not_be_blank) }
 
-                if (binding.editPartsAmount.text?.toString()
+                if (binding.editItemAmount.text?.toString()
                         ?.toIntOrNull()
                         ?.takeIf { it >= 0 } == null
                 )
                     add {
-                        inputPartsAmount.error =
+                        inputItemAmount.error =
                             getString(R.string.error_must_be_integer_and_at_least_zero)
                     }
 
-                if (binding.autoCompleteTextPartsType.text?.toString().isNullOrBlank())
-                    add { inputPartsType.error = getString(R.string.error_must_not_be_blank) }
+                if (binding.autoCompleteTextItemType.text?.toString().isNullOrBlank())
+                    add { inputItemType.error = getString(R.string.error_must_not_be_blank) }
 
                 if (binding.autoCompleteTextRegionOfBox.text?.toString().isNullOrBlank())
                     add { inputRegionOfBox.error = getString(R.string.error_must_not_be_blank) }
@@ -101,13 +101,13 @@ class AddPartsFragment : Fragment(R.layout.add_parts_fragment) {
             .toList()
 
         if (errors.isEmpty()) {
-            viewModel.addParts(
-                name = binding.editPartsName.text.toString(),
-                amount = binding.editPartsAmount.text.toString().toInt(),
-                partsType = binding.autoCompleteTextPartsType.text.toString(),
+            viewModel.addItem(
+                name = binding.editItemName.text.toString(),
+                amount = binding.editItemAmount.text.toString().toInt(),
+                itemType = binding.autoCompleteTextItemType.text.toString(),
                 regionName = binding.autoCompleteTextRegionOfBox.text.toString(),
                 boxName = binding.autoCompleteTextBoxToSave.text.toString(),
-                comment = binding.editPartsComment.text.toString().takeIf { it.isNotBlank() }
+                comment = binding.editItemComment.text.toString().takeIf { it.isNotBlank() }
             )
             findNavController().popBackStack()
         } else {

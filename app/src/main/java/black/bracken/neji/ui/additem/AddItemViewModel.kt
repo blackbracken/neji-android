@@ -1,4 +1,4 @@
-package black.bracken.neji.ui.addparts
+package black.bracken.neji.ui.additem
 
 import android.net.Uri
 import androidx.hilt.lifecycle.ViewModelInject
@@ -8,12 +8,12 @@ import black.bracken.neji.model.firebase.Region
 import black.bracken.neji.repository.FirebaseRepository
 import kotlinx.coroutines.launch
 
-class AddPartsViewModel @ViewModelInject constructor(
+class AddItemViewModel @ViewModelInject constructor(
     private val firebaseRepository: FirebaseRepository
 ) : ViewModel() {
 
     val regions = firebaseRepository.regions().asLiveData()
-    val partsTypes = firebaseRepository.partTypes().asLiveData()
+    val itemTypes = firebaseRepository.itemTypes().asLiveData()
 
     private val _boxes: MutableLiveData<List<Box>> = MutableLiveData()
     val boxes: LiveData<List<Box>> get() = _boxes
@@ -21,14 +21,14 @@ class AddPartsViewModel @ViewModelInject constructor(
     private val _imageUri: MutableLiveData<Uri?> = MutableLiveData(null)
     val imageUri: LiveData<Uri?> get() = _imageUri
 
-    fun setPartsImage(uri: Uri?) {
+    fun setItemImage(uri: Uri?) {
         _imageUri.value = uri
     }
 
-    fun addParts(
+    fun addItem(
         name: String,
         amount: Int,
-        partsType: String,
+        itemType: String,
         regionName: String,
         boxName: String,
         comment: String?
@@ -39,11 +39,11 @@ class AddPartsViewModel @ViewModelInject constructor(
             ?: throw IllegalStateException("failed to find box by name")
 
         viewModelScope.launch {
-            firebaseRepository.addParts(
+            firebaseRepository.addItem(
                 name = name,
                 imageUri = imageUri.value,
                 amount = amount,
-                partsType = partsType,
+                itemType = itemType,
                 region = region,
                 box = box,
                 comment = comment
