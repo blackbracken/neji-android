@@ -19,7 +19,11 @@ class TopCardItem(
     }
 
     override fun bind(viewBinding: CardItemTopBinding, position: Int) {
-        viewBinding.text.text = context.getString(R.string.top_card_name, region.name)
+        with(viewBinding) {
+            textName.text = context.getString(R.string.top_card_region_name, region.name)
+            textAmount.text =
+                context.getString(R.string.top_card_region_box_amount, region.boxIdSet().size)
+        }
     }
 
 }
