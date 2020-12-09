@@ -7,6 +7,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
 import black.bracken.neji.R
 import black.bracken.neji.databinding.TopFragmentBinding
 import black.bracken.neji.ui.UserViewModel
@@ -43,12 +44,15 @@ class TopFragment : Fragment(R.layout.top_fragment) {
         }
 
         binding.recycler.adapter = adapter
-        binding.recycler.addItemDecoration(
-            ItemOffsetDecoration(
-                requireContext(),
-                R.dimen.recycler_padding
+        binding.recycler.apply {
+            addItemDecoration(ItemOffsetDecoration(requireContext(), R.dimen.recycler_padding))
+            addItemDecoration(
+                DividerItemDecoration(
+                    requireContext(),
+                    DividerItemDecoration.VERTICAL
+                )
             )
-        )
+        }
     }
 
     private fun onSignedIn() {

@@ -7,7 +7,8 @@
     <string name="setup_hint_password">Password</string>
     <string name="setup_text_login">Login</string>
     <string name="top_success_sign_in">ログインに成功しました</string>
-    <string name="top_card_name">リージョン: %s</string>
+    <string name="top_card_region_name">リージョン: %s</string>
+    <string name="top_card_region_box_amount">ボックス数: %d個</string>
     <string name="add_item_name">アイテム名</string>
     <string name="add_item_amount">個数</string>
     <string name="add_item_type">アイテムの種類</string>

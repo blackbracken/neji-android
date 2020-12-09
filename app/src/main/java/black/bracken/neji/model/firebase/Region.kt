@@ -7,7 +7,7 @@ import com.google.firebase.database.IgnoreExtraProperties
 data class Region(
     @get:Exclude val id: String = "",
     var name: String = "",
-    var boxIds: Map<String, Boolean> = mapOf()
+    var boxIds: MutableMap<String, Boolean> = mutableMapOf()
 ) {
 
     override fun toString(): String = name
