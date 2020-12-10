@@ -1,7 +1,7 @@
 package black.bracken.neji.repository
 
 import android.net.Uri
-import black.bracken.neji.ext.createSimpleFlow
+import black.bracken.neji.ext.createChangedChildFlow
 import black.bracken.neji.model.firebase.Box
 import black.bracken.neji.model.firebase.Item
 import black.bracken.neji.model.firebase.Region
@@ -49,7 +49,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         FirebaseStorage.getInstance(FirebaseApp.getInstance(Auth.FIREBASE_NAME)).reference
     }
 
-    override fun regions(): Flow<List<Region>> = database.child("region").createSimpleFlow(
+    override fun regions(): Flow<List<Region>> = database.child("region").createChangedChildFlow(
         onChanged = { snapshot ->
             snapshot.children
                 .mapNotNull { child -> child.getValue<Region>()?.copy(id = child.key!!) }
@@ -57,13 +57,14 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         }
     )
 
-    override fun itemTypes(): Flow<List<String>> = database.child("itemType").createSimpleFlow(
-        onChanged = { snapshot ->
-            snapshot.children
-                .mapNotNull { child -> child.key }
-                .also { itemTypes -> launch { send(itemTypes) } }
-        }
-    )
+    override fun itemTypes(): Flow<List<String>> =
+        database.child("itemType").createChangedChildFlow(
+            onChanged = { snapshot ->
+                snapshot.children
+                    .mapNotNull { child -> child.key }
+                    .also { itemTypes -> launch { send(itemTypes) } }
+            }
+        )
 
     override suspend fun boxesInRegion(region: Region): List<Box> =
         region.boxIdSet()
