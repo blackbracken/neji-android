@@ -75,7 +75,7 @@ class AddItemFragment : Fragment(R.layout.add_item_fragment) {
         val inputRegionOfBox = binding.inputRegionOfBox.apply { error = null }
         val inputBoxToSave = binding.inputBoxToSave.apply { error = null }
 
-        val errors = mutableListOf<() -> Unit>()
+        val errors: List<() -> Unit> = mutableListOf<() -> Unit>()
             .apply {
                 if (binding.editItemName.text.isNullOrBlank())
                     add { inputItemName.error = getString(R.string.error_must_not_be_blank) }
@@ -83,11 +83,12 @@ class AddItemFragment : Fragment(R.layout.add_item_fragment) {
                 if (binding.editItemAmount.text?.toString()
                         ?.toIntOrNull()
                         ?.takeIf { it >= 0 } == null
-                )
+                ) {
                     add {
                         inputItemAmount.error =
                             getString(R.string.error_must_be_integer_and_at_least_zero)
                     }
+                }
 
                 if (binding.autoCompleteTextItemType.text?.toString().isNullOrBlank())
                     add { inputItemType.error = getString(R.string.error_must_not_be_blank) }
