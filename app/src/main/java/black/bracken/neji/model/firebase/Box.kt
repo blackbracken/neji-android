@@ -8,12 +8,12 @@ data class Box(
     @get:Exclude val id: String = "",
     var name: String = "",
     var regionId: String = "",
-    var item: Map<String, Boolean> = mapOf()
+    var itemIds: Map<String, Boolean> = mapOf()
 ) {
 
     override fun toString() = name
 
     @Exclude
-    fun itemIdSet(): Set<String> = item.keys
+    fun itemIdSet(): Set<String> = itemIds.keys
 
 }
