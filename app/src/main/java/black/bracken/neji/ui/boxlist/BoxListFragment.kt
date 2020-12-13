@@ -18,7 +18,9 @@ import black.bracken.neji.util.Success
 import com.wada811.viewbinding.viewBinding
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class BoxListFragment : Fragment(R.layout.box_list_fragment) {
 
     private val viewModel by viewModels<BoxListViewModel>()

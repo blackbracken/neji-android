@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import black.bracken.neji.R
 import black.bracken.neji.databinding.RegionListFragmentBinding
+import black.bracken.neji.model.firebase.Region
 import black.bracken.neji.ui.UserViewModel
 import black.bracken.neji.ui.regionlist.item.RegionCardItem
 import black.bracken.neji.util.ItemOffsetDecoration
@@ -60,11 +61,37 @@ class RegionListFragment : Fragment(R.layout.region_list_fragment) {
 
         viewModel.regions.observe(viewLifecycleOwner) { regions ->
             adapter.clear()
-            regions.forEach { region -> adapter.add(RegionCardItem(requireContext(), region)) }
+            regions.forEach { region ->
+                adapter.add(
+                    RegionCardItem(
+                        requireContext(),
+                        region,
+                        RegionListItemClickListener {
+                            val action =
+                                RegionListFragmentDirections.actionRegionListFragmentToBoxListFragment(
+                                    it
+                                )
+                            findNavController().navigate(action)
+                        })
+                )
+            }
         }
 
         binding.fabAddItem.setOnClickListener {
             findNavController().navigate(RegionListFragmentDirections.actionRegionListFragmentToAddItemFragment())
+        }
+    }
+
+    interface RegionListItemClickListener {
+        fun onClick(region: Region)
+
+        companion object {
+            operator fun invoke(lambdaListener: (Region) -> Unit): RegionListItemClickListener =
+                object : RegionListItemClickListener {
+                    override fun onClick(region: Region) {
+                        lambdaListener(region)
+                    }
+                }
         }
     }
 

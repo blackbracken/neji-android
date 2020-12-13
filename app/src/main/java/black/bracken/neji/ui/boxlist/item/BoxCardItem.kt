@@ -20,9 +20,9 @@ class BoxCardItem(
 
     override fun bind(viewBinding: BoxListCardBinding, position: Int) {
         with(viewBinding) {
-            textName.text =
-                context.getString(R.string.box_list_card_item_amount, box.item.entries.size)
-            textAmount.text = box.name
+            textName.text = box.name
+            textAmount.text =
+                context.getString(R.string.box_list_card_item_amount, box.itemIdSet().size)
         }
     }
 
