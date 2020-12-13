@@ -52,7 +52,7 @@ class SetupFragment : Fragment(R.layout.setup_fragment) {
                             userViewModel.setFirebaseApp(state.result.firebaseApp)
 
                             findNavController().navigate(
-                                SetupFragmentDirections.actionSetupFragmentToTopFragment()
+                                SetupFragmentDirections.actionSetupFragmentToRegionListFragment()
                             )
                         }
                         is FirebaseSignInResult.InvalidValue -> {

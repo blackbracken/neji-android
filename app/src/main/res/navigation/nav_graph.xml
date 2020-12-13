@@ -2,17 +2,17 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/topFragment">
+    app:startDestination="@id/regionListFragment">
 
     <fragment
-        android:id="@+id/topFragment"
-        android:name="black.bracken.neji.ui.top.TopFragment"
-        android:label="@string/nav_name_top">
+        android:id="@+id/regionListFragment"
+        android:name="black.bracken.neji.ui.regionlist.RegionListFragment"
+        android:label="@string/nav_name_region_list">
         <action
-            android:id="@+id/action_topFragment_to_setupFragment"
+            android:id="@+id/action_regionListFragment_to_setupFragment"
             app:destination="@id/setupFragment" />
         <action
-            android:id="@+id/action_topFragment_to_addItemFragment"
+            android:id="@+id/action_regionListFragment_to_addItemFragment"
             app:destination="@id/addItemFragment" />
     </fragment>
     <fragment
@@ -20,8 +20,8 @@
         android:name="black.bracken.neji.ui.setup.SetupFragment"
         android:label="SetupFragment">
         <action
-            android:id="@+id/action_setupFragment_to_topFragment"
-            app:destination="@id/topFragment"
+            android:id="@+id/action_setupFragment_to_regionListFragment"
+            app:destination="@id/regionListFragment"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
     </fragment>
