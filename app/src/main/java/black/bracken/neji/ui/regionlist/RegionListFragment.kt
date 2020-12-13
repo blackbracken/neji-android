@@ -1,4 +1,4 @@
-package black.bracken.neji.ui.top
+package black.bracken.neji.ui.regionlist
 
 import android.os.Bundle
 import android.view.View
@@ -9,9 +9,9 @@ import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import black.bracken.neji.R
-import black.bracken.neji.databinding.TopFragmentBinding
+import black.bracken.neji.databinding.RegionListFragmentBinding
 import black.bracken.neji.ui.UserViewModel
-import black.bracken.neji.ui.top.item.TopCardItem
+import black.bracken.neji.ui.regionlist.item.RegionCardItem
 import black.bracken.neji.util.ItemOffsetDecoration
 import com.google.android.material.snackbar.Snackbar
 import com.wada811.viewbinding.viewBinding
@@ -20,12 +20,12 @@ import com.xwray.groupie.GroupieViewHolder
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class TopFragment : Fragment(R.layout.top_fragment) {
+class RegionListFragment : Fragment(R.layout.region_list_fragment) {
 
-    private val viewModel by viewModels<TopViewModel>()
+    private val viewModel by viewModels<RegionListViewModel>()
     private val userViewModel by activityViewModels<UserViewModel>()
 
-    private val binding by viewBinding(TopFragmentBinding::bind)
+    private val binding by viewBinding(RegionListFragmentBinding::bind)
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
 
@@ -37,7 +37,7 @@ class TopFragment : Fragment(R.layout.top_fragment) {
             if (firebaseApp != null) {
                 onSignedIn()
             } else {
-                findNavController().navigate(TopFragmentDirections.actionTopFragmentToSetupFragment())
+                findNavController().navigate(RegionListFragmentDirections.actionRegionListFragmentToSetupFragment())
             }
 
             binding.indicator.isIndeterminate = false
@@ -56,15 +56,15 @@ class TopFragment : Fragment(R.layout.top_fragment) {
     }
 
     private fun onSignedIn() {
-        Snackbar.make(binding.root, R.string.top_success_sign_in, Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(binding.root, R.string.snackbar_success_sign_in, Snackbar.LENGTH_SHORT).show()
 
         viewModel.regions.observe(viewLifecycleOwner) { regions ->
             adapter.clear()
-            regions.forEach { region -> adapter.add(TopCardItem(requireContext(), region)) }
+            regions.forEach { region -> adapter.add(RegionCardItem(requireContext(), region)) }
         }
 
         binding.fabAddItem.setOnClickListener {
-            findNavController().navigate(TopFragmentDirections.actionTopFragmentToAddItemFragment())
+            findNavController().navigate(RegionListFragmentDirections.actionRegionListFragmentToAddItemFragment())
         }
     }
 

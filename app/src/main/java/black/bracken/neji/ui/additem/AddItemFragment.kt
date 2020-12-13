@@ -101,7 +101,7 @@ class AddItemFragment : Fragment(R.layout.add_item_fragment) {
             }
             .toList()
 
-        if (errors.isEmpty()) {
+        if (errors.none()) {
             viewModel.addItem(
                 name = binding.editItemName.text.toString(),
                 amount = binding.editItemAmount.text.toString().toInt(),
