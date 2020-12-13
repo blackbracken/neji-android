@@ -4,12 +4,15 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import black.bracken.neji.R
 import black.bracken.neji.databinding.RegionListFragmentBinding
 import black.bracken.neji.model.firebase.Region
@@ -20,6 +23,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.wada811.viewbinding.viewBinding
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import com.xwray.groupie.TouchCallback
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -31,6 +35,27 @@ class RegionListFragment : Fragment(R.layout.region_list_fragment) {
     private val binding by viewBinding(RegionListFragmentBinding::bind)
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
+    private val touchCallback: TouchCallback by lazy {
+        object : TouchCallback() {
+
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean = false
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                val item = adapter.getItem(position) as RegionCardItem
+
+                adapter.removeGroupAtAdapterPosition(position)
+                Toast.makeText(requireContext(), "削除未実装: ${item.region.name}", Toast.LENGTH_SHORT)
+                    .show()
+                // TODO: implement
+            }
+
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -50,6 +75,7 @@ class RegionListFragment : Fragment(R.layout.region_list_fragment) {
             addItemDecoration(
                 DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
             )
+            ItemTouchHelper(touchCallback).attachToRecyclerView(this)
         }
     }
 
