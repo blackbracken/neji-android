@@ -23,7 +23,7 @@ class RegionCardItem(
     override fun bind(viewBinding: RegionListCardBinding, position: Int) {
         with(viewBinding) {
             root.setOnClickListener { listener.onClick(region) }
-            textName.text = context.getString(R.string.region_list_card_region_name, region.name)
+            textName.text = region.name
             textAmount.text =
                 context.getString(R.string.region_list_card_box_amount, region.boxIdSet().size)
         }

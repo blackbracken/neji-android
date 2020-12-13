@@ -1,6 +1,8 @@
 package black.bracken.neji.ui.regionlist
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -51,6 +53,17 @@ class RegionListFragment : Fragment(R.layout.region_list_fragment) {
         }
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+
+        inflater.inflate(R.menu.region_list_menu, menu)
+    }
+
     private fun onSignIn() {
         Snackbar.make(binding.root, R.string.snackbar_success_sign_in, Snackbar.LENGTH_SHORT).show()
 
@@ -63,6 +76,7 @@ class RegionListFragment : Fragment(R.layout.region_list_fragment) {
                             RegionListFragmentDirections.actionRegionListFragmentToBoxListFragment(
                                 it
                             )
+
                         findNavController().navigate(action)
                     }
 

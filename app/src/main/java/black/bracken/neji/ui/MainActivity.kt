@@ -21,14 +21,14 @@ class MainActivity : AppCompatActivity() {
 
         userViewModel.signInIfCacheExists()
 
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         val navController = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment)
             ?.findNavController()!!
         val appBarConfiguration = AppBarConfiguration(navController.graph)
-        findViewById<Toolbar>(R.id.toolbar).setupWithNavController(
-            navController,
-            appBarConfiguration
-        )
+
+        setSupportActionBar(toolbar)
+        toolbar.setupWithNavController(navController, appBarConfiguration)
     }
 
 }

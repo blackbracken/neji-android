@@ -6,8 +6,7 @@
     <string name="setup_hint_email">Email</string>
     <string name="setup_hint_password">Password</string>
     <string name="setup_text_login">Login</string>
-    <string name="region_list_card_region_name">リージョン: %s</string>
-    <string name="region_list_card_box_amount">ボックス数: %d個</string>
+    <string name="region_list_card_box_amount">%dボックス</string>
     <string name="box_list_card_item_amount">%d個</string>
     <string name="add_item_name">アイテム名</string>
     <string name="add_item_amount">個数</string>
@@ -24,4 +23,7 @@
     <string name="nav_name_region_list">場所一覧</string>
     <string name="nav_name_box_list">ボックス一覧</string>
     <string name="nav_name_add_item">アイテムの追加</string>
+    <string name="menu_item_add_region">リージョンの追加</string>
+    <string name="menu_item_remove_region">リージョンの削除</string>
+    <string name="menu_item_add_item">アイテムの追加</string>
 </resources>
