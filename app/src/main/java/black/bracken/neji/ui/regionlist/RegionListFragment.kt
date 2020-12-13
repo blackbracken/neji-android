@@ -36,45 +36,41 @@ class RegionListFragment : Fragment(R.layout.region_list_fragment) {
         binding.indicator.isIndeterminate = true
         userViewModel.firebaseApp.observe(viewLifecycleOwner) { firebaseApp ->
             if (firebaseApp != null) {
-                onSignedIn()
+                onSignIn()
             } else {
                 findNavController().navigate(RegionListFragmentDirections.actionRegionListFragmentToSetupFragment())
             }
-
-            binding.indicator.isIndeterminate = false
         }
 
         binding.recycler.adapter = adapter
         binding.recycler.apply {
             addItemDecoration(ItemOffsetDecoration(requireContext(), R.dimen.recycler_padding))
             addItemDecoration(
-                DividerItemDecoration(
-                    requireContext(),
-                    DividerItemDecoration.VERTICAL
-                )
+                DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
             )
         }
     }
 
-    private fun onSignedIn() {
+    private fun onSignIn() {
         Snackbar.make(binding.root, R.string.snackbar_success_sign_in, Snackbar.LENGTH_SHORT).show()
 
         viewModel.regions.observe(viewLifecycleOwner) { regions ->
             adapter.clear()
-            regions.forEach { region ->
-                adapter.add(
-                    RegionCardItem(
-                        requireContext(),
-                        region,
-                        RegionListItemClickListener {
-                            val action =
-                                RegionListFragmentDirections.actionRegionListFragmentToBoxListFragment(
-                                    it
-                                )
-                            findNavController().navigate(action)
-                        })
-                )
-            }
+            regions
+                .map { region ->
+                    val listener = RegionListItemClickListener {
+                        val action =
+                            RegionListFragmentDirections.actionRegionListFragmentToBoxListFragment(
+                                it
+                            )
+                        findNavController().navigate(action)
+                    }
+
+                    RegionCardItem(requireContext(), region, listener)
+                }
+                .forEach { regionCard -> adapter.add(regionCard) }
+
+            binding.indicator.isIndeterminate = false
         }
 
         binding.fabAddItem.setOnClickListener {
