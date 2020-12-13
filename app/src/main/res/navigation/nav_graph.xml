@@ -14,6 +14,17 @@
         <action
             android:id="@+id/action_regionListFragment_to_addItemFragment"
             app:destination="@id/addItemFragment" />
+        <action
+            android:id="@+id/action_regionListFragment_to_boxListFragment"
+            app:destination="@id/boxListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/boxListFragment"
+        android:name="black.bracken.neji.ui.boxlist.BoxListFragment"
+        android:label="@string/nav_name_box_list">
+        <argument
+            android:name="region"
+            app:argType="black.bracken.neji.model.firebase.Region" />
     </fragment>
     <fragment
         android:id="@+id/setupFragment"
