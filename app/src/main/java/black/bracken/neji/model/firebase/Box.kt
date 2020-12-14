@@ -12,8 +12,8 @@ data class Box(
     @get:Exclude val id: String = "",
     var name: String = "",
     var regionId: String = "",
-    var itemIds: Map<String, Boolean> = mapOf(),
-    @get:PropertyName(value = "updatedAt") @set:PropertyName(value = "updatedAt") var updatedAtAsEpochSecond: Long = Instant.now().epochSecond
+    var itemIds: MutableMap<String, Boolean> = HashMap(),
+    @get:PropertyName(value = "updatedAt") @set:PropertyName(value = "updatedAt") var updatedAtAsEpochSecond: Long = 0
 ) : Serializable {
 
     override fun toString() = name
@@ -21,11 +21,25 @@ data class Box(
     @get:Exclude
     @set:Exclude
     var updatedAt: Instant by Delegates.observable(Instant.now()) { _, _, new ->
-        updatedAtAsEpochSecond = new.epochSecond
+        updatedAtAsEpochSecond = -1 * new.epochSecond
     }
 
     @Exclude
     fun itemIdSet(): Set<String> = itemIds.keys
 
+}
 
+fun Box(
+    id: String,
+    name: String,
+    regionId: String,
+    itemIds: Map<String, Boolean>
+): Box = Box(
+    id = id,
+    name = name,
+    regionId = regionId,
+    itemIds = itemIds.toMutableMap(),
+    updatedAtAsEpochSecond = 0
+).apply {
+    updatedAt = Instant.now()
 }

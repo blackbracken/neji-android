@@ -17,15 +17,38 @@ data class Item(
     var regionId: String = "",
     var boxId: String = "",
     var comment: String? = null,
-    @get:PropertyName(value = "updatedAt") @set:PropertyName(value = "updatedAt") var updatedAtAsEpochSecond: Long = Instant.now().epochSecond
+    @get:PropertyName(value = "updatedAt") @set:PropertyName(value = "updatedAt") var updatedAtAsEpochSecond: Long = 0
 ) : Serializable {
 
     @get:Exclude
     @set:Exclude
     var updatedAt: Instant by Delegates.observable(Instant.now()) { _, _, new ->
-        updatedAtAsEpochSecond = new.epochSecond
+        updatedAtAsEpochSecond = -1 * new.epochSecond
     }
 
     override fun toString(): String = name
 
+}
+
+fun Item(
+    id: String,
+    name: String,
+    amount: Int,
+    imageUrl: String? = null,
+    itemType: String,
+    regionId: String,
+    boxId: String,
+    comment: String? = null
+): Item = Item(
+    id = id,
+    name = name,
+    amount = amount,
+    imageUrl = imageUrl,
+    itemType = itemType,
+    regionId = regionId,
+    boxId = boxId,
+    comment = comment,
+    updatedAtAsEpochSecond = 0
+).apply {
+    updatedAt = Instant.now()
 }
