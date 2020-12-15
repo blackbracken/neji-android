@@ -8,6 +8,7 @@ import black.bracken.neji.model.firebase.Region
 import com.google.firebase.FirebaseApp
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.getValue
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -43,6 +44,10 @@ class FirebaseRepositoryImpl : FirebaseRepository {
 
     private val database: DatabaseReference by lazy {
         FirebaseDatabase.getInstance(FirebaseApp.getInstance(Auth.FIREBASE_NAME)).reference
+    }
+
+    private val firestore: FirebaseFirestore by lazy {
+        FirebaseFirestore.getInstance()
     }
 
     private val storage: StorageReference by lazy {

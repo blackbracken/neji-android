@@ -8,7 +8,7 @@
         "f9ef2854-4e9e-4620-b63e-cec47d6b1c87": true
       },
       "regionId": "b23a399e-4762-4521-a79b-2b841b7461c3",
-      "updatedAt": "1607975304"
+      "updatedAt": 1607975304
     }
   },
   "item": {
@@ -19,7 +19,7 @@
       "name": "サンプルアイテム2",
       "itemType": "type1",
       "regionId": "b23a399e-4762-4521-a79b-2b841b7461c3",
-      "updatedAt": "1607975306"
+      "updatedAt": 1607975306
     },
     "6fa656f5-3823-4be7-8155-ae06cd5f782c": {
       "amount": 283,
@@ -28,7 +28,7 @@
       "name": "サンプルアイテム3",
       "itemType": "type1",
       "regionId": "b23a399e-4762-4521-a79b-2b841b7461c3",
-      "updatedAt": "1607975305"
+      "updatedAt": 1607975305
     },
     "f9ef2854-4e9e-4620-b63e-cec47d6b1c87": {
       "amount": 765,
@@ -37,7 +37,7 @@
       "name": "サンプルアイテム1",
       "itemType": "type2",
       "regionId": "b23a399e-4762-4521-a79b-2b841b7461c3",
-      "updatedAt": "1607975304"
+      "updatedAt": 1607975304
     }
   },
   "itemType": {
@@ -51,7 +51,7 @@
         "de49304a-b0f3-4555-9070-be9173b69b02": true
       },
       "name": "サンプルリージョン1",
-      "updatedAt": "1607975304"
+      "updatedAt": 1607975304
     }
   }
 }

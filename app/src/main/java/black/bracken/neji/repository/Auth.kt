@@ -1,7 +1,7 @@
 package black.bracken.neji.repository
 
 import android.content.Context
-import androidx.datastore.DataStore
+import androidx.datastore.core.DataStore
 import black.bracken.neji.NejiSecure
 import black.bracken.neji.NejiSecure.SignInCache
 import black.bracken.neji.model.FirebaseSignInResult
