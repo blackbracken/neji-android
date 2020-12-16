@@ -43,16 +43,18 @@ interface FirebaseRepository {
 class FirebaseRepositoryImpl : FirebaseRepository {
 
     private val database: DatabaseReference by lazy {
-        FirebaseDatabase.getInstance(FirebaseApp.getInstance(Auth.FIREBASE_NAME)).reference
+        FirebaseDatabase.getInstance(firebaseApp).reference
     }
 
     private val firestore: FirebaseFirestore by lazy {
-        FirebaseFirestore.getInstance()
+        FirebaseFirestore.getInstance(firebaseApp)
     }
 
     private val storage: StorageReference by lazy {
-        FirebaseStorage.getInstance(FirebaseApp.getInstance(Auth.FIREBASE_NAME)).reference
+        FirebaseStorage.getInstance(firebaseApp).reference
     }
+
+    private val firebaseApp by lazy { FirebaseApp.getInstance(Auth.FIREBASE_NAME) }
 
     override fun regions(): Flow<List<Region>> = database.child("region").createChangedChildFlow(
         onChanged = { snapshot ->
