@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.View
 import black.bracken.neji.R
 import black.bracken.neji.databinding.BoxListCardBinding
-import black.bracken.neji.model.firebase.Box
+import black.bracken.neji.model.document.Box
 import com.xwray.groupie.viewbinding.BindableItem
 
 class BoxCardItem(

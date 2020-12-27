@@ -5,7 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import black.bracken.neji.R
 import black.bracken.neji.databinding.RegionListCardBinding
-import black.bracken.neji.model.firebase.Region
+import black.bracken.neji.model.document.Region
 import black.bracken.neji.ui.regionlist.RegionListFragment
 import com.xwray.groupie.viewbinding.BindableItem
 

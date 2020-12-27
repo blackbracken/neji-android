@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import black.bracken.neji.R
 import black.bracken.neji.databinding.RegionListFragmentBinding
-import black.bracken.neji.model.firebase.Region
+import black.bracken.neji.model.document.Region
 import black.bracken.neji.ui.UserViewModel
 import black.bracken.neji.ui.regionlist.item.RegionCardItem
 import black.bracken.neji.util.ItemOffsetDecoration

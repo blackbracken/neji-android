@@ -3,8 +3,8 @@ package black.bracken.neji.ui.additem
 import android.net.Uri
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
-import black.bracken.neji.model.firebase.Box
-import black.bracken.neji.model.firebase.Region
+import black.bracken.neji.model.document.Box
+import black.bracken.neji.model.document.Region
 import black.bracken.neji.repository.FirebaseRepository
 import kotlinx.coroutines.launch
 
