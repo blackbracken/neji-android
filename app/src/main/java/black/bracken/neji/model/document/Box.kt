@@ -7,9 +7,7 @@ import java.io.Serializable
 import java.util.*
 
 @IgnoreExtraProperties
-data class Box @Deprecated(
-    message = "this default constructor should be only used for firebase-sdk"
-) constructor(
+data class Box(
     @get:Exclude val id: String = "",
     var name: String = "",
     var regionId: String = "",
