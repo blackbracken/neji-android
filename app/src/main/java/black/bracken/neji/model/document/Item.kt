@@ -7,12 +7,12 @@ import java.io.Serializable
 import java.util.*
 
 @IgnoreExtraProperties
-data class Item(
+data class Item constructor(
     @get:Exclude val id: String = "",
     var name: String = "",
     var amount: Int = 0,
-    var regionId: String = "",
     var boxId: String = "",
+    var itemTypeId: String = "",
     var imageUrl: String? = null,
     var itemType: String? = null,
     var comment: String? = null,

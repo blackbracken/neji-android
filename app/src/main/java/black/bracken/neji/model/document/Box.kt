@@ -7,10 +7,11 @@ import java.io.Serializable
 import java.util.*
 
 @IgnoreExtraProperties
-data class Box(
+data class Box @Deprecated(
+    message = "this default constructor should be only used for firebase-sdk"
+) constructor(
     @get:Exclude val id: String = "",
     var name: String = "",
     var regionId: String = "",
-    var itemIds: List<String> = listOf(),
     @JvmField @ServerTimestamp var updatedAt: Date = Date()
 ) : Serializable

@@ -10,6 +10,5 @@ import java.util.*
 data class Region(
     @get:Exclude val id: String = "",
     var name: String = "",
-    var boxIds: List<String> = listOf(),
     @JvmField @ServerTimestamp var updatedAt: Date = Date()
 ) : Serializable
