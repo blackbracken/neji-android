@@ -93,20 +93,20 @@ class RegionListFragment : Fragment(R.layout.region_list_fragment) {
     private fun onSignIn() {
         Snackbar.make(binding.root, R.string.snackbar_success_sign_in, Snackbar.LENGTH_SHORT).show()
 
-        viewModel.regions.observe(viewLifecycleOwner) { regions ->
+        viewModel.regionAndAmounts.observe(viewLifecycleOwner) { regionAndAmounts ->
             adapter.clear()
-            regions
-                .map { region ->
+            regionAndAmounts
+                .map { (region, amount) ->
                     val listener = RegionListItemClickListener {
                         val action =
                             RegionListFragmentDirections.actionRegionListFragmentToBoxListFragment(
-                                it
+                                region
                             )
 
                         findNavController().navigate(action)
                     }
 
-                    RegionCardItem(requireContext(), region, listener)
+                    RegionCardItem(requireContext(), region, amount, listener)
                 }
                 .forEach { regionCard -> adapter.add(regionCard) }
 

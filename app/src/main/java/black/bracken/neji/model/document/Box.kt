@@ -8,8 +8,8 @@ import java.util.*
 
 @IgnoreExtraProperties
 data class Box(
-    @get:Exclude val id: String = "",
+    @get:Exclude override var id: String = "",
     var name: String = "",
     var regionId: String = "",
     @JvmField @ServerTimestamp var updatedAt: Date = Date()
-) : Serializable
+) : Serializable, HasId

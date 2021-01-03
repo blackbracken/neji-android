@@ -8,7 +8,7 @@ import java.util.*
 
 @IgnoreExtraProperties
 data class Region(
-    @get:Exclude val id: String = "",
+    @get:Exclude override var id: String = "",
     var name: String = "",
     @JvmField @ServerTimestamp var updatedAt: Date = Date()
-) : Serializable
+) : Serializable, HasId

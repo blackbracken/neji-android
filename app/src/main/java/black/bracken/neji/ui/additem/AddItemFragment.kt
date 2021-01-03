@@ -38,7 +38,7 @@ class AddItemFragment : Fragment(R.layout.add_item_fragment) {
 
         viewModel.regions.observe(viewLifecycleOwner) { regions ->
             binding.autoCompleteTextRegionOfBox.setAdapter(
-                ArrayAdapter(requireContext(), R.layout.list_item, regions)
+                ArrayAdapter(requireContext(), R.layout.list_item, regions.map { it.name })
             )
         }
 
@@ -46,13 +46,13 @@ class AddItemFragment : Fragment(R.layout.add_item_fragment) {
             binding.inputBoxToSave.isEnabled = true
             binding.autoCompleteTextBoxToSave.text.clear()
             binding.autoCompleteTextBoxToSave.setAdapter(
-                ArrayAdapter(requireContext(), R.layout.list_item, boxes)
+                ArrayAdapter(requireContext(), R.layout.list_item, boxes.map { it.name })
             )
         }
 
         binding.autoCompleteTextRegionOfBox.doOnTextChanged { regionText, _, _, _ ->
-            viewModel.fetchBoxesInRegion(
-                viewModel.regions.value?.find { it.name == regionText.toString() }
+            viewModel.subscribeBoxesInRegion(
+                viewModel.regions.value?.find { it.name == regionText.toString() }?.id
                     ?: return@doOnTextChanged
             )
         }
@@ -106,7 +106,6 @@ class AddItemFragment : Fragment(R.layout.add_item_fragment) {
                 name = binding.editItemName.text.toString(),
                 amount = binding.editItemAmount.text.toString().toInt(),
                 itemType = binding.autoCompleteTextItemType.text.toString(),
-                regionName = binding.autoCompleteTextRegionOfBox.text.toString(),
                 boxName = binding.autoCompleteTextBoxToSave.text.toString(),
                 comment = binding.editItemComment.text.toString().takeIf { it.isNotBlank() }
             )

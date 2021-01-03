@@ -24,7 +24,7 @@
         android:label="@string/nav_name_box_list">
         <argument
             android:name="region"
-            app:argType="black.bracken.neji.model.firebase.Region" />
+            app:argType="black.bracken.neji.model.document.Region" />
     </fragment>
     <fragment
         android:id="@+id/setupFragment"

@@ -1,58 +1,50 @@
 package black.bracken.neji.repository
 
 import android.net.Uri
-import arrow.core.Either
-import arrow.core.left
-import arrow.core.right
-import arrow.core.rightIfNotNull
+import arrow.core.*
+import black.bracken.neji.ext.toObjectsWithId
 import black.bracken.neji.model.document.Box
 import black.bracken.neji.model.document.Item
 import black.bracken.neji.model.document.ItemType
 import black.bracken.neji.model.document.Region
-import black.bracken.neji.util.PagedValues
 import com.google.firebase.FirebaseApp
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.withTimeoutOrNull
+import java.util.*
 import javax.inject.Singleton
-import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 interface FirebaseRepository {
 
-    suspend fun regions(): PagedValues<Region>
+    fun regions(): Flow<Either<Exception, List<Region>>>
 
-    fun itemTypes(): Flow<Either<Exception, List<ItemType>>>
+    fun itemTypes(): Flow<Either<Exception, List<String>>>
 
-    suspend fun boxesInRegion(region: Region): List<Box>
+    suspend fun boxesInRegion(regionId: String): Either<Exception, List<Box>>
+
+    suspend fun itemsInBox(boxId: String): Either<Exception, List<Item>>
 
     suspend fun addItem(
         name: String,
         imageUri: Uri?,
         amount: Int,
         itemType: String,
-        region: Region,
-        box: Box,
+        boxId: String,
         comment: String?
-    ): Item?
+    ): Either<Exception, Item>
 
 }
 
 @ExperimentalCoroutinesApi
 @Singleton
 class FirebaseRepositoryImpl : FirebaseRepository {
-
-    private val database: DatabaseReference by lazy {
-        FirebaseDatabase.getInstance(firebaseApp).reference
-    }
 
     private val firestore: FirebaseFirestore by lazy {
         FirebaseFirestore.getInstance(firebaseApp)
@@ -64,53 +56,58 @@ class FirebaseRepositoryImpl : FirebaseRepository {
 
     private val firebaseApp by lazy { FirebaseApp.getInstance(Auth.FIREBASE_NAME) }
 
-    override suspend fun regions(): PagedValues<Region> =
-        PagedValues { limitCount, lastVisible ->
-            withTimeoutOrNull(5_000) {
-                suspendCoroutine { continuation: Continuation<Either<Exception, List<Region>>> ->
-                    firestore
-                        .collection("regions")
-                        .orderBy("updatedAt")
-                        .let { query -> if (lastVisible != null) query.startAt(lastVisible) else query }
-                        .limit(limitCount.toLong())
-                        .get()
-                        .addOnSuccessListener { result ->
-                            continuation.resume(result.toObjects(Region::class.java).right())
-                        }
-                        .addOnFailureListener { exception -> continuation.resume(exception.left()) }
-                }
-            } ?: IllegalStateException("connection timeout").left()
-        }
-
-    override fun itemTypes(): Flow<Either<Exception, List<ItemType>>> = callbackFlow {
+    override fun regions(): Flow<Either<Exception, List<Region>>> = callbackFlow {
         val registration = firestore
-            .collection("itemTypes")
+            .collection("regions")
+            .orderBy("updatedAt")
             .addSnapshotListener { value, error ->
                 offer(
-                    value?.toObjects(ItemType::class.java)
-                        .rightIfNotNull { error ?: IllegalAccessException("something happened") }
+                    value?.toObjectsWithId<Region>().rightIfNotNull { requireNotNull(error) }
                 )
             }
 
         awaitClose { registration.remove() }
     }
 
-    override suspend fun boxesInRegion(region: Region): PagedValues<Box> =
-        PagedValues { limitCount, lastVisible ->
-            withTimeoutOrNull(5_000) {
-                suspendCoroutine { continuation: Continuation<Either<Exception, List<Box>>> ->
-                    firestore
-                        .collection("boxes")
-                        .orderBy("updatedAt")
-                        .let { query -> if (lastVisible != null) query.startAt(lastVisible) else query }
-                        .limit(limitCount.toLong())
-                        .get()
-                        .addOnSuccessListener { result ->
-                            continuation.resume(result.toObjects(Box::class.java).right())
-                        }
-                        .addOnFailureListener { exception -> continuation.resume(exception.left()) }
+    override fun itemTypes(): Flow<Either<Exception, List<String>>> = callbackFlow {
+        val registration = firestore
+            .collection("itemTypes")
+            .addSnapshotListener { value, error ->
+                offer(
+                    value?.toObjects<ItemType>()?.map { it.name }
+                        .rightIfNotNull { requireNotNull(error) }
+                )
+            }
+
+        awaitClose { registration.remove() }
+    }
+
+    override suspend fun boxesInRegion(regionId: String): Either<Exception, List<Box>> =
+        suspendCoroutine { continuation ->
+            firestore
+                .collection("boxes")
+                .whereEqualTo("regionId", regionId)
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    continuation.resume(snapshot.toObjectsWithId<Box>().right())
                 }
-            } ?: java.lang.IllegalStateException("connection timeout").left()
+                .addOnFailureListener { exception ->
+                    continuation.resume(exception.left())
+                }
+        }
+
+    override suspend fun itemsInBox(boxId: String): Either<Exception, List<Item>> =
+        suspendCoroutine { continuation ->
+            firestore
+                .collection("items")
+                .whereIn("boxId", listOf(boxId))
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    continuation.resume(snapshot.toObjectsWithId<Item>().right())
+                }
+                .addOnFailureListener { exception ->
+                    continuation.resume(exception.left())
+                }
         }
 
     override suspend fun addItem(
@@ -118,45 +115,40 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         imageUri: Uri?,
         amount: Int,
         itemType: String,
-        region: Region,
-        box: Box,
+        boxId: String,
         comment: String?
-    ): Item? {
-        val ref = database.child("item").push()
-        val key = ref.key ?: return null
-
-        val imageUrl = suspendCoroutine<String?> { continuation ->
+    ): Either<Exception, Item> {
+        val key = UUID.randomUUID().toString()
+        val imageUrl = suspendCoroutine<Either<Exception, String?>> { continuation ->
             if (imageUri == null) {
-                continuation.resume(null)
+                continuation.resume(Right(null))
                 return@suspendCoroutine
             }
 
-            val url = "item/$key/image.jpg"
+            val url = "items/$key/image.jpg"
             storage.child(url)
                 .putFile(imageUri)
-                .addOnSuccessListener { continuation.resume(url) }
-                .addOnFailureListener { continuation.resume(null) }
-        }
+                .addOnSuccessListener { continuation.resume(url.right()) }
+                .addOnFailureListener { exception -> continuation.resume(exception.left()) }
+        }.getOrHandle { exception -> return@addItem exception.left() }
 
         val item = Item(
             id = key,
             name = name,
+            boxId = boxId,
+            itemType = itemType,
             imageUrl = imageUrl,
             amount = amount,
-            itemType = itemType,
-            regionId = region.id,
-            boxId = box.id,
             comment = comment
         )
 
         return suspendCoroutine { continuation ->
-            database.updateChildren(
-                mapOf(
-                    "item/$key" to item,
-                    "box/${box.id}/itemIds/$key" to true
-                )
-                // TODO: don't crush error
-            ) { error, _ -> continuation.resume(item.takeIf { error != null }) }
+            firestore
+                .collection("items")
+                .document(key)
+                .set(item)
+                .addOnSuccessListener { continuation.resume(item.right()) }
+                .addOnFailureListener { exception -> continuation.resume(exception.left()) }
         }
     }
 

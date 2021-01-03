@@ -8,13 +8,12 @@ import java.util.*
 
 @IgnoreExtraProperties
 data class Item constructor(
-    @get:Exclude val id: String = "",
+    @get:Exclude override var id: String = "",
     var name: String = "",
     var amount: Int = 0,
     var boxId: String = "",
-    var itemTypeId: String = "",
     var imageUrl: String? = null,
     var itemType: String? = null,
     var comment: String? = null,
     @JvmField @ServerTimestamp var updatedAt: Date = Date()
-) : Serializable
+) : Serializable, HasId
