@@ -4,40 +4,24 @@ import android.net.Uri
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import arrow.core.Either
-import black.bracken.neji.ext.squeezeLeft
-import black.bracken.neji.ext.squeezeRight
+import arrow.core.left
+import arrow.core.right
 import black.bracken.neji.model.document.Box
-import black.bracken.neji.model.document.Region
 import black.bracken.neji.repository.FirebaseRepository
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class AddItemViewModel @ViewModelInject constructor(
     private val firebaseRepository: FirebaseRepository
 ) : ViewModel() {
 
-    private val regionResults = firebaseRepository.regions()
-    private val itemTypeResults = firebaseRepository.itemTypes()
-    val regions = regionResults.squeezeRight().asLiveData()
-    val itemTypes = itemTypeResults.squeezeRight().asLiveData()
+    val regionsResult = firebaseRepository.regions().asLiveData()
+    val itemTypesResult = firebaseRepository.itemTypes().asLiveData()
 
-    private val _errors = MutableSharedFlow<Exception>(0, 0)
-    val errors: SharedFlow<Exception> = _errors
-
-    private val _boxes: MutableLiveData<List<Box>> = MutableLiveData()
-    val boxes: LiveData<List<Box>> get() = _boxes
+    private val _boxes: MutableLiveData<Either<Exception, List<Box>>> = MutableLiveData()
+    val boxesResult: LiveData<Either<Exception, List<Box>>> get() = _boxes
 
     private val _imageUri: MutableLiveData<Uri?> = MutableLiveData(null)
     val imageUri: LiveData<Uri?> get() = _imageUri
-
-    init {
-        viewModelScope.launch {
-            regionResults.squeezeLeft().collectLatest { _errors.tryEmit(it) }
-            itemTypeResults.squeezeLeft().collectLatest { _errors.tryEmit(it) }
-        }
-    }
 
     fun setItemImage(uri: Uri?) {
         _imageUri.value = uri
@@ -49,9 +33,13 @@ class AddItemViewModel @ViewModelInject constructor(
         itemType: String,
         boxName: String,
         comment: String?
-    ) {
-        val box = boxes.value?.find { it.name == boxName }
-            ?: throw IllegalStateException("failed to find box by name")
+    ): Either<Exception, Unit> {
+        val box = when (val result = boxesResult.value) {
+            null -> return IllegalStateException("the region didn't be selected").left()
+            is Either.Left -> return IllegalStateException("network error").left()
+            is Either.Right -> result.b.find { it.name == boxName }
+                ?: return NoSuchElementException("no box found").left()
+        }
 
         viewModelScope.launch {
             firebaseRepository.addItem(
@@ -63,14 +51,13 @@ class AddItemViewModel @ViewModelInject constructor(
                 comment = comment
             )
         }
+
+        return Unit.right()
     }
 
     fun subscribeBoxesInRegion(regionId: String) {
         viewModelScope.launch {
-            when(val result = firebaseRepository.boxesInRegion(regionId)) {
-                is Either.Right -> _boxes.postValue(result.b)
-                is Either.Left -> _errors.tryEmit(result.a)
-            }
+            _boxes.postValue(firebaseRepository.boxesInRegion(regionId))
         }
     }
 

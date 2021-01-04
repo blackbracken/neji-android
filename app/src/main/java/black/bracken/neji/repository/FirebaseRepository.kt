@@ -12,10 +12,15 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.shareIn
 import java.util.*
 import javax.inject.Singleton
 import kotlin.coroutines.resume
@@ -46,6 +51,8 @@ interface FirebaseRepository {
 @Singleton
 class FirebaseRepositoryImpl : FirebaseRepository {
 
+    private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+
     private val firestore: FirebaseFirestore by lazy {
         FirebaseFirestore.getInstance(firebaseApp)
     }
@@ -61,13 +68,12 @@ class FirebaseRepositoryImpl : FirebaseRepository {
             .collection("regions")
             .orderBy("updatedAt")
             .addSnapshotListener { value, error ->
-                offer(
-                    value?.toObjectsWithId<Region>().rightIfNotNull { requireNotNull(error) }
-                )
+                offer(IllegalStateException("wowowow").left())
+                //offer(value?.toObjectsWithId<Region>().rightIfNotNull { requireNotNull(error) })
             }
 
         awaitClose { registration.remove() }
-    }
+    }.shareIn(coroutineScope, SharingStarted.WhileSubscribed(), 1)
 
     override fun itemTypes(): Flow<Either<Exception, List<String>>> = callbackFlow {
         val registration = firestore
