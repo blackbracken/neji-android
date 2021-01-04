@@ -9,7 +9,8 @@ import com.xwray.groupie.viewbinding.BindableItem
 
 class BoxCardItem(
     private val context: Context,
-    private val box: Box
+    private val box: Box,
+    private val itemAmountInBox: Int
 ) : BindableItem<BoxListCardBinding>() {
 
     override fun getLayout() = R.layout.box_list_card
@@ -22,7 +23,7 @@ class BoxCardItem(
         with(viewBinding) {
             textName.text = box.name
             textAmount.text =
-                context.getString(R.string.box_list_card_item_amount, box.itemIdSet().size)
+                context.getString(R.string.box_list_card_item_amount, itemAmountInBox)
         }
     }
 

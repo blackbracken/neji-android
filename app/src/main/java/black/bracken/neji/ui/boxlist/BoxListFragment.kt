@@ -35,11 +35,11 @@ class BoxListFragment : Fragment(R.layout.box_list_fragment) {
         binding.indicator.isIndeterminate = true
         viewModel.fetchBoxes(args.region)
 
-        viewModel.boxes.observe(viewLifecycleOwner) { boxesResource ->
+        viewModel.boxAndAmounts.observe(viewLifecycleOwner) { boxesResource ->
             when (boxesResource) {
                 is Success -> {
-                    boxesResource.value.forEach { box ->
-                        adapter.add(BoxCardItem(requireContext(), box))
+                    boxesResource.value.forEach { (box, amount) ->
+                        adapter.add(BoxCardItem(requireContext(), box, amount))
                     }
                     binding.indicator.isIndeterminate = false
                 }

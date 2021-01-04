@@ -7,14 +7,13 @@ import java.io.Serializable
 import java.util.*
 
 @IgnoreExtraProperties
-data class Item(
-    @get:Exclude val id: String = "",
+data class Item constructor(
+    @get:Exclude override var id: String = "",
     var name: String = "",
     var amount: Int = 0,
-    var regionId: String = "",
     var boxId: String = "",
     var imageUrl: String? = null,
     var itemType: String? = null,
     var comment: String? = null,
     @JvmField @ServerTimestamp var updatedAt: Date = Date()
-) : Serializable
+) : Serializable, HasId
