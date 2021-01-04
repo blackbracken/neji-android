@@ -68,8 +68,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
             .collection("regions")
             .orderBy("updatedAt")
             .addSnapshotListener { value, error ->
-                offer(IllegalStateException("wowowow").left())
-                //offer(value?.toObjectsWithId<Region>().rightIfNotNull { requireNotNull(error) })
+                offer(value?.toObjectsWithId<Region>().rightIfNotNull { requireNotNull(error) })
             }
 
         awaitClose { registration.remove() }
