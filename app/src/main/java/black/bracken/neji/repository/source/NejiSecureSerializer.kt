@@ -1,7 +1,7 @@
 package black.bracken.neji.repository.source
 
-import androidx.datastore.CorruptionException
-import androidx.datastore.Serializer
+import androidx.datastore.core.CorruptionException
+import androidx.datastore.core.Serializer
 import black.bracken.neji.NejiSecure
 import black.bracken.neji.security.Crypto
 import java.io.IOException
@@ -9,6 +9,8 @@ import java.io.InputStream
 import java.io.OutputStream
 
 class NejiSecureSerializer(private val crypto: Crypto) : Serializer<NejiSecure> {
+
+    override val defaultValue: NejiSecure = NejiSecure.newBuilder().build()
 
     override fun readFrom(input: InputStream): NejiSecure {
         return if (input.available() != 0) {

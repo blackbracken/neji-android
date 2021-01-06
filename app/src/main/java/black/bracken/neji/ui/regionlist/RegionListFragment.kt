@@ -1,5 +1,6 @@
 package black.bracken.neji.ui.regionlist
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -13,9 +14,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import arrow.core.Either
 import black.bracken.neji.R
 import black.bracken.neji.databinding.RegionListFragmentBinding
-import black.bracken.neji.model.firebase.Region
+import black.bracken.neji.model.document.Region
 import black.bracken.neji.ui.UserViewModel
 import black.bracken.neji.ui.regionlist.item.RegionCardItem
 import black.bracken.neji.util.ItemOffsetDecoration
@@ -63,7 +65,7 @@ class RegionListFragment : Fragment(R.layout.region_list_fragment) {
         binding.indicator.isIndeterminate = true
         userViewModel.firebaseApp.observe(viewLifecycleOwner) { firebaseApp ->
             if (firebaseApp != null) {
-                onSignIn()
+                onSuccessInSigningIn()
             } else {
                 findNavController().navigate(RegionListFragmentDirections.actionRegionListFragmentToSetupFragment())
             }
@@ -90,25 +92,34 @@ class RegionListFragment : Fragment(R.layout.region_list_fragment) {
         inflater.inflate(R.menu.region_list_menu, menu)
     }
 
-    private fun onSignIn() {
+    private fun onSuccessInSigningIn() {
         Snackbar.make(binding.root, R.string.snackbar_success_sign_in, Snackbar.LENGTH_SHORT).show()
 
-        viewModel.regions.observe(viewLifecycleOwner) { regions ->
+        viewModel.regionAndAmountsResult.observe(viewLifecycleOwner) { result ->
             adapter.clear()
-            regions
-                .map { region ->
-                    val listener = RegionListItemClickListener {
-                        val action =
-                            RegionListFragmentDirections.actionRegionListFragmentToBoxListFragment(
-                                it
-                            )
 
-                        findNavController().navigate(action)
-                    }
+            when (result) {
+                is Either.Right -> {
+                    result.b
+                        .map { (region, amount) ->
+                            val listener = RegionListItemClickListener { newRegion ->
+                                val action = RegionListFragmentDirections
+                                    .actionRegionListFragmentToBoxListFragment(newRegion)
 
-                    RegionCardItem(requireContext(), region, listener)
+                                findNavController().navigate(action)
+                            }
+
+                            RegionCardItem(requireContext(), region, amount, listener)
+                        }
+                        .forEach { regionCard -> adapter.add(regionCard) }
                 }
-                .forEach { regionCard -> adapter.add(regionCard) }
+                is Either.Left -> {
+                    Snackbar
+                        .make(binding.root, result.a.toString(), Snackbar.LENGTH_SHORT)
+                        .setBackgroundTint(Color.RED)
+                        .show()
+                }
+            }
 
             binding.indicator.isIndeterminate = false
         }
