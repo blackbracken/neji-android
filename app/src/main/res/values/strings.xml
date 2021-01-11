@@ -15,6 +15,11 @@
     <string name="add_item_region_of_box">ボックスのある場所</string>
     <string name="add_item_box_to_save">保存するボックス</string>
     <string name="add_item_adding">追加</string>
+    <string name="search_element_name">検索要素 - 名前</string>
+    <string name="search_element_item_type">検索要素 - アイテムの種類</string>
+    <string name="search_element_region">検索要素 - アイテムのある場所</string>
+    <string name="search_element_box">検索要素 - アイテムのあるボックス</string>
+    <string name="search_searching">検索</string>
     <string name="error_must_not_be_blank">値を入力してください</string>
     <string name="error_must_be_integer_and_at_least_zero">0以上の整数にしてください</string>
     <string name="snackbar_success_sign_in">ログインに成功しました</string>
