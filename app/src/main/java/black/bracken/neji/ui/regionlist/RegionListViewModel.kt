@@ -9,8 +9,10 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import black.bracken.neji.repository.FirebaseRepository
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.mapLatest
 
+@ExperimentalCoroutinesApi
 class RegionListViewModel @ViewModelInject constructor(
     @Assisted private val savedState: SavedStateHandle,
     private val firebaseRepository: FirebaseRepository

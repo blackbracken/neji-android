@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -27,7 +28,9 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.TouchCallback
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class RegionListFragment : Fragment(R.layout.region_list_fragment) {
 
@@ -39,7 +42,6 @@ class RegionListFragment : Fragment(R.layout.region_list_fragment) {
     private val adapter = GroupAdapter<GroupieViewHolder>()
     private val touchCallback: TouchCallback by lazy {
         object : TouchCallback() {
-
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
@@ -55,7 +57,6 @@ class RegionListFragment : Fragment(R.layout.region_list_fragment) {
                     .show()
                 // TODO: implement
             }
-
         }
     }
 
@@ -83,6 +84,7 @@ class RegionListFragment : Fragment(R.layout.region_list_fragment) {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
         setHasOptionsMenu(true)
     }
 
@@ -91,6 +93,15 @@ class RegionListFragment : Fragment(R.layout.region_list_fragment) {
 
         inflater.inflate(R.menu.region_list_menu, menu)
     }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean =
+        when (item.itemId) {
+            R.id.add_item -> {
+                findNavController().navigate(RegionListFragmentDirections.actionRegionListFragmentToAddItemFragment())
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
 
     private fun onSuccessInSigningIn() {
         Snackbar.make(binding.root, R.string.snackbar_success_sign_in, Snackbar.LENGTH_SHORT).show()
@@ -125,7 +136,7 @@ class RegionListFragment : Fragment(R.layout.region_list_fragment) {
         }
 
         binding.fabAddItem.setOnClickListener {
-            findNavController().navigate(RegionListFragmentDirections.actionRegionListFragmentToAddItemFragment())
+            findNavController().navigate(RegionListFragmentDirections.actionRegionListFragmentToSearchItemFragment())
         }
     }
 
