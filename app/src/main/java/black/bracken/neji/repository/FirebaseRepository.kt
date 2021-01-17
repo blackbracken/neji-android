@@ -167,7 +167,23 @@ class FirebaseRepositoryImpl : FirebaseRepository {
     }
 
     override suspend fun searchItems(query: FirebaseRepository.SearchQuery): Either<Exception, List<Item>> {
-        TODO("implement")
+        return suspendCoroutine { continuation ->
+            firestore
+                .collection("items")
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    continuation.resume(
+                        snapshot.toObjects<Item>()
+                            .filter { item ->
+                                // TODO: suppose if item#name is null
+                                // O(N * M)
+                                item.name.split(" ", "　").any { it in item.name }
+                            }
+                            .right()
+                    )
+                }
+                .addOnFailureListener { continuation.resume(it.left()) }
+        }
     }
 
 }
