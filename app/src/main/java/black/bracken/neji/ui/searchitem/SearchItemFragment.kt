@@ -20,6 +20,15 @@ class SearchItemFragment : Fragment(R.layout.search_item_fragment) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.buttonSearch.setOnClickListener {
+            with(binding) {
+                viewModel.searchItems(
+                    itemName = editElementName.text?.toString(),
+                    itemType = autoCompleteTextElementItemType.text?.toString(),
+                    regionName = autoCompleteTextElementRegion.text?.toString(),
+                    boxName = autoCompleteTextElementBox.text?.toString()
+                )
+            }
+            // TODO: implement
             findNavController().navigate(SearchItemFragmentDirections.actionSearchItemFragmentToRegionListFragment())
         }
     }

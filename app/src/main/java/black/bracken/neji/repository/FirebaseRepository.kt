@@ -45,6 +45,15 @@ interface FirebaseRepository {
         comment: String?
     ): Either<Exception, Item>
 
+    suspend fun searchItems(query: SearchQuery): Either<Exception, List<Item>>
+
+    data class SearchQuery(
+        val name: String?,
+        val type: String?,
+        val regionName: String?,
+        val boxName: String?
+    )
+
 }
 
 @ExperimentalCoroutinesApi
@@ -155,6 +164,10 @@ class FirebaseRepositoryImpl : FirebaseRepository {
                 .addOnSuccessListener { continuation.resume(item.right()) }
                 .addOnFailureListener { exception -> continuation.resume(exception.left()) }
         }
+    }
+
+    override suspend fun searchItems(query: FirebaseRepository.SearchQuery): Either<Exception, List<Item>> {
+        TODO("implement")
     }
 
 }
