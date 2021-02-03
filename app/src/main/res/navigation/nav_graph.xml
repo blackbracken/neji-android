@@ -46,7 +46,7 @@
     <fragment
         android:id="@+id/searchItemFragment"
         android:name="black.bracken.neji.ui.searchitem.SearchItemFragment"
-        android:label="SearchItemFragment" >
+        android:label="@string/nav_name_search_item" >
         <action
             android:id="@+id/action_searchItemFragment_to_regionListFragment"
             app:destination="@id/regionListFragment" />
