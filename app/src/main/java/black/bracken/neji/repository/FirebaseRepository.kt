@@ -179,6 +179,8 @@ class FirebaseRepositoryImpl : FirebaseRepository {
                                 // O(N * M)
                                 item.name.split(" ", "　").any { it in item.name }
                             }
+                            .filter { item -> (query.type == null) || item.itemType == query.type }
+                                // TODO: filter with regionId and boxId
                             .right()
                     )
                 }
