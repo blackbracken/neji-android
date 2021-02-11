@@ -42,7 +42,13 @@
     <fragment
         android:id="@+id/editItemFragment"
         android:name="black.bracken.neji.ui.edititem.EditItemFragment"
-        android:label="@string/nav_name_edit_item" />
+        android:label="@string/nav_name_edit_item">
+        <argument
+            android:name="target"
+            android:defaultValue="@null"
+            app:argType="black.bracken.neji.model.document.Item"
+            app:nullable="true" />
+    </fragment>
     <fragment
         android:id="@+id/searchItemFragment"
         android:name="black.bracken.neji.ui.searchitem.SearchItemFragment"

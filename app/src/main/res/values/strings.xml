@@ -14,7 +14,7 @@
     <string name="edit__item_comment">コメント</string>
     <string name="edit_item_region_of_box">ボックスのある場所</string>
     <string name="edit_item_box_to_save">保存するボックス</string>
-    <string name="edit_item_adding">追加</string>
+    <string name="edit_item_complete">完了</string>
     <string name="search_element_name">検索要素 - 名前 <font color='#FF0000'>*</font></string>
     <string name="search_element_item_type">検索要素 - アイテムの種類</string>
     <string name="search_element_region">検索要素 - アイテムのある場所</string>
@@ -27,7 +27,7 @@
     <string name="snackbar_must_not_be_blank">エラー: 空欄が存在します</string>
     <string name="nav_name_region_list">場所一覧</string>
     <string name="nav_name_box_list">ボックス一覧</string>
-    <string name="nav_name_edit_item">アイテムの追加</string>
+    <string name="nav_name_edit_item">アイテムの編集</string>
     <string name="nav_name_search_item">アイテムの検索</string>
     <string name="menu_item_add_region">リージョンの追加</string>
     <string name="menu_item_add_item">アイテムの追加</string>
