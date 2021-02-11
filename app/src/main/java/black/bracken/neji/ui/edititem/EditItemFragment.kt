@@ -1,8 +1,7 @@
-package black.bracken.neji.ui.additem
+package black.bracken.neji.ui.edititem
 
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.core.net.toUri
@@ -13,7 +12,7 @@ import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import arrow.core.Either
 import black.bracken.neji.R
-import black.bracken.neji.databinding.AddItemFragmentBinding
+import black.bracken.neji.databinding.EditItemFragmentBinding
 import coil.load
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.material.snackbar.Snackbar
@@ -21,11 +20,11 @@ import com.wada811.viewbinding.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class AddItemFragment : Fragment(R.layout.add_item_fragment) {
+class EditItemFragment : Fragment(R.layout.edit_item_fragment) {
 
-    private val binding by viewBinding(AddItemFragmentBinding::bind)
+    private val binding by viewBinding(EditItemFragmentBinding::bind)
 
-    private val viewModel by viewModels<AddItemViewModel>()
+    private val viewModel by viewModels<EditItemViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

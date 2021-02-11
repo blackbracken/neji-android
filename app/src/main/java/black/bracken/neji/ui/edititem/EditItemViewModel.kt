@@ -1,4 +1,4 @@
-package black.bracken.neji.ui.additem
+package black.bracken.neji.ui.edititem
 
 import android.net.Uri
 import androidx.hilt.lifecycle.ViewModelInject
@@ -10,7 +10,7 @@ import black.bracken.neji.model.document.Box
 import black.bracken.neji.repository.FirebaseRepository
 import kotlinx.coroutines.launch
 
-class AddItemViewModel @ViewModelInject constructor(
+class EditItemViewModel @ViewModelInject constructor(
     private val firebaseRepository: FirebaseRepository
 ) : ViewModel() {
 

@@ -12,8 +12,8 @@
             android:id="@+id/action_regionListFragment_to_setupFragment"
             app:destination="@id/setupFragment" />
         <action
-            android:id="@+id/action_regionListFragment_to_addItemFragment"
-            app:destination="@id/addItemFragment" />
+            android:id="@+id/action_regionListFragment_to_editItemFragment"
+            app:destination="@id/editItemFragment" />
         <action
             android:id="@+id/action_regionListFragment_to_boxListFragment"
             app:destination="@id/boxListFragment" />
@@ -40,9 +40,15 @@
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
-        android:id="@+id/addItemFragment"
-        android:name="black.bracken.neji.ui.additem.AddItemFragment"
-        android:label="@string/nav_name_add_item" />
+        android:id="@+id/editItemFragment"
+        android:name="black.bracken.neji.ui.edititem.EditItemFragment"
+        android:label="@string/nav_name_edit_item">
+        <argument
+            android:name="target"
+            android:defaultValue="@null"
+            app:argType="black.bracken.neji.model.document.Item"
+            app:nullable="true" />
+    </fragment>
     <fragment
         android:id="@+id/searchItemFragment"
         android:name="black.bracken.neji.ui.searchitem.SearchItemFragment"
