@@ -12,6 +12,8 @@
         android:layout_height="wrap_content"
         android:layout_marginVertical="@dimen/margin_small"
         android:layout_marginStart="@dimen/margin_small"
+        android:minWidth="@dimen/icon_size_medium"
+        android:minHeight="@dimen/icon_size_medium"
         android:background="@drawable/ic_flag_24px"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

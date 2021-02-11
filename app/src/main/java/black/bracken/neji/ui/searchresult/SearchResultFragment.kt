@@ -6,10 +6,18 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.DividerItemDecoration
 import black.bracken.neji.R
 import black.bracken.neji.databinding.SearchResultFragmentBinding
 import black.bracken.neji.model.document.Item
+import black.bracken.neji.repository.Auth
+import black.bracken.neji.ui.searchresult.item.SearchResultCardItem
+import black.bracken.neji.util.ItemOffsetDecoration
+import com.google.firebase.FirebaseApp
+import com.google.firebase.storage.FirebaseStorage
 import com.wada811.viewbinding.viewBinding
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.GroupieViewHolder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 
@@ -20,12 +28,42 @@ class SearchResultFragment : Fragment(R.layout.search_result_fragment) {
     private val binding by viewBinding(SearchResultFragmentBinding::bind)
     private val args: SearchResultFragmentArgs by navArgs()
 
+    private val adapter = GroupAdapter<GroupieViewHolder>()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.recycler.adapter = adapter
+        binding.recycler.apply {
+            addItemDecoration(ItemOffsetDecoration(requireContext(), R.dimen.recycler_padding))
+            addItemDecoration(
+                DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
+            )
+        }
+
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.searchedResults.collect { results ->
-                // TODO: add result items
+                results
+                    .map { item ->
+                        val listener = SearchResultItemClickListener { newItem ->
+                            // TODO: navigate to view for showing information of item
+                        }
+
+                        SearchResultCardItem(
+                            requireContext(),
+                            item,
+                            // TODO: shouldn't get reference here
+                            item.imageUrl?.let {
+                                FirebaseStorage.getInstance(
+                                    FirebaseApp.getInstance(
+                                        Auth.FIREBASE_NAME
+                                    )
+                                ).getReference(it)
+                            },
+                            listener
+                        )
+                    }
+                    .forEach { searchedItemCard -> adapter.add(searchedItemCard) }
             }
         }
 
