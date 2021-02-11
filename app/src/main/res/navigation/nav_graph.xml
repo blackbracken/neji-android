@@ -52,9 +52,20 @@
     <fragment
         android:id="@+id/searchItemFragment"
         android:name="black.bracken.neji.ui.searchitem.SearchItemFragment"
-        android:label="@string/nav_name_search_item" >
+        android:label="@string/nav_name_search_item">
         <action
             android:id="@+id/action_searchItemFragment_to_regionListFragment"
             app:destination="@id/regionListFragment" />
+        <action
+            android:id="@+id/action_searchItemFragment_to_searchResultFragment"
+            app:destination="@id/searchResultFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchResultFragment"
+        android:name="black.bracken.neji.ui.searchresult.SearchResultFragment"
+        android:label="SearchResultFragment">
+        <argument
+            android:name="searchedItems"
+            app:argType="black.bracken.neji.model.document.Item[]" />
     </fragment>
 </navigation>

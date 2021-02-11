@@ -5,13 +5,15 @@ import android.view.View
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.observe
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import arrow.core.Either
 import black.bracken.neji.R
 import black.bracken.neji.databinding.SearchItemFragmentBinding
 import com.google.android.material.snackbar.Snackbar
 import com.wada811.viewbinding.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 
 @AndroidEntryPoint
 class SearchItemFragment : Fragment(R.layout.search_item_fragment) {
@@ -38,16 +40,24 @@ class SearchItemFragment : Fragment(R.layout.search_item_fragment) {
             }
         }
 
-        viewModel.searchResult.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Either.Right -> {
-                    Snackbar.make(
-                        binding.root,
-                        "results size is ${result.b.size}",
-                        Snackbar.LENGTH_SHORT
-                    ).show()
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.searchResult.collect { result ->
+                when (result) {
+                    is Either.Right -> {
+                        Snackbar.make(
+                            binding.root,
+                            "results size is ${result.b.size}",
+                            Snackbar.LENGTH_SHORT
+                        ).show()
+
+                        findNavController().navigate(
+                            SearchItemFragmentDirections.actionSearchItemFragmentToSearchResultFragment(
+                                result.b.toTypedArray()
+                            )
+                        )
+                    }
+                    else -> Unit
                 }
-                else -> Unit
             }
         }
     }
