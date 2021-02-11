@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 
 class SearchResultViewModel @ViewModelInject constructor() : ViewModel() {
 
-    private val _searchedResults = MutableSharedFlow<List<Item>>(replay = 0)
+    private val _searchedResults = MutableSharedFlow<List<Item>>(replay = 1)
     val searchedResults get() = _searchedResults.asSharedFlow()
 
     fun addAllSearchedResults(results: Array<out Item>) {

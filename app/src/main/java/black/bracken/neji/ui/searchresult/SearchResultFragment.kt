@@ -8,6 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import black.bracken.neji.R
 import black.bracken.neji.databinding.SearchResultFragmentBinding
+import black.bracken.neji.model.document.Item
 import com.wada811.viewbinding.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -22,14 +23,26 @@ class SearchResultFragment : Fragment(R.layout.search_result_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.searchedResults.collect { results ->
                 // TODO: add result items
-                println("sukoya shown results: ${results.joinToString()}")
             }
         }
 
         viewModel.addAllSearchedResults(args.searchedItems)
+    }
+
+    interface SearchResultItemClickListener {
+        fun onClick(item: Item)
+
+        companion object {
+            operator fun invoke(lambdaListener: (Item) -> Unit): SearchResultItemClickListener =
+                object : SearchResultItemClickListener {
+                    override fun onClick(item: Item) {
+                        lambdaListener(item)
+                    }
+                }
+        }
     }
 
 }
