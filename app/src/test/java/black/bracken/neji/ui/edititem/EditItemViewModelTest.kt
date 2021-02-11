@@ -1,4 +1,4 @@
-package black.bracken.neji.ui.additem
+package black.bracken.neji.ui.edititem
 
 import android.net.Uri
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
@@ -13,18 +13,18 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class AddItemViewModelTest {
+class EditItemViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var mockkFirebase: FirebaseRepository
-    private lateinit var viewModel: AddItemViewModel
+    private lateinit var viewModel: EditItemViewModel
 
     @Before
     fun setup() {
         mockkFirebase = mockk(relaxed = true)
-        viewModel = AddItemViewModel(mockkFirebase)
+        viewModel = EditItemViewModel(mockkFirebase)
     }
 
     @Test

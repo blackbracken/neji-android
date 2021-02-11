@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/margin_medium"
             android:layout_marginTop="@dimen/margin_large"
-            android:hint="@string/add_item_name"
+            android:hint="@string/edit_item_name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/image_item">
@@ -58,7 +58,7 @@
             android:layout_marginStart="@dimen/margin_medium"
             android:layout_marginTop="@dimen/margin_medium"
             android:layout_marginEnd="@dimen/margin_small"
-            android:hint="@string/add_item_amount"
+            android:hint="@string/edit_item_amount"
             app:layout_constraintEnd_toStartOf="@id/input_item_type"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/input_item_name">
@@ -79,7 +79,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/margin_medium"
-            android:hint="@string/add_item_type"
+            android:hint="@string/edit_item_type"
             app:layout_constraintBottom_toBottomOf="@id/input_item_amount"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/input_item_amount"
@@ -100,7 +100,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/margin_medium"
             android:layout_marginTop="@dimen/margin_medium"
-            android:hint="@string/add_item_region_of_box"
+            android:hint="@string/edit_item_region_of_box"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/input_item_amount">
@@ -121,7 +121,7 @@
             android:layout_marginHorizontal="@dimen/margin_medium"
             android:layout_marginTop="@dimen/margin_medium"
             android:enabled="false"
-            android:hint="@string/add_item_box_to_save"
+            android:hint="@string/edit_item_box_to_save"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/input_region_of_box">
@@ -140,7 +140,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/margin_medium"
             android:layout_marginTop="@dimen/margin_medium"
-            android:hint="@string/add_item_comment"
+            android:hint="@string/edit__item_comment"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/input_box_to_save">
@@ -159,7 +159,7 @@
             android:layout_marginTop="@dimen/margin_medium"
             android:layout_marginEnd="@dimen/margin_medium"
             android:layout_marginBottom="@dimen/margin_large"
-            android:text="@string/add_item_adding"
+            android:text="@string/edit_item_adding"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/input_item_comment"

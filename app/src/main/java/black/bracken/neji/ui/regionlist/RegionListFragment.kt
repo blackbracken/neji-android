@@ -97,7 +97,7 @@ class RegionListFragment : Fragment(R.layout.region_list_fragment) {
     override fun onOptionsItemSelected(item: MenuItem): Boolean =
         when (item.itemId) {
             R.id.add_item -> {
-                findNavController().navigate(RegionListFragmentDirections.actionRegionListFragmentToAddItemFragment())
+                findNavController().navigate(RegionListFragmentDirections.actionRegionListFragmentToEditItemFragment())
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -135,7 +135,7 @@ class RegionListFragment : Fragment(R.layout.region_list_fragment) {
             binding.indicator.isIndeterminate = false
         }
 
-        binding.fabAddItem.setOnClickListener {
+        binding.fabEditItem.setOnClickListener {
             findNavController().navigate(RegionListFragmentDirections.actionRegionListFragmentToSearchItemFragment())
         }
     }
