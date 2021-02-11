@@ -2,6 +2,7 @@ package black.bracken.neji.ui.searchitem
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
@@ -21,6 +22,10 @@ class SearchItemFragment : Fragment(R.layout.search_item_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.autoCompleteTextElementRegion.doOnTextChanged { _, _, _, _ ->
+            binding.autoCompleteTextElementBox.text.clear()
+        }
+
         binding.buttonSearch.setOnClickListener {
             println("sukoya searching")
             with(binding) {
@@ -34,7 +39,6 @@ class SearchItemFragment : Fragment(R.layout.search_item_fragment) {
         }
 
         viewModel.searchResult.observe(viewLifecycleOwner) { result ->
-            println("sukoya result is $result")
             when (result) {
                 is Either.Right -> Snackbar.make(
                     binding.root,
