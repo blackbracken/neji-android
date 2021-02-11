@@ -1,12 +1,12 @@
 package black.bracken.neji.di
 
 import android.content.Context
-import androidx.datastore.DataStore
+import androidx.datastore.core.DataStore
 import black.bracken.neji.NejiSecure
-import black.bracken.neji.repository.FirebaseRepository
-import black.bracken.neji.repository.FirebaseRepositoryImpl
 import black.bracken.neji.repository.Auth
 import black.bracken.neji.repository.AuthImpl
+import black.bracken.neji.repository.FirebaseRepository
+import black.bracken.neji.repository.FirebaseRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

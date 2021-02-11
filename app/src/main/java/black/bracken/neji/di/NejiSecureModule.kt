@@ -1,7 +1,7 @@
 package black.bracken.neji.di
 
 import android.content.Context
-import androidx.datastore.DataStore
+import androidx.datastore.core.DataStore
 import androidx.datastore.createDataStore
 import black.bracken.neji.NejiSecure
 import black.bracken.neji.repository.source.NejiSecureSerializer

@@ -3,9 +3,11 @@ package black.bracken.neji.ui.boxlist
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
-import black.bracken.neji.model.firebase.Box
-import black.bracken.neji.model.firebase.Region
+import arrow.core.Either
+import black.bracken.neji.model.document.Box
+import black.bracken.neji.model.document.Region
 import black.bracken.neji.repository.FirebaseRepository
+import black.bracken.neji.util.Failure
 import black.bracken.neji.util.Loading
 import black.bracken.neji.util.Resource
 import black.bracken.neji.util.Success
@@ -16,12 +18,25 @@ class BoxListViewModel @ViewModelInject constructor(
     private val firebaseRepository: FirebaseRepository
 ) : ViewModel() {
 
-    private val _boxes = MutableLiveData<Resource<List<Box>>>(Loading)
-    val boxes: LiveData<Resource<List<Box>>> get() = _boxes
+    private val _boxAndItemCounts = MutableLiveData<Resource<Map<Box, Int>>>(Loading)
+    val boxAndAmounts: LiveData<Resource<Map<Box, Int>>> get() = _boxAndItemCounts
 
     fun fetchBoxes(region: Region) {
         viewModelScope.launch {
-            _boxes.postValue(Success(firebaseRepository.boxesInRegion(region)))
+            _boxAndItemCounts.postValue(
+                when (val result = firebaseRepository.boxesInRegion(region.id)) {
+                    is Either.Right -> {
+                        Success(result.b
+                            .map {
+                                // FIXME: this is N+1
+                                it to (firebaseRepository.itemsInBox(it.id).orNull()?.size ?: 0)
+                            }
+                            .toMap()
+                        )
+                    }
+                    is Either.Left -> Failure(result.a)
+                }
+            )
         }
     }
 

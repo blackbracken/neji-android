@@ -17,6 +17,9 @@
         <action
             android:id="@+id/action_regionListFragment_to_boxListFragment"
             app:destination="@id/boxListFragment" />
+        <action
+            android:id="@+id/action_regionListFragment_to_searchItemFragment"
+            app:destination="@id/searchItemFragment" />
     </fragment>
     <fragment
         android:id="@+id/boxListFragment"
@@ -24,7 +27,7 @@
         android:label="@string/nav_name_box_list">
         <argument
             android:name="region"
-            app:argType="black.bracken.neji.model.firebase.Region" />
+            app:argType="black.bracken.neji.model.document.Region" />
     </fragment>
     <fragment
         android:id="@+id/setupFragment"
@@ -40,4 +43,12 @@
         android:id="@+id/addItemFragment"
         android:name="black.bracken.neji.ui.additem.AddItemFragment"
         android:label="@string/nav_name_add_item" />
+    <fragment
+        android:id="@+id/searchItemFragment"
+        android:name="black.bracken.neji.ui.searchitem.SearchItemFragment"
+        android:label="@string/nav_name_search_item" >
+        <action
+            android:id="@+id/action_searchItemFragment_to_regionListFragment"
+            app:destination="@id/regionListFragment" />
+    </fragment>
 </navigation>

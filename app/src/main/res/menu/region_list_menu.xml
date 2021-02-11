@@ -7,11 +7,6 @@
         android:title="@string/menu_item_add_region"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/remove_region"
-        android:icon="@drawable/ic_baseline_delete_24"
-        android:title="@string/menu_item_remove_region"
-        app:showAsAction="ifRoom" />
-    <item
         android:id="@+id/add_item"
         android:icon="@drawable/ic_baseline_post_add_24"
         android:title="@string/menu_item_add_item"
