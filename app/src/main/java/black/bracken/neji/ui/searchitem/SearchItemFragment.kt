@@ -27,10 +27,10 @@ class SearchItemFragment : Fragment(R.layout.search_item_fragment) {
         }
 
         binding.buttonSearch.setOnClickListener {
-            println("sukoya searching")
             with(binding) {
                 viewModel.searchItems(
-                    itemName = editElementName.text?.toString(),
+                    itemName = editElementName.text?.toString()
+                        ?: "", // TODO: handle if the string is blank or null
                     itemType = autoCompleteTextElementItemType.text?.toString(),
                     regionName = autoCompleteTextElementRegion.text?.toString(),
                     boxName = autoCompleteTextElementBox.text?.toString()
@@ -40,11 +40,13 @@ class SearchItemFragment : Fragment(R.layout.search_item_fragment) {
 
         viewModel.searchResult.observe(viewLifecycleOwner) { result ->
             when (result) {
-                is Either.Right -> Snackbar.make(
-                    binding.root,
-                    "results size is ${result.b.size}",
-                    Snackbar.LENGTH_SHORT
-                ).show()
+                is Either.Right -> {
+                    Snackbar.make(
+                        binding.root,
+                        "results size is ${result.b.size}",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
                 else -> Unit
             }
         }

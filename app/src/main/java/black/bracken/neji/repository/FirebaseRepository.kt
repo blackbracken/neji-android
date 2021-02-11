@@ -48,10 +48,10 @@ interface FirebaseRepository {
     suspend fun searchItems(query: SearchQuery): Either<Exception, List<Item>>
 
     data class SearchQuery(
-        val name: String?,
-        val type: String?,
-        val regionName: String?,
-        val boxName: String?
+        val byName: String,
+        val byType: String?,
+        val byRegionName: String?,
+        val byBoxName: String?
     )
 
 }
@@ -177,10 +177,10 @@ class FirebaseRepositoryImpl : FirebaseRepository {
                             .filter { item ->
                                 // TODO: suppose if item#name is null
                                 // O(N * M)
-                                item.name.split(" ", "　").any { it in item.name }
+                                query.byName.split(" ", "　").any { it in item.name }
                             }
-                            .filter { item -> (query.type == null) || item.itemType == query.type }
-                                // TODO: filter with regionId and boxId
+                            .filter { item -> query.byType.isNullOrBlank() || query.byType == item.itemType }
+                            // TODO: filter with regionId and boxId
                             .right()
                     )
                 }

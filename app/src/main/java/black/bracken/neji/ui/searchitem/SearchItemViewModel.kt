@@ -21,7 +21,7 @@ class SearchItemViewModel @ViewModelInject constructor(
     val searchResult get() = _searchResult.toLiveData()
 
     fun searchItems(
-        itemName: String?,
+        itemName: String,
         itemType: String?,
         regionName: String?,
         boxName: String?
