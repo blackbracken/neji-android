@@ -63,7 +63,7 @@
     <fragment
         android:id="@+id/searchResultFragment"
         android:name="black.bracken.neji.ui.searchresult.SearchResultFragment"
-        android:label="SearchResultFragment">
+        android:label="@string/nav_name_search_result">
         <argument
             android:name="searchedItems"
             app:argType="black.bracken.neji.model.document.Item[]" />
