@@ -10,11 +10,9 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import black.bracken.neji.R
 import black.bracken.neji.databinding.SearchResultFragmentBinding
 import black.bracken.neji.model.document.Item
-import black.bracken.neji.repository.Auth
 import black.bracken.neji.ui.searchresult.item.SearchResultCardItem
 import black.bracken.neji.util.ItemOffsetDecoration
-import com.google.firebase.FirebaseApp
-import com.google.firebase.storage.FirebaseStorage
+import black.bracken.neji.util.firebaseStorage
 import com.wada811.viewbinding.viewBinding
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
@@ -52,14 +50,7 @@ class SearchResultFragment : Fragment(R.layout.search_result_fragment) {
                         SearchResultCardItem(
                             requireContext(),
                             item,
-                            // TODO: shouldn't get reference here
-                            item.imageUrl?.let {
-                                FirebaseStorage.getInstance(
-                                    FirebaseApp.getInstance(
-                                        Auth.FIREBASE_NAME
-                                    )
-                                ).getReference(it)
-                            },
+                            item.imageUrl?.let { firebaseStorage.getReference(it) },
                             listener
                         )
                     }
