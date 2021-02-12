@@ -28,7 +28,7 @@ class BoxListViewModel @ViewModelInject constructor(
                     is Either.Right -> {
                         Success(result.b
                             .map {
-                                // FIXME: this is N+1
+                                // TODO: this is N+1
                                 it to (firebaseRepository.itemsInBox(it.id).orNull()?.size ?: 0)
                             }
                             .toMap()

@@ -4,7 +4,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
-import androidx.core.net.toUri
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -30,7 +29,12 @@ class EditItemFragment : Fragment(R.layout.edit_item_fragment) {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.imageUri.observe(viewLifecycleOwner) { imageUri ->
-            binding.imageItem.load(imageUri ?: "file:///android_asset/sample.png".toUri())
+            if (imageUri != null) {
+                binding.imageItem.load(imageUri)
+            } else {
+                binding.imageItem.load(R.drawable.ic_baseline_memory_24)
+            }
+
         }
 
         viewModel.itemTypesResult.observe(viewLifecycleOwner) { result ->

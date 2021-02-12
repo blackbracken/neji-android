@@ -70,5 +70,16 @@
         <argument
             android:name="searchedItems"
             app:argType="black.bracken.neji.model.document.Item[]" />
+        <action
+            android:id="@+id/action_searchResultFragment_to_itemInfoFragment"
+            app:destination="@id/itemInfoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/itemInfoFragment"
+        android:name="black.bracken.neji.ui.iteminfo.ItemInfoFragment"
+        android:label="ItemInfoFragment">
+        <argument
+            android:name="item"
+            app:argType="black.bracken.neji.model.document.Item" />
     </fragment>
 </navigation>

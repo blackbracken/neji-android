@@ -5,6 +5,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import black.bracken.neji.R
@@ -40,11 +41,16 @@ class SearchResultFragment : Fragment(R.layout.search_result_fragment) {
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            adapter.clear()
             viewModel.searchedResults.collect { results ->
                 results
                     .map { item ->
                         val listener = SearchResultItemClickListener { newItem ->
-                            // TODO: navigate to view for showing information of item
+                            findNavController().navigate(
+                                SearchResultFragmentDirections.actionSearchResultFragmentToItemInfoFragment(
+                                    newItem
+                                )
+                            )
                         }
 
                         SearchResultCardItem(
