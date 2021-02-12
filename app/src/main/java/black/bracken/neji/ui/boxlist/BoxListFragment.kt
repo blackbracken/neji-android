@@ -6,6 +6,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import black.bracken.neji.R
@@ -36,6 +37,8 @@ class BoxListFragment : Fragment(R.layout.box_list_fragment) {
         viewModel.fetchBoxes(args.region)
 
         viewModel.boxAndAmounts.observe(viewLifecycleOwner) { boxesResource ->
+            adapter.clear()
+            
             when (boxesResource) {
                 is Success -> {
                     boxesResource.value.forEach { (box, amount) ->
@@ -60,6 +63,10 @@ class BoxListFragment : Fragment(R.layout.box_list_fragment) {
                     DividerItemDecoration.VERTICAL
                 )
             )
+        }
+
+        binding.fabSearchItem.setOnClickListener {
+            findNavController().navigate(BoxListFragmentDirections.actionBoxListFragmentToSearchItemFragment())
         }
     }
 

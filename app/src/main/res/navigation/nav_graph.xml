@@ -28,6 +28,9 @@
         <argument
             android:name="region"
             app:argType="black.bracken.neji.model.document.Region" />
+        <action
+            android:id="@+id/action_boxListFragment_to_searchItemFragment"
+            app:destination="@id/searchItemFragment" />
     </fragment>
     <fragment
         android:id="@+id/setupFragment"
