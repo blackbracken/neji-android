@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.View
 import black.bracken.neji.R
 import black.bracken.neji.databinding.SearchResultCardBinding
-import black.bracken.neji.model.document.Item
+import black.bracken.neji.firebase.document.ItemEntity
 import black.bracken.neji.ui.searchresult.SearchResultFragment
 import com.google.firebase.storage.StorageReference
 import com.xwray.groupie.viewbinding.BindableItem
@@ -12,7 +12,7 @@ import io.github.rosariopfernandes.firecoil.load
 
 class SearchResultCardItem(
     private val context: Context,
-    val item: Item,
+    val item: ItemEntity,
     private val imageRef: StorageReference?,
     private val listener: SearchResultFragment.SearchResultItemClickListener
 ) : BindableItem<SearchResultCardBinding>() {

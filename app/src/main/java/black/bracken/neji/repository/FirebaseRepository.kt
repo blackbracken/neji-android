@@ -3,10 +3,10 @@ package black.bracken.neji.repository
 import android.net.Uri
 import arrow.core.*
 import black.bracken.neji.ext.toObjectsWithId
-import black.bracken.neji.model.document.Box
-import black.bracken.neji.model.document.Item
-import black.bracken.neji.model.document.ItemType
-import black.bracken.neji.model.document.Region
+import black.bracken.neji.firebase.document.BoxEntity
+import black.bracken.neji.firebase.document.ItemEntity
+import black.bracken.neji.firebase.document.ItemTypeEntity
+import black.bracken.neji.firebase.document.RegionEntity
 import com.google.firebase.FirebaseApp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObjects
@@ -28,13 +28,13 @@ import kotlin.coroutines.suspendCoroutine
 
 interface FirebaseRepository {
 
-    fun regions(): Flow<Either<Exception, List<Region>>>
+    fun regions(): Flow<Either<Exception, List<RegionEntity>>>
 
     fun itemTypes(): Flow<Either<Exception, List<String>>>
 
-    suspend fun boxesInRegion(regionId: String): Either<Exception, List<Box>>
+    suspend fun boxesInRegion(regionId: String): Either<Exception, List<BoxEntity>>
 
-    suspend fun itemsInBox(boxId: String): Either<Exception, List<Item>>
+    suspend fun itemsInBox(boxId: String): Either<Exception, List<ItemEntity>>
 
     suspend fun addItem(
         name: String,
@@ -43,9 +43,9 @@ interface FirebaseRepository {
         itemType: String,
         boxId: String,
         comment: String?
-    ): Either<Exception, Item>
+    ): Either<Exception, ItemEntity>
 
-    suspend fun searchItems(query: SearchQuery): Either<Exception, List<Item>>
+    suspend fun searchItems(query: SearchQuery): Either<Exception, List<ItemEntity>>
 
     data class SearchQuery(
         val byName: String,
@@ -72,12 +72,12 @@ class FirebaseRepositoryImpl : FirebaseRepository {
 
     private val firebaseApp by lazy { FirebaseApp.getInstance(Auth.FIREBASE_NAME) }
 
-    override fun regions(): Flow<Either<Exception, List<Region>>> = callbackFlow {
+    override fun regions(): Flow<Either<Exception, List<RegionEntity>>> = callbackFlow {
         val registration = firestore
             .collection("regions")
             .orderBy("updatedAt")
             .addSnapshotListener { value, error ->
-                offer(value?.toObjectsWithId<Region>().rightIfNotNull { requireNotNull(error) })
+                offer(value?.toObjectsWithId<RegionEntity>().rightIfNotNull { requireNotNull(error) })
             }
 
         awaitClose { registration.remove() }
@@ -88,7 +88,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
             .collection("itemTypes")
             .addSnapshotListener { value, error ->
                 offer(
-                    value?.toObjects<ItemType>()?.map { it.name }
+                    value?.toObjects<ItemTypeEntity>()?.map { it.name }
                         .rightIfNotNull { requireNotNull(error) }
                 )
             }
@@ -96,28 +96,28 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         awaitClose { registration.remove() }
     }
 
-    override suspend fun boxesInRegion(regionId: String): Either<Exception, List<Box>> =
+    override suspend fun boxesInRegion(regionId: String): Either<Exception, List<BoxEntity>> =
         suspendCoroutine { continuation ->
             firestore
                 .collection("boxes")
                 .whereEqualTo("regionId", regionId)
                 .get()
                 .addOnSuccessListener { snapshot ->
-                    continuation.resume(snapshot.toObjectsWithId<Box>().right())
+                    continuation.resume(snapshot.toObjectsWithId<BoxEntity>().right())
                 }
                 .addOnFailureListener { exception ->
                     continuation.resume(exception.left())
                 }
         }
 
-    override suspend fun itemsInBox(boxId: String): Either<Exception, List<Item>> =
+    override suspend fun itemsInBox(boxId: String): Either<Exception, List<ItemEntity>> =
         suspendCoroutine { continuation ->
             firestore
                 .collection("items")
                 .whereIn("boxId", listOf(boxId))
                 .get()
                 .addOnSuccessListener { snapshot ->
-                    continuation.resume(snapshot.toObjectsWithId<Item>().right())
+                    continuation.resume(snapshot.toObjectsWithId<ItemEntity>().right())
                 }
                 .addOnFailureListener { exception ->
                     continuation.resume(exception.left())
@@ -131,7 +131,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         itemType: String,
         boxId: String,
         comment: String?
-    ): Either<Exception, Item> {
+    ): Either<Exception, ItemEntity> {
         val key = UUID.randomUUID().toString()
         val imageUrl = suspendCoroutine<Either<Exception, String?>> { continuation ->
             if (imageUri == null) {
@@ -146,7 +146,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
                 .addOnFailureListener { exception -> continuation.resume(exception.left()) }
         }.getOrHandle { exception -> return@addItem exception.left() }
 
-        val item = Item(
+        val item = ItemEntity(
             id = key,
             name = name,
             boxId = boxId,
@@ -166,14 +166,14 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         }
     }
 
-    override suspend fun searchItems(query: FirebaseRepository.SearchQuery): Either<Exception, List<Item>> {
+    override suspend fun searchItems(query: FirebaseRepository.SearchQuery): Either<Exception, List<ItemEntity>> {
         return suspendCoroutine { continuation ->
             firestore
                 .collection("items")
                 .get()
                 .addOnSuccessListener { snapshot ->
                     continuation.resume(
-                        snapshot.toObjects<Item>()
+                        snapshot.toObjects<ItemEntity>()
                             .filter { item ->
                                 // TODO: suppose if item#name is null
                                 // O(N * M)

@@ -4,8 +4,8 @@ import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import arrow.core.Either
-import black.bracken.neji.model.document.Box
-import black.bracken.neji.model.document.Region
+import black.bracken.neji.firebase.document.BoxEntity
+import black.bracken.neji.firebase.document.RegionEntity
 import black.bracken.neji.repository.FirebaseRepository
 import black.bracken.neji.util.Failure
 import black.bracken.neji.util.Loading
@@ -18,10 +18,10 @@ class BoxListViewModel @ViewModelInject constructor(
     private val firebaseRepository: FirebaseRepository
 ) : ViewModel() {
 
-    private val _boxAndItemCounts = MutableLiveData<Resource<Map<Box, Int>>>(Loading)
-    val boxAndAmounts: LiveData<Resource<Map<Box, Int>>> get() = _boxAndItemCounts
+    private val _boxAndItemCounts = MutableLiveData<Resource<Map<BoxEntity, Int>>>(Loading)
+    val boxAndAmounts: LiveData<Resource<Map<BoxEntity, Int>>> get() = _boxAndItemCounts
 
-    fun fetchBoxes(region: Region) {
+    fun fetchBoxes(region: RegionEntity) {
         viewModelScope.launch {
             _boxAndItemCounts.postValue(
                 when (val result = firebaseRepository.boxesInRegion(region.id)) {

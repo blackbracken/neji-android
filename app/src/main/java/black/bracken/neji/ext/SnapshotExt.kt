@@ -1,6 +1,6 @@
 package black.bracken.neji.ext
 
-import black.bracken.neji.model.document.HasId
+import black.bracken.neji.firebase.document.HasId
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.toObject

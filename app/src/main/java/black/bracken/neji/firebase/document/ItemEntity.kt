@@ -1,4 +1,4 @@
-package black.bracken.neji.model.document
+package black.bracken.neji.firebase.document
 
 import android.os.Parcelable
 import com.google.firebase.firestore.Exclude
@@ -10,7 +10,7 @@ import java.util.*
 
 @Parcelize
 @IgnoreExtraProperties
-data class Item constructor(
+data class ItemEntity constructor(
     @get:Exclude override var id: String = "",
     var name: String = "",
     var amount: Int = 0,

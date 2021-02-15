@@ -4,12 +4,12 @@ import android.content.Context
 import android.view.View
 import black.bracken.neji.R
 import black.bracken.neji.databinding.BoxListCardBinding
-import black.bracken.neji.model.document.Box
+import black.bracken.neji.firebase.document.BoxEntity
 import com.xwray.groupie.viewbinding.BindableItem
 
 class BoxCardItem(
     private val context: Context,
-    private val box: Box,
+    private val box: BoxEntity,
     private val itemAmountInBox: Int
 ) : BindableItem<BoxListCardBinding>() {
 

@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import arrow.core.Either
 import black.bracken.neji.R
 import black.bracken.neji.databinding.RegionListFragmentBinding
-import black.bracken.neji.model.document.Region
+import black.bracken.neji.firebase.document.RegionEntity
 import black.bracken.neji.ui.UserViewModel
 import black.bracken.neji.ui.regionlist.item.RegionCardItem
 import black.bracken.neji.util.ItemOffsetDecoration
@@ -141,12 +141,12 @@ class RegionListFragment : Fragment(R.layout.region_list_fragment) {
     }
 
     interface RegionListItemClickListener {
-        fun onClick(region: Region)
+        fun onClick(region: RegionEntity)
 
         companion object {
-            operator fun invoke(lambdaListener: (Region) -> Unit): RegionListItemClickListener =
+            operator fun invoke(lambdaListener: (RegionEntity) -> Unit): RegionListItemClickListener =
                 object : RegionListItemClickListener {
-                    override fun onClick(region: Region) {
+                    override fun onClick(region: RegionEntity) {
                         lambdaListener(region)
                     }
                 }

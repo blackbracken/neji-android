@@ -6,7 +6,7 @@ import androidx.lifecycle.*
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import black.bracken.neji.model.document.Box
+import black.bracken.neji.firebase.document.BoxEntity
 import black.bracken.neji.repository.FirebaseRepository
 import kotlinx.coroutines.launch
 
@@ -17,8 +17,8 @@ class EditItemViewModel @ViewModelInject constructor(
     val regionsResult = firebaseRepository.regions().asLiveData()
     val itemTypesResult = firebaseRepository.itemTypes().asLiveData()
 
-    private val _boxes: MutableLiveData<Either<Exception, List<Box>>> = MutableLiveData()
-    val boxesResult: LiveData<Either<Exception, List<Box>>> get() = _boxes
+    private val _boxes: MutableLiveData<Either<Exception, List<BoxEntity>>> = MutableLiveData()
+    val boxesResult: LiveData<Either<Exception, List<BoxEntity>>> get() = _boxes
 
     private val _imageUri: MutableLiveData<Uri?> = MutableLiveData(null)
     val imageUri: LiveData<Uri?> get() = _imageUri
