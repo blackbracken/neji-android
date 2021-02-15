@@ -77,7 +77,7 @@
     <fragment
         android:id="@+id/itemInfoFragment"
         android:name="black.bracken.neji.ui.iteminfo.ItemInfoFragment"
-        android:label="ItemInfoFragment">
+        android:label="@string/nav_name_item_info">
         <argument
             android:name="item"
             app:argType="black.bracken.neji.model.document.Item" />

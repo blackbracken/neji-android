@@ -30,7 +30,8 @@
             android:text="アイテム名"
             android:textSize="@dimen/text_size_large"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/image_item" />
+            app:layout_constraintTop_toBottomOf="@id/image_item"
+            tools:ignore="HardcodedText" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/text_type"
@@ -41,7 +42,8 @@
             app:layout_constraintBottom_toBottomOf="@id/text_name"
             app:layout_constraintStart_toEndOf="@id/text_name"
             app:layout_constraintTop_toTopOf="@id/text_name"
-            app:layout_constraintVertical_bias="1" />
+            app:layout_constraintVertical_bias="1"
+            tools:ignore="HardcodedText" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/text_path"
@@ -52,58 +54,33 @@
             android:text="TheRegion > TheBox"
             android:textSize="@dimen/text_size_medium"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_name" />
+            app:layout_constraintTop_toBottomOf="@id/text_name"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/text_amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_medium"
-            android:text="73個"
-            android:textSize="@dimen/text_size_huge"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:text="@string/item_info_amount"
+            android:textSize="@dimen/text_size_large"
+            app:layout_constraintEnd_toStartOf="@id/picker_amount"
             app:layout_constraintTop_toBottomOf="@id/text_path" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_plus_1"
-            android:layout_width="64dp"
+        <it.sephiroth.android.library.numberpicker.NumberPicker
+            android:id="@+id/picker_amount"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_small"
-            android:text="+1"
+            android:orientation="horizontal"
+            android:progress="0"
             app:layout_constraintBottom_toBottomOf="@id/text_amount"
-            app:layout_constraintStart_toEndOf="@id/text_amount"
-            app:layout_constraintTop_toTopOf="@id/text_amount" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_plus_10"
-            android:layout_width="64dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_small"
-            android:text="+10"
-            app:layout_constraintBottom_toBottomOf="@id/text_amount"
-            app:layout_constraintStart_toEndOf="@id/button_plus_1"
-            app:layout_constraintTop_toTopOf="@id/text_amount" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_minus_1"
-            android:layout_width="64dp"
-            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/text_amount"
             android:layout_marginEnd="@dimen/margin_small"
-            android:text="-1"
-            app:layout_constraintBottom_toBottomOf="@id/text_amount"
-            app:layout_constraintEnd_toStartOf="@id/text_amount"
-            app:layout_constraintTop_toTopOf="@id/text_amount" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_minus_10"
-            android:layout_width="64dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/margin_small"
-            android:text="-10"
-            app:layout_constraintBottom_toBottomOf="@id/text_amount"
-            app:layout_constraintEnd_toStartOf="@id/button_minus_1"
-            app:layout_constraintTop_toTopOf="@id/text_amount" />
+            app:picker_min="0"
+            app:picker_orientation="vertical"
+            app:picker_stepSize="1"
+            app:picker_tracker="exponential" />
 
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="0dp"
@@ -116,7 +93,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/text_amount"
-            app:layout_constraintVertical_bias="0" />
+            app:layout_constraintVertical_bias="0"
+            tools:ignore="HardcodedText" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

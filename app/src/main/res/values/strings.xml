@@ -11,7 +11,7 @@
     <string name="edit_item_name">アイテム名</string>
     <string name="edit_item_amount">個数</string>
     <string name="edit_item_type">アイテムの種類</string>
-    <string name="edit__item_comment">コメント</string>
+    <string name="edit_item_comment">コメント</string>
     <string name="edit_item_region_of_box">ボックスのある場所</string>
     <string name="edit_item_box_to_save">保存するボックス</string>
     <string name="edit_item_complete">完了</string>
@@ -20,6 +20,7 @@
     <string name="search_element_region">検索要素 - アイテムのある場所</string>
     <string name="search_element_box">検索要素 - アイテムのあるボックス</string>
     <string name="search_searching">検索</string>
+    <string name="item_info_amount">個数: </string>
     <string name="error_must_not_be_blank">値を入力してください</string>
     <string name="error_must_be_integer_and_at_least_zero">0以上の整数にしてください</string>
     <string name="snackbar_success_sign_in">ログインに成功しました</string>
@@ -30,6 +31,7 @@
     <string name="nav_name_edit_item">アイテムの編集</string>
     <string name="nav_name_search_item">アイテムの検索</string>
     <string name="nav_name_search_result">検索結果</string>
+    <string name="nav_name_item_info">アイテム情報</string>
     <string name="menu_item_add_region">リージョンの追加</string>
     <string name="menu_item_add_item">アイテムの追加</string>
 </resources>

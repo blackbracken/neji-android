@@ -141,7 +141,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/margin_medium"
             android:layout_marginTop="@dimen/margin_medium"
-            android:hint="@string/edit__item_comment"
+            android:hint="@string/edit_item_comment"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/input_box_to_save">
