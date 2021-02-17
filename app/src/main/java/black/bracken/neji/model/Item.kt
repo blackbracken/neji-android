@@ -20,7 +20,7 @@ data class Item(
 suspend fun Item(
     entity: ItemEntity,
     id: String,
-    getBox: suspend (String) -> Box?,
+    getBox: suspend (boxId: String) -> Box?,
     getImageReference: suspend (String) -> StorageReference?
 ): Item? {
     val box = getBox(entity.boxId) ?: return null
