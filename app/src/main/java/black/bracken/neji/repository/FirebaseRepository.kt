@@ -29,15 +29,15 @@ import kotlin.coroutines.suspendCoroutine
 
 interface FirebaseRepository {
 
-    fun _itemTypes(): Flow<List<ItemType>?>
+    fun itemTypes(): Flow<List<ItemType>?>
 
-    fun _regions(): Flow<List<Region>?>
+    fun regions(): Flow<List<Region>?>
 
-    suspend fun _boxesInRegion(region: Region): List<Box>?
+    suspend fun boxesInRegion(region: Region): List<Box>?
 
-    suspend fun _itemsInBox(box: Box): List<Item>?
+    suspend fun itemsInBox(box: Box): List<Item>?
 
-    suspend fun _addItem(
+    suspend fun addItem(
         name: String,
         amount: Int,
         itemType: ItemType,
@@ -46,7 +46,7 @@ interface FirebaseRepository {
         comment: String?
     ): Item?
 
-    suspend fun _searchItems(query: SearchQuery): List<Item>?
+    suspend fun searchItems(query: SearchQuery): List<Item>?
 
     data class SearchQuery(
         val byName: String,
@@ -73,7 +73,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
 
     private val firebaseApp by lazy { FirebaseApp.getInstance(Auth.FIREBASE_NAME) }
 
-    override fun _regions(): Flow<List<Region>?> = callbackFlow {
+    override fun regions(): Flow<List<Region>?> = callbackFlow {
         val registration = firestore
             .collection("regions")
             .orderBy("updatedAt")
@@ -88,7 +88,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         awaitClose { registration.remove() }
     }.shareIn(coroutineScope, SharingStarted.WhileSubscribed(), 1)
 
-    override fun _itemTypes(): Flow<List<ItemType>?> = callbackFlow {
+    override fun itemTypes(): Flow<List<ItemType>?> = callbackFlow {
         val registration = firestore
             .collection("itemTypes")
             .addSnapshotListener { value, error ->
@@ -101,7 +101,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         awaitClose { registration.remove() }
     }.shareIn(coroutineScope, SharingStarted.WhileSubscribed(), 1)
 
-    override suspend fun _boxesInRegion(region: Region): List<Box>? {
+    override suspend fun boxesInRegion(region: Region): List<Box>? {
         val entityMap = suspendCoroutine<Map<String, BoxEntity>?> { continuation ->
             firestore
                 .collection("boxes")
@@ -122,7 +122,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         return entityMap?.mapNotNull { (id, entity) -> Box(entity, id) { region } }
     }
 
-    override suspend fun _itemsInBox(box: Box): List<Item>? {
+    override suspend fun itemsInBox(box: Box): List<Item>? {
         val entityMap = suspendCoroutine<Map<String, ItemEntity>?> { continuation ->
             firestore
                 .collection("items")
@@ -152,7 +152,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         }
     }
 
-    override suspend fun _addItem(
+    override suspend fun addItem(
         name: String,
         amount: Int,
         itemType: ItemType,
@@ -205,7 +205,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         }
     }
 
-    override suspend fun _searchItems(query: FirebaseRepository.SearchQuery): List<Item>? {
+    override suspend fun searchItems(query: FirebaseRepository.SearchQuery): List<Item>? {
         val entityMap = suspendCoroutine<Map<String, ItemEntity>?> { continuation ->
             firestore
                 .collection("items")
@@ -237,7 +237,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
             Item(
                 entity = entity,
                 id = id,
-                getBox = TODO(),
+                getBox = { getBox(id) },
                 getImageReference = { imagePath ->
                     FirebaseStorage.getInstance(firebaseApp).getReference(imagePath)
                 }
@@ -273,7 +273,13 @@ class FirebaseRepositoryImpl : FirebaseRepository {
                     continuation.resume(snapshot.toObject<BoxEntity>())
                 }
                 .addOnFailureListener { continuation.resume(null) }
-        }
+        } ?: return null
+
+        return Box(
+            entity = boxEntity,
+            id = id,
+            getRegion = { getRegion(boxEntity.regionId) }
+        )
     }
 
     private inline fun <T : Any, reified E : Any> QuerySnapshot?.buildWithId(build: (String, E) -> T): List<T>? {
