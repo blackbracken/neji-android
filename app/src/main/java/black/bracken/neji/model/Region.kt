@@ -8,7 +8,11 @@ data class Region(
     val id: String,
     val name: String,
     val updatedAt: LocalDateTime
-)
+) {
+
+    override fun toString() = name
+
+}
 
 fun Region(entity: RegionEntity, id: String): Region {
     return Region(

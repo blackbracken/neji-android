@@ -3,10 +3,7 @@ package black.bracken.neji.ui.edititem
 import android.net.Uri
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
-import arrow.core.Either
-import arrow.core.left
-import arrow.core.right
-import black.bracken.neji.firebase.document.BoxEntity
+import black.bracken.neji.model.Box
 import black.bracken.neji.repository.FirebaseRepository
 import kotlinx.coroutines.launch
 
@@ -14,11 +11,11 @@ class EditItemViewModel @ViewModelInject constructor(
     private val firebaseRepository: FirebaseRepository
 ) : ViewModel() {
 
-    val regionsResult = firebaseRepository.regions().asLiveData()
-    val itemTypesResult = firebaseRepository.itemTypes().asLiveData()
+    val regions = firebaseRepository.regions().asLiveData()
+    val itemTypes = firebaseRepository.itemTypes().asLiveData()
 
-    private val _boxes: MutableLiveData<Either<Exception, List<BoxEntity>>> = MutableLiveData()
-    val boxesResult: LiveData<Either<Exception, List<BoxEntity>>> get() = _boxes
+    private val _boxes: MutableLiveData<List<Box>?> = MutableLiveData()
+    val boxes: LiveData<List<Box>?> get() = _boxes
 
     private val _imageUri: MutableLiveData<Uri?> = MutableLiveData(null)
     val imageUri: LiveData<Uri?> get() = _imageUri
@@ -30,35 +27,32 @@ class EditItemViewModel @ViewModelInject constructor(
     fun addItem(
         name: String,
         amount: Int,
-        itemType: String,
-        boxName: String,
+        itemTypeSelection: Int?,
+        boxSelection: Int?,
         comment: String?
-    ): Either<Exception, Unit> {
-        val box = when (val result = boxesResult.value) {
-            null -> return IllegalStateException("the region didn't be selected").left()
-            is Either.Left -> return IllegalStateException("network error").left()
-            is Either.Right -> result.b.find { it.name == boxName }
-                ?: return NoSuchElementException("no box found").left()
-        }
+    ) {
+        // TODO: handle error rightly
+        val itemType = itemTypes.value?.getOrNull(itemTypeSelection ?: -1) ?: return
+        val box = boxes.value?.getOrNull(boxSelection ?: -1) ?: return
 
         viewModelScope.launch {
-            firebaseRepository.addItem(
+            // TODO: handle error rightly
+            val item = firebaseRepository.addItem(
                 name = name,
-                imageUri = imageUri.value,
                 amount = amount,
                 itemType = itemType,
-                boxId = box.id,
+                box = box,
+                imageUri = imageUri.value,
                 comment = comment
             )
         }
-
-        return Unit.right()
     }
 
-    fun subscribeBoxesInRegion(regionId: String) {
+    fun updateBoxesByRegion(regionPosition: Int) {
+        val region = regions.value?.getOrNull(regionPosition) ?: return
+
         viewModelScope.launch {
-            _boxes.postValue(firebaseRepository.boxesInRegion(regionId))
+            _boxes.postValue(firebaseRepository.boxesInRegion(region))
         }
     }
-
 }
