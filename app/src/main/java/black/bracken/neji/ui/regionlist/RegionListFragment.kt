@@ -15,7 +15,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import arrow.core.Either
 import black.bracken.neji.R
 import black.bracken.neji.databinding.RegionListFragmentBinding
 import black.bracken.neji.model.Region

@@ -79,7 +79,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
             .orderBy("updatedAt")
             .addSnapshotListener { value, error ->
                 val regions = value
-                    ?.takeIf { error != null }
+                    ?.takeIf { error == null }
                     ?.buildWithId { id, entity: RegionEntity -> Region(entity, id) }
 
                 offer(regions)
@@ -93,7 +93,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
             .collection("itemTypes")
             .addSnapshotListener { value, error ->
                 val itemTypes = value
-                    ?.takeIf { error != null }
+                    ?.takeIf { error == null }
                     ?.buildWithId { _, entity: ItemTypeEntity -> ItemType(entity) }
                 offer(itemTypes)
             }
