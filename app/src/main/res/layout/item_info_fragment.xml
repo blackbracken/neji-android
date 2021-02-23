@@ -78,6 +78,7 @@
             app:layout_constraintBottom_toBottomOf="@id/text_amount"
             app:layout_constraintEnd_toStartOf="@id/button_determine_amount"
             app:layout_constraintTop_toTopOf="@id/text_amount"
+            app:picker_max="99999"
             app:picker_min="0"
             app:picker_orientation="vertical"
             app:picker_stepSize="1"

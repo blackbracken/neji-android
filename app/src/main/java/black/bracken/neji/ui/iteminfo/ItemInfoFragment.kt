@@ -23,8 +23,6 @@ class ItemInfoFragment : Fragment(R.layout.item_info_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.addItem(args.item)
-
         viewModel.item.observe(viewLifecycleOwner) { item ->
             with(binding) {
                 if (item.imageReference != null) {
@@ -34,7 +32,7 @@ class ItemInfoFragment : Fragment(R.layout.item_info_fragment) {
                 }
 
                 textName.text = item.name
-                textType.text = item.itemType
+                textType.text = Math.random().toString()
                 // TODO: i18n
                 textPath.text = "${item.box.region.name} > ${item.box.name}"
                 pickerAmount.progress = item.amount
@@ -42,6 +40,11 @@ class ItemInfoFragment : Fragment(R.layout.item_info_fragment) {
             }
         }
 
+        binding.buttonDetermineAmount.setOnClickListener {
+            viewModel.setAmount(binding.pickerAmount.progress)
+        }
+
+        viewModel.addItem(args.item)
     }
 
 }

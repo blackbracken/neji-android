@@ -46,6 +46,8 @@ interface FirebaseRepository {
         comment: String?
     ): Item?
 
+    suspend fun updateItemAmount(item: Item, newAmount: Int): Item?
+
     suspend fun searchItems(query: SearchQuery): List<Item>?
 
     data class SearchQuery(
@@ -202,6 +204,17 @@ class FirebaseRepositoryImpl : FirebaseRepository {
             )
         } else {
             null
+        }
+    }
+
+    override suspend fun updateItemAmount(item: Item, newAmount: Int): Item? {
+        return suspendCoroutine { continuation ->
+            firestore
+                .collection("items")
+                .document(item.id)
+                .update("amount", newAmount)
+                .addOnSuccessListener { continuation.resume(item.copy(amount = newAmount)) }
+                .addOnFailureListener { continuation.resume(null) }
         }
     }
 
