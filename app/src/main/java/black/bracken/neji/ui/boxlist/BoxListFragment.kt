@@ -1,11 +1,11 @@
 package black.bracken.neji.ui.boxlist
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import black.bracken.neji.R
@@ -19,6 +19,7 @@ import com.wada811.viewbinding.viewBinding
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class BoxListFragment : Fragment(R.layout.box_list_fragment) {
@@ -36,6 +37,8 @@ class BoxListFragment : Fragment(R.layout.box_list_fragment) {
         viewModel.fetchBoxes(args.region)
 
         viewModel.boxAndAmounts.observe(viewLifecycleOwner) { boxesResource ->
+            adapter.clear()
+
             when (boxesResource) {
                 is Success -> {
                     boxesResource.value.forEach { (box, amount) ->
@@ -44,7 +47,7 @@ class BoxListFragment : Fragment(R.layout.box_list_fragment) {
                     binding.indicator.isIndeterminate = false
                 }
                 is Failure -> {
-                    Log.e("Neji", "failed to get box, error: ${boxesResource.error}")
+                    Timber.e("failed to get box, error: ${boxesResource.error}")
                     binding.indicator.isIndeterminate = false
                 }
                 is Loading -> Unit /* do nothing */
@@ -60,6 +63,10 @@ class BoxListFragment : Fragment(R.layout.box_list_fragment) {
                     DividerItemDecoration.VERTICAL
                 )
             )
+        }
+
+        binding.fabSearchItem.setOnClickListener {
+            findNavController().navigate(BoxListFragmentDirections.actionBoxListFragmentToSearchItemFragment())
         }
     }
 

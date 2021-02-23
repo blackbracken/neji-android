@@ -7,14 +7,14 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/image_region"
+        android:id="@+id/image_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginVertical="@dimen/margin_small"
         android:layout_marginStart="@dimen/margin_small"
+        android:background="@drawable/ic_baseline_memory_24"
         android:minWidth="@dimen/icon_size_medium"
         android:minHeight="@dimen/icon_size_medium"
-        android:background="@drawable/ic_flag_24px"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -24,21 +24,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_medium"
-        android:text="region name"
+        android:text="item name"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/image_region"
+        app:layout_constraintStart_toEndOf="@id/image_item"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="HardcodedText" />
 
-    <TextView
-        android:id="@+id/textAmount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/margin_small"
-        android:text="X boxes"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="HardcodedText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

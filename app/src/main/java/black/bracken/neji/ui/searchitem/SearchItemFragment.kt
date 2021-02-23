@@ -5,13 +5,14 @@ import android.view.View
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.observe
-import arrow.core.Either
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import black.bracken.neji.R
 import black.bracken.neji.databinding.SearchItemFragmentBinding
 import com.google.android.material.snackbar.Snackbar
 import com.wada811.viewbinding.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 
 @AndroidEntryPoint
 class SearchItemFragment : Fragment(R.layout.search_item_fragment) {
@@ -31,23 +32,35 @@ class SearchItemFragment : Fragment(R.layout.search_item_fragment) {
                 viewModel.searchItems(
                     itemName = editElementName.text?.toString()
                         ?: "", // TODO: handle if the string is blank or null
-                    itemType = autoCompleteTextElementItemType.text?.toString(),
-                    regionName = autoCompleteTextElementRegion.text?.toString(),
+                    itemType = autoCompleteTextElementItemType.text?.toString()
+                        ?.takeIf { it.isNotBlank() },
+                    regionName = autoCompleteTextElementRegion.text?.toString()
+                        ?.takeIf { it.isNotBlank() },
                     boxName = autoCompleteTextElementBox.text?.toString()
+                        ?.takeIf { it.isNotBlank() }
                 )
             }
         }
 
-        viewModel.searchResult.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Either.Right -> {
-                    Snackbar.make(
-                        binding.root,
-                        "results size is ${result.b.size}",
-                        Snackbar.LENGTH_SHORT
-                    ).show()
-                }
-                else -> Unit
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.searchedItems.collect { result ->
+                result
+                    ?.also { items ->
+                        Snackbar.make(
+                            binding.root,
+                            "results size is ${items.size}",
+                            Snackbar.LENGTH_SHORT
+                        ).show()
+
+                        findNavController().navigate(
+                            SearchItemFragmentDirections.actionSearchItemFragmentToSearchResultFragment(
+                                items.toTypedArray()
+                            )
+                        )
+                    }
+                    ?: run {
+                        // TODO: handle error
+                    }
             }
         }
     }

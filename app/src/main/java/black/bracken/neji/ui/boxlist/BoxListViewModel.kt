@@ -1,11 +1,12 @@
 package black.bracken.neji.ui.boxlist
 
-import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.*
-import arrow.core.Either
-import black.bracken.neji.model.document.Box
-import black.bracken.neji.model.document.Region
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import black.bracken.neji.model.Box
+import black.bracken.neji.model.Region
 import black.bracken.neji.repository.FirebaseRepository
 import black.bracken.neji.util.Failure
 import black.bracken.neji.util.Loading
@@ -14,7 +15,6 @@ import black.bracken.neji.util.Success
 import kotlinx.coroutines.launch
 
 class BoxListViewModel @ViewModelInject constructor(
-    @Assisted private val savedState: SavedStateHandle,
     private val firebaseRepository: FirebaseRepository
 ) : ViewModel() {
 
@@ -23,20 +23,16 @@ class BoxListViewModel @ViewModelInject constructor(
 
     fun fetchBoxes(region: Region) {
         viewModelScope.launch {
-            _boxAndItemCounts.postValue(
-                when (val result = firebaseRepository.boxesInRegion(region.id)) {
-                    is Either.Right -> {
-                        Success(result.b
-                            .map {
-                                // FIXME: this is N+1
-                                it to (firebaseRepository.itemsInBox(it.id).orNull()?.size ?: 0)
-                            }
-                            .toMap()
-                        )
-                    }
-                    is Either.Left -> Failure(result.a)
-                }
-            )
+            val result = firebaseRepository
+                .boxesInRegion(region)
+                ?.map { box ->
+                    // TODO: improve performance (this curse N + 1 problem)
+                    box to (firebaseRepository.itemsInBox(box)?.size ?: 0) }
+                ?.toMap()
+                ?.let { boxAndAmounts -> Success(boxAndAmounts) }
+                ?: Failure()
+
+            _boxAndItemCounts.postValue(result)
         }
     }
 

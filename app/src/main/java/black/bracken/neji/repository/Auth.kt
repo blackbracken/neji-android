@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import black.bracken.neji.NejiSecure
 import black.bracken.neji.NejiSecure.SignInCache
-import black.bracken.neji.model.FirebaseSignInResult
+import black.bracken.neji.firebase.FirebaseSignInResult
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.FirebaseAuth

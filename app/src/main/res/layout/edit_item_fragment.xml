@@ -14,6 +14,7 @@
             android:id="@+id/image_item"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:background="@color/item_photo_background"
             app:layout_constraintDimensionRatio="W,1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -140,7 +141,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/margin_medium"
             android:layout_marginTop="@dimen/margin_medium"
-            android:hint="@string/edit__item_comment"
+            android:hint="@string/edit_item_comment"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/input_box_to_save">

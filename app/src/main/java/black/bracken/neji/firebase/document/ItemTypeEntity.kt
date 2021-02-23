@@ -1,9 +1,9 @@
-package black.bracken.neji.model.document
+package black.bracken.neji.firebase.document
 
 import com.google.firebase.firestore.IgnoreExtraProperties
 import java.io.Serializable
 
 @IgnoreExtraProperties
-data class ItemType(
+data class ItemTypeEntity(
     val name: String = ""
 ) : Serializable

@@ -15,10 +15,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import arrow.core.Either
 import black.bracken.neji.R
 import black.bracken.neji.databinding.RegionListFragmentBinding
-import black.bracken.neji.model.document.Region
+import black.bracken.neji.model.Region
 import black.bracken.neji.ui.UserViewModel
 import black.bracken.neji.ui.regionlist.item.RegionCardItem
 import black.bracken.neji.util.ItemOffsetDecoration
@@ -106,31 +105,27 @@ class RegionListFragment : Fragment(R.layout.region_list_fragment) {
     private fun onSuccessInSigningIn() {
         Snackbar.make(binding.root, R.string.snackbar_success_sign_in, Snackbar.LENGTH_SHORT).show()
 
-        viewModel.regionAndAmountsResult.observe(viewLifecycleOwner) { result ->
+        viewModel.regionAndAmounts.observe(viewLifecycleOwner) { regionAndAmount ->
             adapter.clear()
 
-            when (result) {
-                is Either.Right -> {
-                    result.b
-                        .map { (region, amount) ->
-                            val listener = RegionListItemClickListener { newRegion ->
-                                val action = RegionListFragmentDirections
-                                    .actionRegionListFragmentToBoxListFragment(newRegion)
+            regionAndAmount
+                ?.map { (region, amount) ->
+                    val listener = RegionListItemClickListener { newRegion ->
+                        val action = RegionListFragmentDirections
+                            .actionRegionListFragmentToBoxListFragment(newRegion)
 
-                                findNavController().navigate(action)
-                            }
+                        findNavController().navigate(action)
+                    }
 
-                            RegionCardItem(requireContext(), region, amount, listener)
-                        }
-                        .forEach { regionCard -> adapter.add(regionCard) }
+                    RegionCardItem(requireContext(), region, amount, listener)
                 }
-                is Either.Left -> {
+                ?.forEach { regionCard -> adapter.add(regionCard) }
+                ?: run {
                     Snackbar
-                        .make(binding.root, result.a.toString(), Snackbar.LENGTH_SHORT)
+                        .make(binding.root, "failed to get regions", Snackbar.LENGTH_SHORT)
                         .setBackgroundTint(Color.RED)
                         .show()
                 }
-            }
 
             binding.indicator.isIndeterminate = false
         }

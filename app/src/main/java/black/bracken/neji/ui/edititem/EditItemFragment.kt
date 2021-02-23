@@ -4,13 +4,10 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
-import androidx.core.net.toUri
-import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
-import arrow.core.Either
 import black.bracken.neji.R
 import black.bracken.neji.databinding.EditItemFragmentBinding
 import coil.load
@@ -30,68 +27,56 @@ class EditItemFragment : Fragment(R.layout.edit_item_fragment) {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.imageUri.observe(viewLifecycleOwner) { imageUri ->
-            binding.imageItem.load(imageUri ?: "file:///android_asset/sample.png".toUri())
-        }
-
-        viewModel.itemTypesResult.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Either.Right -> {
-                    binding.autoCompleteTextItemType.setAdapter(
-                        ArrayAdapter(requireContext(), R.layout.list_item, result.b)
-                    )
-                }
-                is Either.Left -> {
-                    Snackbar
-                        .make(binding.root, result.a.toString(), Snackbar.LENGTH_SHORT)
-                        .setBackgroundTint(Color.RED)
-                        .show()
-                }
+            if (imageUri != null) {
+                binding.imageItem.load(imageUri)
+            } else {
+                binding.imageItem.load(R.drawable.ic_baseline_memory_24)
             }
         }
 
-        viewModel.regionsResult.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Either.Right -> {
-                    binding.autoCompleteTextRegionOfBox.setAdapter(
-                        ArrayAdapter(requireContext(), R.layout.list_item, result.b.map { it.name })
-                    )
-                }
-                is Either.Left -> {
-                    Snackbar
-                        .make(binding.root, result.a.toString(), Snackbar.LENGTH_SHORT)
-                        .setBackgroundTint(Color.RED)
-                        .show()
-                }
+        viewModel.itemTypes.observe(viewLifecycleOwner) { itemTypes ->
+            if (itemTypes != null) {
+                binding.autoCompleteTextItemType.setAdapter(
+                    ArrayAdapter(requireContext(), R.layout.list_item, itemTypes)
+                )
+            } else {
+                Snackbar
+                    .make(binding.root, "failed to get itemTypes", Snackbar.LENGTH_SHORT)
+                    .setBackgroundTint(Color.RED)
+                    .show()
             }
         }
 
-
-        viewModel.boxesResult.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Either.Right -> {
-                    binding.inputBoxToSave.isEnabled = true
-                    binding.autoCompleteTextBoxToSave.text.clear()
-                    binding.autoCompleteTextBoxToSave.setAdapter(
-                        ArrayAdapter(requireContext(), R.layout.list_item, result.b.map { it.name })
-                    )
-                }
-                is Either.Left -> {
-                    Snackbar
-                        .make(binding.root, result.a.toString(), Snackbar.LENGTH_SHORT)
-                        .setBackgroundTint(Color.RED)
-                        .show()
-                }
+        viewModel.regions.observe(viewLifecycleOwner) { regions ->
+            if (regions != null) {
+                binding.autoCompleteTextRegionOfBox.setAdapter(
+                    ArrayAdapter(requireContext(), R.layout.list_item, regions)
+                )
+            } else {
+                Snackbar
+                    .make(binding.root, "failed to get regions", Snackbar.LENGTH_SHORT)
+                    .setBackgroundTint(Color.RED)
+                    .show()
             }
         }
 
-        binding.autoCompleteTextRegionOfBox.doOnTextChanged { regionText, _, _, _ ->
-            viewModel.subscribeBoxesInRegion(
-                viewModel.regionsResult.value
-                    ?.orNull()
-                    ?.find { it.name == regionText.toString() }
-                    ?.id
-                    ?: return@doOnTextChanged
-            )
+        viewModel.boxes.observe(viewLifecycleOwner) { boxes ->
+            if (boxes != null) {
+                binding.inputBoxToSave.isEnabled = true
+                binding.autoCompleteTextBoxToSave.text.clear()
+                binding.autoCompleteTextBoxToSave.setAdapter(
+                    ArrayAdapter(requireContext(), R.layout.list_item, boxes)
+                )
+            } else {
+                Snackbar
+                    .make(binding.root, "failed to get boxes", Snackbar.LENGTH_SHORT)
+                    .setBackgroundTint(Color.RED)
+                    .show()
+            }
+        }
+
+        binding.autoCompleteTextRegionOfBox.setOnItemClickListener { _, _, position, _ ->
+            viewModel.updateBoxesByRegion(position)
         }
 
         binding.fabAddImage.setOnClickListener {
@@ -106,6 +91,7 @@ class EditItemFragment : Fragment(R.layout.edit_item_fragment) {
     }
 
     private fun onPushButtonToAdd() {
+        // TODO: validate in viewModel
         val inputItemName = binding.inputItemName.apply { error = null }
         val inputItemAmount = binding.inputItemAmount.apply { error = null }
         val inputItemType = binding.inputItemType.apply { error = null }
@@ -142,8 +128,8 @@ class EditItemFragment : Fragment(R.layout.edit_item_fragment) {
             viewModel.addItem(
                 name = binding.editItemName.text.toString(),
                 amount = binding.editItemAmount.text.toString().toInt(),
-                itemType = binding.autoCompleteTextItemType.text.toString(),
-                boxName = binding.autoCompleteTextBoxToSave.text.toString(),
+                itemTypeSelection = binding.autoCompleteTextItemType.listSelection,
+                boxSelection = binding.autoCompleteTextBoxToSave.listSelection,
                 comment = binding.editItemComment.text.toString().takeIf { it.isNotBlank() }
             )
             findNavController().popBackStack()

@@ -1,4 +1,4 @@
-package black.bracken.neji.model
+package black.bracken.neji.firebase
 
 import com.google.firebase.FirebaseApp
 

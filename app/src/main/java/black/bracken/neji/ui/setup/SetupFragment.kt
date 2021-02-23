@@ -11,7 +11,7 @@ import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import black.bracken.neji.R
 import black.bracken.neji.databinding.SetupFragmentBinding
-import black.bracken.neji.model.FirebaseSignInResult
+import black.bracken.neji.firebase.FirebaseSignInResult
 import black.bracken.neji.ui.UserViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.wada811.viewbinding.viewBinding

@@ -27,7 +27,10 @@
         android:label="@string/nav_name_box_list">
         <argument
             android:name="region"
-            app:argType="black.bracken.neji.model.document.Region" />
+            app:argType="black.bracken.neji.model.Region" />
+        <action
+            android:id="@+id/action_boxListFragment_to_searchItemFragment"
+            app:destination="@id/searchItemFragment" />
     </fragment>
     <fragment
         android:id="@+id/setupFragment"
@@ -46,15 +49,37 @@
         <argument
             android:name="target"
             android:defaultValue="@null"
-            app:argType="black.bracken.neji.model.document.Item"
+            app:argType="black.bracken.neji.model.Region"
             app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/searchItemFragment"
         android:name="black.bracken.neji.ui.searchitem.SearchItemFragment"
-        android:label="@string/nav_name_search_item" >
+        android:label="@string/nav_name_search_item">
         <action
             android:id="@+id/action_searchItemFragment_to_regionListFragment"
             app:destination="@id/regionListFragment" />
+        <action
+            android:id="@+id/action_searchItemFragment_to_searchResultFragment"
+            app:destination="@id/searchResultFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchResultFragment"
+        android:name="black.bracken.neji.ui.searchresult.SearchResultFragment"
+        android:label="@string/nav_name_search_result">
+        <argument
+            android:name="searchedItems"
+            app:argType="black.bracken.neji.model.Item[]" />
+        <action
+            android:id="@+id/action_searchResultFragment_to_itemInfoFragment"
+            app:destination="@id/itemInfoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/itemInfoFragment"
+        android:name="black.bracken.neji.ui.iteminfo.ItemInfoFragment"
+        android:label="@string/nav_name_item_info">
+        <argument
+            android:name="item"
+            app:argType="black.bracken.neji.model.Item" />
     </fragment>
 </navigation>
