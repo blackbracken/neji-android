@@ -27,7 +27,7 @@
         android:label="@string/nav_name_box_list">
         <argument
             android:name="region"
-            app:argType="black.bracken.neji.firebase.document.RegionEntity" />
+            app:argType="black.bracken.neji.model.Region" />
         <action
             android:id="@+id/action_boxListFragment_to_searchItemFragment"
             app:destination="@id/searchItemFragment" />
@@ -49,7 +49,7 @@
         <argument
             android:name="target"
             android:defaultValue="@null"
-            app:argType="black.bracken.neji.firebase.document.ItemEntity"
+            app:argType="black.bracken.neji.model.Region"
             app:nullable="true" />
     </fragment>
     <fragment
@@ -69,7 +69,7 @@
         android:label="@string/nav_name_search_result">
         <argument
             android:name="searchedItems"
-            app:argType="black.bracken.neji.firebase.document.ItemEntity[]" />
+            app:argType="black.bracken.neji.model.Item[]" />
         <action
             android:id="@+id/action_searchResultFragment_to_itemInfoFragment"
             app:destination="@id/itemInfoFragment" />
@@ -80,6 +80,6 @@
         android:label="@string/nav_name_item_info">
         <argument
             android:name="item"
-            app:argType="black.bracken.neji.firebase.document.ItemEntity" />
+            app:argType="black.bracken.neji.model.Item" />
     </fragment>
 </navigation>

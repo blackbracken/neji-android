@@ -5,14 +5,14 @@ import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import black.bracken.neji.R
 import black.bracken.neji.databinding.RegionListCardBinding
-import black.bracken.neji.firebase.document.RegionEntity
+import black.bracken.neji.model.Region
 import black.bracken.neji.ui.regionlist.RegionListFragment
 import com.xwray.groupie.viewbinding.BindableItem
 
 class RegionCardItem(
     private val context: Context,
-    val region: RegionEntity,
-    val boxAmountInRegion: Int,
+    val region: Region,
+    private val boxAmountInRegion: Int,
     private val listener: RegionListFragment.RegionListItemClickListener
 ) : BindableItem<RegionListCardBinding>() {
 

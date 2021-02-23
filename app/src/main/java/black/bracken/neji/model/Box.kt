@@ -1,15 +1,18 @@
 package black.bracken.neji.model
 
+import android.os.Parcelable
 import black.bracken.neji.ext.toLocalTimeDate
 import black.bracken.neji.firebase.document.BoxEntity
+import kotlinx.android.parcel.Parcelize
 import java.time.LocalDateTime
 
+@Parcelize
 data class Box(
     val id: String,
     val name: String,
     val region: Region,
     val updatedAt: LocalDateTime
-)
+) : Parcelable
 
 @Suppress("FunctionName")
 suspend fun Box(

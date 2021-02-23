@@ -10,10 +10,9 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import black.bracken.neji.R
 import black.bracken.neji.databinding.SearchResultFragmentBinding
-import black.bracken.neji.firebase.document.ItemEntity
+import black.bracken.neji.model.Item
 import black.bracken.neji.ui.searchresult.item.SearchResultCardItem
 import black.bracken.neji.util.ItemOffsetDecoration
-import black.bracken.neji.util.firebaseStorage
 import com.wada811.viewbinding.viewBinding
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
@@ -56,7 +55,7 @@ class SearchResultFragment : Fragment(R.layout.search_result_fragment) {
                         SearchResultCardItem(
                             requireContext(),
                             item,
-                            item.imageUrl?.let { firebaseStorage.getReference(it) },
+                            item.imageReference,
                             listener
                         )
                     }
@@ -68,12 +67,12 @@ class SearchResultFragment : Fragment(R.layout.search_result_fragment) {
     }
 
     interface SearchResultItemClickListener {
-        fun onClick(item: ItemEntity)
+        fun onClick(item: Item)
 
         companion object {
-            operator fun invoke(lambdaListener: (ItemEntity) -> Unit): SearchResultItemClickListener =
+            operator fun invoke(lambdaListener: (Item) -> Unit): SearchResultItemClickListener =
                 object : SearchResultItemClickListener {
-                    override fun onClick(item: ItemEntity) {
+                    override fun onClick(item: Item) {
                         lambdaListener(item)
                     }
                 }

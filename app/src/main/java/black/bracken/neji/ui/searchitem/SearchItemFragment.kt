@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import arrow.core.Either
 import black.bracken.neji.R
 import black.bracken.neji.databinding.SearchItemFragmentBinding
 import com.google.android.material.snackbar.Snackbar
@@ -41,23 +40,24 @@ class SearchItemFragment : Fragment(R.layout.search_item_fragment) {
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.searchResult.collect { result ->
-                when (result) {
-                    is Either.Right -> {
+            viewModel.searchedItems.collect { result ->
+                result
+                    ?.also { items ->
                         Snackbar.make(
                             binding.root,
-                            "results size is ${result.b.size}",
+                            "results size is ${items.size}",
                             Snackbar.LENGTH_SHORT
                         ).show()
 
                         findNavController().navigate(
                             SearchItemFragmentDirections.actionSearchItemFragmentToSearchResultFragment(
-                                result.b.toTypedArray()
+                                items.toTypedArray()
                             )
                         )
                     }
-                    else -> Unit
-                }
+                    ?: run {
+                        // TODO: handle error
+                    }
             }
         }
     }

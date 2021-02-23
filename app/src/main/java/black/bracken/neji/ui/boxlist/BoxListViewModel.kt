@@ -25,7 +25,9 @@ class BoxListViewModel @ViewModelInject constructor(
         viewModelScope.launch {
             val result = firebaseRepository
                 .boxesInRegion(region)
-                ?.map { box -> box to (firebaseRepository.itemsInBox(box)?.size ?: 0) }
+                ?.map { box ->
+                    // TODO: improve performance (this curse N + 1 problem)
+                    box to (firebaseRepository.itemsInBox(box)?.size ?: 0) }
                 ?.toMap()
                 ?.let { boxAndAmounts -> Success(boxAndAmounts) }
                 ?: Failure()

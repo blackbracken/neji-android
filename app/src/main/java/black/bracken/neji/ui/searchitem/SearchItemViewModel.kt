@@ -5,8 +5,7 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import arrow.core.Either
-import black.bracken.neji.firebase.document.ItemEntity
+import black.bracken.neji.model.Item
 import black.bracken.neji.repository.FirebaseRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -17,8 +16,8 @@ class SearchItemViewModel @ViewModelInject constructor(
     private val firebaseRepository: FirebaseRepository
 ) : ViewModel() {
 
-    private val _searchResult = MutableSharedFlow<Either<Exception, List<ItemEntity>>>(replay = 0)
-    val searchResult get() = _searchResult.asSharedFlow()
+    private val _searchedItems = MutableSharedFlow<List<Item>?>(replay = 0)
+    val searchedItems get() = _searchedItems.asSharedFlow()
 
     fun searchItems(
         itemName: String,
@@ -29,7 +28,7 @@ class SearchItemViewModel @ViewModelInject constructor(
         val query = FirebaseRepository.SearchQuery(itemName, itemType, regionName, boxName)
 
         viewModelScope.launch {
-            _searchResult.emit(firebaseRepository.searchItems(query))
+            _searchedItems.emit(firebaseRepository.searchItems(query))
         }
     }
 

@@ -1,14 +1,17 @@
 package black.bracken.neji.model
 
+import android.os.Parcelable
 import black.bracken.neji.ext.toLocalTimeDate
 import black.bracken.neji.firebase.document.RegionEntity
+import kotlinx.android.parcel.Parcelize
 import java.time.LocalDateTime
 
+@Parcelize
 data class Region(
     val id: String,
     val name: String,
     val updatedAt: LocalDateTime
-) {
+) : Parcelable {
 
     override fun toString() = name
 
