@@ -221,7 +221,12 @@ class FirebaseRepositoryImpl : FirebaseRepository {
                 .addOnSuccessListener { snapshot ->
                     continuation.resume(
                         snapshot
-                            .map { it.id to it.toObject<ItemEntity>() }
+                            .documents
+                            .mapNotNull {
+                                val key = it.id
+                                val value = it.toObject<ItemEntity>() ?: return@mapNotNull null
+                                key to value
+                            }
                             .filter { (_, entity) ->
                                 // filter by ItemName, this order is O(N * M).
                                 query.byName.split(" ", "　").any { it in entity.name }
@@ -237,7 +242,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
             Item(
                 entity = entity,
                 id = id,
-                getBox = { getBox(id) },
+                getBox = { getBox(entity.boxId) },
                 getImageReference = { imagePath ->
                     FirebaseStorage.getInstance(firebaseApp).getReference(imagePath)
                 }

@@ -32,9 +32,12 @@ class SearchItemFragment : Fragment(R.layout.search_item_fragment) {
                 viewModel.searchItems(
                     itemName = editElementName.text?.toString()
                         ?: "", // TODO: handle if the string is blank or null
-                    itemType = autoCompleteTextElementItemType.text?.toString(),
-                    regionName = autoCompleteTextElementRegion.text?.toString(),
+                    itemType = autoCompleteTextElementItemType.text?.toString()
+                        ?.takeIf { it.isNotBlank() },
+                    regionName = autoCompleteTextElementRegion.text?.toString()
+                        ?.takeIf { it.isNotBlank() },
                     boxName = autoCompleteTextElementBox.text?.toString()
+                        ?.takeIf { it.isNotBlank() }
                 )
             }
         }
