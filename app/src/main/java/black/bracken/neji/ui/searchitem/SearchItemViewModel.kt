@@ -1,34 +1,26 @@
 package black.bracken.neji.ui.searchitem
 
-import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import black.bracken.neji.model.Item
-import black.bracken.neji.repository.FirebaseRepository
+import black.bracken.neji.model.ItemSearchQuery
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
-class SearchItemViewModel @ViewModelInject constructor(
-    @Assisted private val savedState: SavedStateHandle,
-    private val firebaseRepository: FirebaseRepository
-) : ViewModel() {
+class SearchItemViewModel @ViewModelInject constructor() : ViewModel() {
 
-    private val _searchedItems = MutableSharedFlow<List<Item>?>(replay = 0)
-    val searchedItems get() = _searchedItems.asSharedFlow()
+    private val _searchQuery = MutableSharedFlow<ItemSearchQuery>(replay = 0)
+    val searchQuery get() = _searchQuery.asSharedFlow()
 
-    fun searchItems(
+    fun emitQuery(
         itemName: String,
         itemType: String?,
         regionName: String?,
         boxName: String?
     ) {
-        val query = FirebaseRepository.SearchQuery(itemName, itemType, regionName, boxName)
-
         viewModelScope.launch {
-            _searchedItems.emit(firebaseRepository.searchItems(query))
+            _searchQuery.emit(ItemSearchQuery(itemName, itemType, regionName, boxName))
         }
     }
 

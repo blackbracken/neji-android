@@ -13,6 +13,7 @@ import black.bracken.neji.databinding.SearchResultFragmentBinding
 import black.bracken.neji.model.Item
 import black.bracken.neji.ui.searchresult.item.SearchResultCardItem
 import black.bracken.neji.util.ItemOffsetDecoration
+import com.google.android.material.snackbar.Snackbar
 import com.wada811.viewbinding.viewBinding
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
@@ -40,10 +41,14 @@ class SearchResultFragment : Fragment(R.layout.search_result_fragment) {
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            if (binding.indicator.isIndeterminate) {
+                binding.indicator.isIndeterminate = false
+            }
             adapter.clear()
-            viewModel.searchedResults.collect { results ->
+
+            viewModel.searchedItems.collect { results ->
                 results
-                    .map { item ->
+                    ?.map { item ->
                         val listener = SearchResultItemClickListener { newItem ->
                             findNavController().navigate(
                                 SearchResultFragmentDirections.actionSearchResultFragmentToItemInfoFragment(
@@ -59,11 +64,14 @@ class SearchResultFragment : Fragment(R.layout.search_result_fragment) {
                             listener
                         )
                     }
-                    .forEach { searchedItemCard -> adapter.add(searchedItemCard) }
+                    ?.forEach { searchedItemCard -> adapter.add(searchedItemCard) }
+                    ?: run {
+                        Snackbar.make(view.rootView, "Failed to search", Snackbar.LENGTH_SHORT)
+                    }
             }
         }
 
-        viewModel.addAllSearchedResults(args.searchedItems)
+        viewModel.search(args.query)
     }
 
     interface SearchResultItemClickListener {

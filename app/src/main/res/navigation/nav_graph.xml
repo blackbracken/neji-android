@@ -68,8 +68,8 @@
         android:name="black.bracken.neji.ui.searchresult.SearchResultFragment"
         android:label="@string/nav_name_search_result">
         <argument
-            android:name="searchedItems"
-            app:argType="black.bracken.neji.model.Item[]" />
+            android:name="query"
+            app:argType="black.bracken.neji.model.ItemSearchQuery" />
         <action
             android:id="@+id/action_searchResultFragment_to_itemInfoFragment"
             app:destination="@id/itemInfoFragment" />
