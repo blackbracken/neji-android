@@ -12,7 +12,11 @@ data class Box(
     val name: String,
     val region: Region,
     val updatedAt: LocalDateTime
-) : Parcelable
+) : Parcelable {
+
+    override fun toString(): String = name
+
+}
 
 @Suppress("FunctionName")
 suspend fun Box(

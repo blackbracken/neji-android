@@ -41,12 +41,11 @@ class SearchResultFragment : Fragment(R.layout.search_result_fragment) {
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            if (binding.indicator.isIndeterminate) {
-                binding.indicator.isIndeterminate = false
-            }
             adapter.clear()
+            binding.indicator.isIndeterminate = true
 
             viewModel.searchedItems.collect { results ->
+                binding.indicator.isIndeterminate = false
                 results
                     ?.map { item ->
                         val listener = SearchResultItemClickListener { newItem ->
@@ -58,7 +57,6 @@ class SearchResultFragment : Fragment(R.layout.search_result_fragment) {
                         }
 
                         SearchResultCardItem(
-                            requireContext(),
                             item,
                             item.imageReference,
                             listener

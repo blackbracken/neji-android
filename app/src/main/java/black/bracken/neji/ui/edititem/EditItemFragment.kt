@@ -126,10 +126,11 @@ class EditItemFragment : Fragment(R.layout.edit_item_fragment) {
 
         if (errors.none()) {
             viewModel.addItem(
+                context = requireContext(),
                 name = binding.editItemName.text.toString(),
                 amount = binding.editItemAmount.text.toString().toInt(),
-                itemTypeSelection = binding.autoCompleteTextItemType.listSelection,
-                boxSelection = binding.autoCompleteTextBoxToSave.listSelection,
+                itemTypeText = binding.autoCompleteTextItemType.text.toString(),
+                boxText = binding.autoCompleteTextBoxToSave.text.toString(),
                 comment = binding.editItemComment.text.toString().takeIf { it.isNotBlank() }
             )
             findNavController().popBackStack()

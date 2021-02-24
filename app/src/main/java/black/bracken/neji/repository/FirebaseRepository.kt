@@ -1,6 +1,6 @@
 package black.bracken.neji.repository
 
-import android.net.Uri
+import androidx.core.net.toUri
 import black.bracken.neji.firebase.document.BoxEntity
 import black.bracken.neji.firebase.document.ItemEntity
 import black.bracken.neji.firebase.document.ItemTypeEntity
@@ -18,6 +18,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
+import java.io.File
 import java.util.*
 import javax.inject.Singleton
 import kotlin.coroutines.resume
@@ -38,7 +39,7 @@ interface FirebaseRepository {
         amount: Int,
         itemType: ItemType,
         box: Box,
-        imageUri: Uri?,
+        image: File?,
         comment: String?
     ): Item?
 
@@ -150,17 +151,17 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         amount: Int,
         itemType: ItemType,
         box: Box,
-        imageUri: Uri?,
+        image: File?,
         comment: String?
     ): Item? {
         val id = UUID.randomUUID().toString()
         val imagePath = suspendCoroutine<Pair<String, StorageReference>?> { continuation ->
-            if (imageUri == null) {
+            if (image == null) {
                 continuation.resume(null)
             } else {
                 val path = "items/$id/image.jpg"
                 storage.child(path)
-                    .putFile(imageUri)
+                    .putFile(image.toUri())
                     .addOnCompleteListener { task ->
                         continuation.resume(
                             task.result?.let { result -> path to result.storage }
