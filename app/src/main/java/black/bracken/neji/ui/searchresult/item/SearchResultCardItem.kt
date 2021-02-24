@@ -1,6 +1,5 @@
 package black.bracken.neji.ui.searchresult.item
 
-import android.content.Context
 import android.view.View
 import black.bracken.neji.R
 import black.bracken.neji.databinding.SearchResultCardBinding
@@ -11,7 +10,6 @@ import com.xwray.groupie.viewbinding.BindableItem
 import io.github.rosariopfernandes.firecoil.load
 
 class SearchResultCardItem(
-    private val context: Context,
     val item: Item,
     private val imageRef: StorageReference?,
     private val listener: SearchResultFragment.SearchResultItemClickListener

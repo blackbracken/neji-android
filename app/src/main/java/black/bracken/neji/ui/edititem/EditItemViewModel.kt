@@ -1,11 +1,16 @@
 package black.bracken.neji.ui.edititem
 
+import android.content.Context
 import android.net.Uri
+import androidx.core.net.toFile
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import black.bracken.neji.model.Box
 import black.bracken.neji.repository.FirebaseRepository
+import id.zelory.compressor.Compressor
+import id.zelory.compressor.constraint.default
 import kotlinx.coroutines.launch
+import java.io.File
 
 class EditItemViewModel @ViewModelInject constructor(
     private val firebaseRepository: FirebaseRepository
@@ -25,24 +30,25 @@ class EditItemViewModel @ViewModelInject constructor(
     }
 
     fun addItem(
+        context: Context,
         name: String,
         amount: Int,
-        itemTypeSelection: Int?,
-        boxSelection: Int?,
+        itemTypeText: String?,
+        boxText: String?,
         comment: String?
     ) {
         // TODO: handle error rightly
-        val itemType = itemTypes.value?.getOrNull(itemTypeSelection ?: -1) ?: return
-        val box = boxes.value?.getOrNull(boxSelection ?: -1) ?: return
+        val itemType = itemTypes.value?.find { it.toString() == itemTypeText } ?: return
+        val box = boxes.value?.find { it.toString() == boxText } ?: return
 
         viewModelScope.launch {
-            // TODO: handle error rightly
+            // TODO: handle error
             val item = firebaseRepository.addItem(
                 name = name,
                 amount = amount,
                 itemType = itemType,
                 box = box,
-                imageUri = imageUri.value,
+                image = imageUri.value?.let { compressImage(context, it) },
                 comment = comment
             )
         }
@@ -55,4 +61,14 @@ class EditItemViewModel @ViewModelInject constructor(
             _boxes.postValue(firebaseRepository.boxesInRegion(region))
         }
     }
+
+    private suspend fun compressImage(context: Context, uri: Uri): File {
+        return Compressor.compress(context, uri.toFile(), viewModelScope.coroutineContext) {
+            default(
+                width = 240,
+                height = 240
+            )
+        }
+    }
+
 }
