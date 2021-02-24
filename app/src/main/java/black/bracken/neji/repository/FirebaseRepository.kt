@@ -6,10 +6,7 @@ import black.bracken.neji.firebase.document.BoxEntity
 import black.bracken.neji.firebase.document.ItemEntity
 import black.bracken.neji.firebase.document.ItemTypeEntity
 import black.bracken.neji.firebase.document.RegionEntity
-import black.bracken.neji.model.Box
-import black.bracken.neji.model.Item
-import black.bracken.neji.model.ItemType
-import black.bracken.neji.model.Region
+import black.bracken.neji.model.*
 import com.google.firebase.FirebaseApp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
@@ -48,14 +45,9 @@ interface FirebaseRepository {
 
     suspend fun updateItemAmount(item: Item, newAmount: Int): Item?
 
-    suspend fun searchItems(query: SearchQuery): List<Item>?
+    suspend fun searchItems(query: ItemSearchQuery): List<Item>?
 
-    data class SearchQuery(
-        val byName: String,
-        val byType: String?,
-        val byRegionName: String?,
-        val byBoxName: String?
-    )
+    fun _searchItems(query: ItemSearchQuery): Flow<List<Item>?>
 
 }
 
@@ -218,7 +210,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         }
     }
 
-    override suspend fun searchItems(query: FirebaseRepository.SearchQuery): List<Item>? {
+    override suspend fun searchItems(query: ItemSearchQuery): List<Item>? {
         val entityMap = suspendCoroutine<Map<String, ItemEntity>?> { continuation ->
             firestore
                 .collection("items")
@@ -262,6 +254,56 @@ class FirebaseRepositoryImpl : FirebaseRepository {
             )
         }
     }
+
+    override fun _searchItems(query: ItemSearchQuery): Flow<List<Item>?> =
+        callbackFlow {
+            val registration = firestore
+                .collection("items")
+                .let {
+                    // filter by itemType
+                    if (query.byType != null) {
+                        it.whereEqualTo("itemType", query.byType)
+                    } else {
+                        it
+                    }
+                }
+                .addSnapshotListener { snapshot, error ->
+                    val result =
+                        if (snapshot == null || error != null) {
+                            null
+                        } else {
+                            snapshot
+                                .documents
+                                .mapNotNull {
+                                    val key = it.id
+                                    val value = it.toObject<ItemEntity>() ?: return@mapNotNull null
+                                    key to value
+                                }
+                                .filter { (_, entity) ->
+                                    // filter by ItemName, this order is O(N * M).
+                                    query.byName.split(" ", "　").any { it in entity.name }
+                                }
+                                // TODO: filter with regionId and boxId
+                                .toMap()
+                        }
+
+                    offer(result)
+                }
+
+            awaitClose { registration.remove() }
+        }
+            .map { entities ->
+                entities?.mapNotNull { (id, entity) ->
+                    Item(
+                        entity = entity,
+                        id = id,
+                        getBox = { getBox(entity.boxId) },
+                        getImageReference = { imagePath ->
+                            FirebaseStorage.getInstance(firebaseApp).getReference(imagePath)
+                        }
+                    )
+                }
+            }
 
     private suspend fun getRegion(id: String): Region? = suspendCoroutine { continuation ->
         firestore
