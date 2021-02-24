@@ -1,7 +1,6 @@
 package black.bracken.neji.repository
 
 import android.net.Uri
-import arrow.core.*
 import black.bracken.neji.firebase.document.BoxEntity
 import black.bracken.neji.firebase.document.ItemEntity
 import black.bracken.neji.firebase.document.ItemTypeEntity
