@@ -31,6 +31,9 @@
         <action
             android:id="@+id/action_boxListFragment_to_searchItemFragment"
             app:destination="@id/searchItemFragment" />
+        <action
+            android:id="@+id/action_boxListFragment_to_searchResultFragment"
+            app:destination="@id/searchResultFragment" />
     </fragment>
     <fragment
         android:id="@+id/setupFragment"

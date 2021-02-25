@@ -10,6 +10,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import black.bracken.neji.R
 import black.bracken.neji.databinding.BoxListFragmentBinding
+import black.bracken.neji.model.ItemSearchQuery
 import black.bracken.neji.ui.boxlist.item.BoxCardItem
 import black.bracken.neji.util.Failure
 import black.bracken.neji.util.ItemOffsetDecoration
@@ -42,7 +43,20 @@ class BoxListFragment : Fragment(R.layout.box_list_fragment) {
             when (boxesResource) {
                 is Success -> {
                     boxesResource.value.forEach { (box, amount) ->
-                        adapter.add(BoxCardItem(requireContext(), box, amount))
+                        val card = BoxCardItem(
+                            requireContext(),
+                            box,
+                            amount,
+                            BoxListViewModel.BoxListItemClickListener { box ->
+                                findNavController().navigate(
+                                    BoxListFragmentDirections.actionBoxListFragmentToSearchResultFragment(
+                                        ItemSearchQuery(byBoxName = box.name)
+                                    )
+                                )
+                            }
+                        )
+
+                        adapter.add(card)
                     }
                     binding.indicator.isIndeterminate = false
                 }

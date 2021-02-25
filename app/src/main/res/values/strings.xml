@@ -15,7 +15,7 @@
     <string name="edit_item_region_of_box">ボックスのある場所</string>
     <string name="edit_item_box_to_save">保存するボックス</string>
     <string name="edit_item_complete">完了</string>
-    <string name="search_element_name">検索要素 - 名前 <font color='#FF0000'>*</font></string>
+    <string name="search_element_name">検索要素 - 名前</string>
     <string name="search_element_item_type">検索要素 - アイテムの種類</string>
     <string name="search_element_region">検索要素 - アイテムのある場所</string>
     <string name="search_element_box">検索要素 - アイテムのあるボックス</string>

@@ -36,4 +36,17 @@ class BoxListViewModel @ViewModelInject constructor(
         }
     }
 
+    interface BoxListItemClickListener {
+        fun onClick(box: Box)
+
+        companion object {
+            operator fun invoke(lambdaListener: (Box) -> Unit): BoxListItemClickListener =
+                object : BoxListItemClickListener {
+                    override fun onClick(box: Box) {
+                        lambdaListener(box)
+                    }
+                }
+        }
+    }
+
 }

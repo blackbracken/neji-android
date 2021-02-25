@@ -45,9 +45,7 @@ interface FirebaseRepository {
 
     suspend fun updateItemAmount(item: Item, newAmount: Int): Item?
 
-    suspend fun searchItems(query: ItemSearchQuery): List<Item>?
-
-    fun _searchItems(query: ItemSearchQuery): Flow<List<Item>?>
+    fun searchItems(query: ItemSearchQuery): Flow<List<Item>?>
 
 }
 
@@ -210,52 +208,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         }
     }
 
-    override suspend fun searchItems(query: ItemSearchQuery): List<Item>? {
-        val entityMap = suspendCoroutine<Map<String, ItemEntity>?> { continuation ->
-            firestore
-                .collection("items")
-                .let {
-                    // filter by itemType
-                    if (query.byType != null) {
-                        it.whereEqualTo("itemType", query.byType)
-                    } else {
-                        it
-                    }
-                }
-                .get()
-                .addOnSuccessListener { snapshot ->
-                    continuation.resume(
-                        snapshot
-                            .documents
-                            .mapNotNull {
-                                val key = it.id
-                                val value = it.toObject<ItemEntity>() ?: return@mapNotNull null
-                                key to value
-                            }
-                            .filter { (_, entity) ->
-                                // filter by ItemName, this order is O(N * M).
-                                query.byName.split(" ", "　").any { it in entity.name }
-                            }
-                            // TODO: filter with regionId and boxId
-                            .toMap()
-                    )
-                }
-                .addOnFailureListener { continuation.resume(null) }
-        }
-
-        return entityMap?.mapNotNull { (id, entity) ->
-            Item(
-                entity = entity,
-                id = id,
-                getBox = { getBox(entity.boxId) },
-                getImageReference = { imagePath ->
-                    FirebaseStorage.getInstance(firebaseApp).getReference(imagePath)
-                }
-            )
-        }
-    }
-
-    override fun _searchItems(query: ItemSearchQuery): Flow<List<Item>?> =
+    override fun searchItems(query: ItemSearchQuery): Flow<List<Item>?> =
         callbackFlow {
             val registration = firestore
                 .collection("items")
@@ -281,7 +234,10 @@ class FirebaseRepositoryImpl : FirebaseRepository {
                                 }
                                 .filter { (_, entity) ->
                                     // filter by ItemName, this order is O(N * M).
-                                    query.byName.split(" ", "　").any { it in entity.name }
+                                    query.byName
+                                        ?.split(" ", "　")
+                                        ?.any { it in entity.name }
+                                        ?: true
                                 }
                                 // TODO: filter with regionId and boxId
                                 .toMap()

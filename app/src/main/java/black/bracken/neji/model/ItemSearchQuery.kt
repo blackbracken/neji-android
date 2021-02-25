@@ -5,8 +5,8 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class ItemSearchQuery(
-    val byName: String,
-    val byType: String?,
-    val byRegionName: String?,
-    val byBoxName: String?
+    val byName: String? = null,
+    val byType: String? = null,
+    val byRegionName: String? = null,
+    val byBoxName: String? = null
 ) : Parcelable

@@ -19,7 +19,7 @@ class SearchResultViewModel @ViewModelInject constructor(
     val searchedItems get() = _searchedItems
 
     fun search(query: ItemSearchQuery) {
-        _searchedItems = firebaseRepository._searchItems(query)
+        _searchedItems = firebaseRepository.searchItems(query)
             .shareIn(viewModelScope, SharingStarted.WhileSubscribed(), 1)
     }
 
