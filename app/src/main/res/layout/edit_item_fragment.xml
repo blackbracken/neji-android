@@ -34,7 +34,7 @@
             tools:ignore="ContentDescription" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/input_region_name"
+            android:id="@+id/input_item_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/margin_medium"
@@ -62,7 +62,7 @@
             android:hint="@string/edit_item_amount"
             app:layout_constraintEnd_toStartOf="@id/input_item_type"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/input_region_name">
+            app:layout_constraintTop_toBottomOf="@id/input_item_name">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edit_item_amount"

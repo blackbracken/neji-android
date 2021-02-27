@@ -20,6 +20,9 @@
         <action
             android:id="@+id/action_regionListFragment_to_searchItemFragment"
             app:destination="@id/searchItemFragment" />
+        <action
+            android:id="@+id/action_regionListFragment_to_addRegionFragment"
+            app:destination="@id/addRegionFragment" />
     </fragment>
     <fragment
         android:id="@+id/boxListFragment"
@@ -85,4 +88,8 @@
             android:name="item"
             app:argType="black.bracken.neji.model.Item" />
     </fragment>
+    <fragment
+        android:id="@+id/addRegionFragment"
+        android:name="black.bracken.neji.ui.addregion.AddRegionFragment"
+        android:label="@string/nav_name_add_region" />
 </navigation>
