@@ -3,6 +3,7 @@ package black.bracken.neji.ui.addregion
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import black.bracken.neji.ext.toUnit
 import black.bracken.neji.repository.FirebaseRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -23,8 +24,7 @@ class AddRegionViewModel @ViewModelInject constructor(
             }
 
             if (firebaseRepository.findRegionByName(name) == null) {
-                firebaseRepository.addRegion(name)
-                _registrationResult.emit(Unit)
+                _registrationResult.emit(firebaseRepository.addRegion(name)?.toUnit())
             } else {
                 _registrationResult.emit(null)
             }

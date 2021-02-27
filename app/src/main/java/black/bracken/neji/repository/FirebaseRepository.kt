@@ -32,6 +32,8 @@ interface FirebaseRepository {
 
     suspend fun findRegionByName(name: String): Region?
 
+    fun _boxesInRegion(region: Region): Flow<List<Box>?>
+
     suspend fun boxesInRegion(region: Region): List<Box>?
 
     suspend fun itemsInBox(box: Box): List<Item>?
@@ -46,6 +48,8 @@ interface FirebaseRepository {
     ): Item?
 
     suspend fun addRegion(name: String): Region?
+
+    suspend fun addBox(name: String, region: Region): Box?
 
     suspend fun updateItemAmount(item: Item, newAmount: Int): Item?
 
@@ -111,6 +115,25 @@ class FirebaseRepositoryImpl : FirebaseRepository {
 
         awaitClose { registration.remove() }
     }.shareIn(coroutineScope, SharingStarted.WhileSubscribed(), 1)
+
+    override fun _boxesInRegion(region: Region): Flow<List<Box>?> = channelFlow {
+        firestore
+            .collection("boxes")
+            .whereIn("regionId", listOf(region.id))
+            .addSnapshotListener { snapshot, error ->
+                val entities = if (snapshot == null || error != null) {
+                    null
+                } else {
+                    snapshot.documents
+                        .mapNotNull {
+                            it.id to (it.toObject<BoxEntity>() ?: return@mapNotNull null)
+                        }
+                        .toMap()
+                }
+
+                offer(entities)
+            }
+    }.mapLatest { map -> map?.mapNotNull { (id, entity) -> Box(entity, id) { region } } }
 
     override suspend fun boxesInRegion(region: Region): List<Box>? {
         val entityMap = suspendCoroutine<Map<String, BoxEntity>?> { continuation ->
@@ -230,6 +253,25 @@ class FirebaseRepositoryImpl : FirebaseRepository {
 
         return if (hasSuccessfulAdding) {
             Region(entity, id)
+        } else {
+            null
+        }
+    }
+
+    override suspend fun addBox(name: String, region: Region): Box? {
+        val id = UUID.randomUUID().toString()
+        val entity = BoxEntity(name = name, regionId = region.id)
+
+        val hasSuccessfulAdding = suspendCoroutine<Boolean> { continuation ->
+            firestore
+                .collection("boxes")
+                .document(id)
+                .set(entity)
+                .addOnCompleteListener { task -> continuation.resume(task.isSuccessful) }
+        }
+
+        return if (hasSuccessfulAdding) {
+            Box(entity, id) { region }
         } else {
             null
         }

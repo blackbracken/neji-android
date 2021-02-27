@@ -98,5 +98,9 @@
     <fragment
         android:id="@+id/addBoxFragment"
         android:name="black.bracken.neji.ui.addbox.AddBoxFragment"
-        android:label="AddBoxFragment" />
+        android:label="AddBoxFragment" >
+        <argument
+            android:name="region"
+            app:argType="black.bracken.neji.model.Region" />
+    </fragment>
 </navigation>

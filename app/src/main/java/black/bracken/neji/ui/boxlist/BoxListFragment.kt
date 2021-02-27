@@ -52,10 +52,10 @@ class BoxListFragment : Fragment(R.layout.box_list_fragment) {
                             requireContext(),
                             box,
                             amount,
-                            BoxListViewModel.BoxListItemClickListener { box ->
+                            BoxListViewModel.BoxListItemClickListener { newBox ->
                                 findNavController().navigate(
                                     BoxListFragmentDirections.actionBoxListFragmentToSearchResultFragment(
-                                        ItemSearchQuery(byBoxName = box.name)
+                                        ItemSearchQuery(byBoxName = newBox.name)
                                     )
                                 )
                             }
@@ -98,7 +98,9 @@ class BoxListFragment : Fragment(R.layout.box_list_fragment) {
     override fun onOptionsItemSelected(item: MenuItem): Boolean =
         when (item.itemId) {
             R.id.add_box -> {
-                findNavController().navigate(BoxListFragmentDirections.actionBoxListFragmentToAddBoxFragment())
+                val action =
+                    BoxListFragmentDirections.actionBoxListFragmentToAddBoxFragment(args.region)
+                findNavController().navigate(action)
                 true
             }
             else -> super.onOptionsItemSelected(item)
