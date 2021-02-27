@@ -15,10 +15,19 @@ class AddRegionViewModel @ViewModelInject constructor(
     private val _registrationResult = MutableSharedFlow<Unit?>(replay = 0)
     val registrationResult get() = _registrationResult.asSharedFlow()
 
-    fun addRegion() {
+    fun addRegion(name: String) {
         viewModelScope.launch {
-            // TODO: register region
-            _registrationResult.emit(Unit)
+            if (name.isBlank()) {
+                _registrationResult.emit(null)
+                return@launch
+            }
+
+            if (firebaseRepository.findRegionByName(name) == null) {
+                firebaseRepository.addRegion(name)
+                _registrationResult.emit(Unit)
+            } else {
+                _registrationResult.emit(null)
+            }
         }
     }
 

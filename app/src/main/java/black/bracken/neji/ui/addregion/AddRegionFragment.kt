@@ -8,6 +8,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import black.bracken.neji.R
 import black.bracken.neji.databinding.AddRegionFragmentBinding
+import black.bracken.neji.ext.closeSoftKeyboard
+import com.google.android.material.snackbar.Snackbar
 import com.wada811.viewbinding.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -22,7 +24,8 @@ class AddRegionFragment : Fragment(R.layout.add_region_fragment) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.buttonAdd.setOnClickListener {
-            viewModel.addRegion()
+            viewModel.addRegion(binding.editItemName.text?.toString()?.trim() ?: "")
+            closeSoftKeyboard(view.rootView)
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
@@ -30,7 +33,8 @@ class AddRegionFragment : Fragment(R.layout.add_region_fragment) {
                 if (result != null) {
                     findNavController().popBackStack()
                 } else {
-                    // TODO: error handling
+                    Snackbar.make(view.rootView, "Failed to add the region", Snackbar.LENGTH_SHORT)
+                        .show()
                 }
             }
         }
