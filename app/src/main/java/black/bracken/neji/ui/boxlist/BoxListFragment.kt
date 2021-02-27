@@ -1,6 +1,9 @@
 package black.bracken.neji.ui.boxlist
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -33,6 +36,8 @@ class BoxListFragment : Fragment(R.layout.box_list_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        setHasOptionsMenu(true)
 
         binding.indicator.isIndeterminate = true
         viewModel.fetchBoxes(args.region)
@@ -83,5 +88,20 @@ class BoxListFragment : Fragment(R.layout.box_list_fragment) {
             findNavController().navigate(BoxListFragmentDirections.actionBoxListFragmentToSearchItemFragment())
         }
     }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+
+        inflater.inflate(R.menu.box_list_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean =
+        when (item.itemId) {
+            R.id.add_box -> {
+                findNavController().navigate(BoxListFragmentDirections.actionBoxListFragmentToAddBoxFragment())
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
 
 }
