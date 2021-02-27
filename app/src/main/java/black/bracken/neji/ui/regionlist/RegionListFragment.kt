@@ -95,10 +95,6 @@ class RegionListFragment : Fragment(R.layout.region_list_fragment) {
                 findNavController().navigate(RegionListFragmentDirections.actionRegionListFragmentToAddRegionFragment())
                 true
             }
-            R.id.add_item -> {
-                findNavController().navigate(RegionListFragmentDirections.actionRegionListFragmentToEditItemFragment())
-                true
-            }
             else -> super.onOptionsItemSelected(item)
         }
 

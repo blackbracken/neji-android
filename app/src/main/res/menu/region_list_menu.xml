@@ -6,9 +6,4 @@
         android:icon="@drawable/ic_baseline_add_24"
         android:title="@string/menu_item_add_region"
         app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/add_item"
-        android:icon="@drawable/ic_baseline_post_add_24"
-        android:title="@string/menu_item_add_item"
-        app:showAsAction="ifRoom" />
 </menu>

@@ -12,9 +12,6 @@
             android:id="@+id/action_regionListFragment_to_setupFragment"
             app:destination="@id/setupFragment" />
         <action
-            android:id="@+id/action_regionListFragment_to_editItemFragment"
-            app:destination="@id/editItemFragment" />
-        <action
             android:id="@+id/action_regionListFragment_to_boxListFragment"
             app:destination="@id/boxListFragment" />
         <action
@@ -98,7 +95,7 @@
     <fragment
         android:id="@+id/addBoxFragment"
         android:name="black.bracken.neji.ui.addbox.AddBoxFragment"
-        android:label="AddBoxFragment" >
+        android:label="@string/nav_name_add_box">
         <argument
             android:name="region"
             app:argType="black.bracken.neji.model.Region" />
