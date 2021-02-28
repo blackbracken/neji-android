@@ -41,7 +41,7 @@ class SearchItemFragment : Fragment(R.layout.search_item_fragment) {
             }
         }
 
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.searchQuery.collect { query ->
                 val action =
                     SearchItemFragmentDirections.actionSearchItemFragmentToSearchResultFragment(
