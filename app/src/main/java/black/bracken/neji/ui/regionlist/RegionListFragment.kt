@@ -62,6 +62,8 @@ class RegionListFragment : Fragment(R.layout.region_list_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setHasOptionsMenu(true)
+
         binding.indicator.isIndeterminate = true
         userViewModel.firebaseApp.observe(viewLifecycleOwner) { firebaseApp ->
             if (firebaseApp != null) {
@@ -81,12 +83,6 @@ class RegionListFragment : Fragment(R.layout.region_list_fragment) {
         }
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        setHasOptionsMenu(true)
-    }
-
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
 
@@ -95,8 +91,8 @@ class RegionListFragment : Fragment(R.layout.region_list_fragment) {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean =
         when (item.itemId) {
-            R.id.add_item -> {
-                findNavController().navigate(RegionListFragmentDirections.actionRegionListFragmentToEditItemFragment())
+            R.id.add_region -> {
+                findNavController().navigate(RegionListFragmentDirections.actionRegionListFragmentToAddRegionFragment())
                 true
             }
             else -> super.onOptionsItemSelected(item)

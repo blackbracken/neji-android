@@ -1,6 +1,9 @@
 package black.bracken.neji.ui.boxlist
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -10,7 +13,6 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import black.bracken.neji.R
 import black.bracken.neji.databinding.BoxListFragmentBinding
-import black.bracken.neji.model.ItemSearchQuery
 import black.bracken.neji.ui.boxlist.item.BoxCardItem
 import black.bracken.neji.util.Failure
 import black.bracken.neji.util.ItemOffsetDecoration
@@ -34,6 +36,8 @@ class BoxListFragment : Fragment(R.layout.box_list_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setHasOptionsMenu(true)
+
         binding.indicator.isIndeterminate = true
         viewModel.fetchBoxes(args.region)
 
@@ -47,12 +51,13 @@ class BoxListFragment : Fragment(R.layout.box_list_fragment) {
                             requireContext(),
                             box,
                             amount,
-                            BoxListViewModel.BoxListItemClickListener { box ->
-                                findNavController().navigate(
-                                    BoxListFragmentDirections.actionBoxListFragmentToSearchResultFragment(
-                                        ItemSearchQuery(byBoxName = box.name)
+                            BoxListViewModel.BoxListItemClickListener { newBox ->
+                                val action =
+                                    BoxListFragmentDirections.actionBoxListFragmentToItemListFragment(
+                                        newBox
                                     )
-                                )
+
+                                findNavController().navigate(action)
                             }
                         )
 
@@ -83,5 +88,22 @@ class BoxListFragment : Fragment(R.layout.box_list_fragment) {
             findNavController().navigate(BoxListFragmentDirections.actionBoxListFragmentToSearchItemFragment())
         }
     }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+
+        inflater.inflate(R.menu.box_list_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean =
+        when (item.itemId) {
+            R.id.add_box -> {
+                val action =
+                    BoxListFragmentDirections.actionBoxListFragmentToAddBoxFragment(args.region)
+                findNavController().navigate(action)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
 
 }

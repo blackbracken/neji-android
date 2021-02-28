@@ -12,14 +12,14 @@
             android:id="@+id/action_regionListFragment_to_setupFragment"
             app:destination="@id/setupFragment" />
         <action
-            android:id="@+id/action_regionListFragment_to_editItemFragment"
-            app:destination="@id/editItemFragment" />
-        <action
             android:id="@+id/action_regionListFragment_to_boxListFragment"
             app:destination="@id/boxListFragment" />
         <action
             android:id="@+id/action_regionListFragment_to_searchItemFragment"
             app:destination="@id/searchItemFragment" />
+        <action
+            android:id="@+id/action_regionListFragment_to_addRegionFragment"
+            app:destination="@id/addRegionFragment" />
     </fragment>
     <fragment
         android:id="@+id/boxListFragment"
@@ -32,8 +32,11 @@
             android:id="@+id/action_boxListFragment_to_searchItemFragment"
             app:destination="@id/searchItemFragment" />
         <action
-            android:id="@+id/action_boxListFragment_to_searchResultFragment"
-            app:destination="@id/searchResultFragment" />
+            android:id="@+id/action_boxListFragment_to_addBoxFragment"
+            app:destination="@id/addBoxFragment" />
+        <action
+            android:id="@+id/action_boxListFragment_to_itemListFragment"
+            app:destination="@id/itemListFragment" />
     </fragment>
     <fragment
         android:id="@+id/setupFragment"
@@ -84,5 +87,37 @@
         <argument
             android:name="item"
             app:argType="black.bracken.neji.model.Item" />
+        <action
+            android:id="@+id/action_itemInfoFragment_to_editItemFragment"
+            app:destination="@id/editItemFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addRegionFragment"
+        android:name="black.bracken.neji.ui.addregion.AddRegionFragment"
+        android:label="@string/nav_name_add_region" />
+    <fragment
+        android:id="@+id/addBoxFragment"
+        android:name="black.bracken.neji.ui.addbox.AddBoxFragment"
+        android:label="@string/nav_name_add_box">
+        <argument
+            android:name="region"
+            app:argType="black.bracken.neji.model.Region" />
+    </fragment>
+    <fragment
+        android:id="@+id/itemListFragment"
+        android:name="black.bracken.neji.ui.itemlist.ItemListFragment"
+        android:label="@string/nav_name_item_list">
+        <argument
+            android:name="box"
+            app:argType="black.bracken.neji.model.Box" />
+        <action
+            android:id="@+id/action_itemListFragment_to_itemInfoFragment"
+            app:destination="@id/itemInfoFragment" />
+        <action
+            android:id="@+id/action_itemListFragment_to_editItemFragment"
+            app:destination="@id/editItemFragment" />
+        <action
+            android:id="@+id/action_itemListFragment_to_searchItemFragment"
+            app:destination="@id/searchItemFragment" />
     </fragment>
 </navigation>
