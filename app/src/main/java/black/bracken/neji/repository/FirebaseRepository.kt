@@ -10,6 +10,7 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.CoroutineScope
@@ -29,6 +30,8 @@ interface FirebaseRepository {
     fun itemTypes(): Flow<List<ItemType>?>
 
     fun regions(): Flow<List<Region>?>
+
+    suspend fun itemTypesOnce(): List<ItemType>?
 
     suspend fun findRegionByName(name: String): Region?
 
@@ -88,6 +91,36 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         awaitClose { registration.remove() }
     }.shareIn(coroutineScope, SharingStarted.WhileSubscribed(), 1)
 
+    override fun itemTypes(): Flow<List<ItemType>?> = callbackFlow {
+        val registration = firestore
+            .collection("itemTypes")
+            .addSnapshotListener { value, error ->
+                val itemTypes = value
+                    ?.takeIf { error == null }
+                    ?.buildWithId { entity: ItemTypeEntity, _ -> ItemType(entity) }
+                offer(itemTypes)
+            }
+
+        awaitClose { registration.remove() }
+    }.shareIn(coroutineScope, SharingStarted.WhileSubscribed(), 1)
+
+    override suspend fun itemTypesOnce(): List<ItemType>? =
+        suspendCoroutine { continuation ->
+            firestore
+                .collection("itemTypes")
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    val itemTypes = snapshot
+                        .toObjects<ItemTypeEntity>()
+                        .map { entity -> ItemType(entity) }
+
+                    continuation.resume(itemTypes)
+                }
+                .addOnFailureListener {
+                    continuation.resume(null)
+                }
+        }
+
     override suspend fun findRegionByName(name: String): Region? =
         suspendCoroutine { continuation ->
             firestore
@@ -102,19 +135,6 @@ class FirebaseRepositoryImpl : FirebaseRepository {
                     )
                 }
         }
-
-    override fun itemTypes(): Flow<List<ItemType>?> = callbackFlow {
-        val registration = firestore
-            .collection("itemTypes")
-            .addSnapshotListener { value, error ->
-                val itemTypes = value
-                    ?.takeIf { error == null }
-                    ?.buildWithId { entity: ItemTypeEntity, _ -> ItemType(entity) }
-                offer(itemTypes)
-            }
-
-        awaitClose { registration.remove() }
-    }.shareIn(coroutineScope, SharingStarted.WhileSubscribed(), 1)
 
     override fun _boxesInRegion(region: Region): Flow<List<Box>?> = channelFlow {
         firestore
