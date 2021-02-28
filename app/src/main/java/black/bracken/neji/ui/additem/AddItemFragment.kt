@@ -44,7 +44,9 @@ class AddItemFragment : Fragment(R.layout.add_item_fragment) {
                         .show()
                 }
             }
+        }
 
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.registrationResult.collect {
                 closeSoftKeyboard(view)
 
@@ -52,7 +54,9 @@ class AddItemFragment : Fragment(R.layout.add_item_fragment) {
                     findNavController().popBackStack()
                 }
             }
+        }
 
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.imageUri.collect { uri ->
                 if (uri != null) {
                     binding.imageItem.load(uri)
