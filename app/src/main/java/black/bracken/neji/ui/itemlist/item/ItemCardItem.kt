@@ -1,4 +1,4 @@
-package black.bracken.neji.ui.searchresult.item
+package black.bracken.neji.ui.itemlist.item
 
 import android.view.View
 import black.bracken.neji.R
@@ -8,7 +8,7 @@ import com.google.firebase.storage.StorageReference
 import com.xwray.groupie.viewbinding.BindableItem
 import io.github.rosariopfernandes.firecoil.load
 
-class SearchResultCardItem(
+class ItemCardItem(
     val item: Item,
     private val imageRef: StorageReference?,
     private val onClick: (Item) -> Unit

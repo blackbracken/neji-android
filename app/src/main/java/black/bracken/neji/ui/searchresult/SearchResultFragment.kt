@@ -10,7 +10,6 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import black.bracken.neji.R
 import black.bracken.neji.databinding.SearchResultFragmentBinding
-import black.bracken.neji.model.Item
 import black.bracken.neji.ui.searchresult.item.SearchResultCardItem
 import black.bracken.neji.util.ItemOffsetDecoration
 import com.google.android.material.snackbar.Snackbar
@@ -48,19 +47,13 @@ class SearchResultFragment : Fragment(R.layout.search_result_fragment) {
                 binding.indicator.isIndeterminate = false
                 results
                     ?.map { item ->
-                        val listener = SearchResultItemClickListener { newItem ->
+                        SearchResultCardItem(item, item.imageReference) { newItem ->
                             findNavController().navigate(
                                 SearchResultFragmentDirections.actionSearchResultFragmentToItemInfoFragment(
                                     newItem
                                 )
                             )
                         }
-
-                        SearchResultCardItem(
-                            item,
-                            item.imageReference,
-                            listener
-                        )
                     }
                     ?.forEach { searchedItemCard -> adapter.add(searchedItemCard) }
                     ?: run {
@@ -70,19 +63,6 @@ class SearchResultFragment : Fragment(R.layout.search_result_fragment) {
         }
 
         viewModel.search(args.query)
-    }
-
-    interface SearchResultItemClickListener {
-        fun onClick(item: Item)
-
-        companion object {
-            operator fun invoke(lambdaListener: (Item) -> Unit): SearchResultItemClickListener =
-                object : SearchResultItemClickListener {
-                    override fun onClick(item: Item) {
-                        lambdaListener(item)
-                    }
-                }
-        }
     }
 
 }
