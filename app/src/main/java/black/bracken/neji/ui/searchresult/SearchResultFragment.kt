@@ -31,6 +31,9 @@ class SearchResultFragment : Fragment(R.layout.search_result_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        adapter.clear()
+        binding.indicator.isIndeterminate = true
+
         binding.recycler.adapter = adapter
         binding.recycler.apply {
             addItemDecoration(ItemOffsetDecoration(requireContext(), R.dimen.recycler_padding))
@@ -40,9 +43,6 @@ class SearchResultFragment : Fragment(R.layout.search_result_fragment) {
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            adapter.clear()
-            binding.indicator.isIndeterminate = true
-
             viewModel.searchedItems.collect { results ->
                 binding.indicator.isIndeterminate = false
                 results

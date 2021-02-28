@@ -114,10 +114,18 @@
             android:id="@+id/action_itemListFragment_to_itemInfoFragment"
             app:destination="@id/itemInfoFragment" />
         <action
-            android:id="@+id/action_itemListFragment_to_editItemFragment"
-            app:destination="@id/editItemFragment" />
-        <action
             android:id="@+id/action_itemListFragment_to_searchItemFragment"
             app:destination="@id/searchItemFragment" />
+        <action
+            android:id="@+id/action_itemListFragment_to_addItemFragment"
+            app:destination="@id/addItemFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addItemFragment"
+        android:name="black.bracken.neji.ui.additem.AddItemFragment"
+        android:label="@string/nav_name_add_item">
+        <argument
+            android:name="box"
+            app:argType="black.bracken.neji.model.Box" />
     </fragment>
 </navigation>

@@ -83,8 +83,10 @@ class ItemListFragment : Fragment(R.layout.item_list_fragment) {
     override fun onOptionsItemSelected(item: MenuItem): Boolean =
         when (item.itemId) {
             R.id.add_item -> {
-                // TODO: navigate to `AddItemFragment`
-                findNavController().navigate(ItemListFragmentDirections.actionItemListFragmentToEditItemFragment())
+                val action =
+                    ItemListFragmentDirections.actionItemListFragmentToAddItemFragment(args.box)
+
+                findNavController().navigate(action)
                 true
             }
             else -> super.onOptionsItemSelected(item)
