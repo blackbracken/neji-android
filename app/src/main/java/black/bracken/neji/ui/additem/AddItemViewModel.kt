@@ -21,6 +21,8 @@ class AddItemViewModel @ViewModelInject constructor(
     private val firebaseRepository: FirebaseRepository
 ) : ViewModel() {
 
+    val itemTypes = firebaseRepository.itemTypes()
+
     private val _registrationResult = MutableSharedFlow<Unit?>(replay = 0)
     val registrationResult = _registrationResult.asSharedFlow()
 

@@ -1,7 +1,9 @@
 package black.bracken.neji.ui.additem
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -9,9 +11,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import black.bracken.neji.R
 import black.bracken.neji.databinding.AddItemFragmentBinding
+import black.bracken.neji.ext.closeSoftKeyboard
 import black.bracken.neji.util.ValidatedResult
 import coil.load
 import com.github.dhaval2404.imagepicker.ImagePicker
+import com.google.android.material.snackbar.Snackbar
 import com.wada811.viewbinding.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -28,7 +32,22 @@ class AddItemFragment : Fragment(R.layout.add_item_fragment) {
         super.onViewCreated(view, savedInstanceState)
 
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.itemTypes.collect { itemTypes ->
+                if (itemTypes != null) {
+                    binding.autoCompleteTextItemType.setAdapter(
+                        ArrayAdapter(requireContext(), R.layout.list_item, itemTypes)
+                    )
+                } else {
+                    Snackbar
+                        .make(binding.root, "failed to get itemTypes", Snackbar.LENGTH_SHORT)
+                        .setBackgroundTint(Color.RED)
+                        .show()
+                }
+            }
+
             viewModel.registrationResult.collect {
+                closeSoftKeyboard(view)
+
                 if (it != null) {
                     findNavController().popBackStack()
                 }
