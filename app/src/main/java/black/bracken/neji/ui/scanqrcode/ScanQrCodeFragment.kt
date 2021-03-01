@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
@@ -22,7 +23,6 @@ import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
 import com.wada811.viewbinding.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.scan_qr_code_fragment.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -39,9 +39,26 @@ class ScanQrCodeFragment : Fragment(R.layout.scan_qr_code_fragment) {
 
         if (allPermissionsGranted()) {
             startCamera()
+        } else {
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isAllowed ->
+                if (isAllowed) {
+                    startCamera()
+                } else {
+                    // TODO: handle errors
+                    Snackbar
+                        .make(view.rootView, "you have no permission", Snackbar.LENGTH_SHORT)
+                        .show()
+                }
+            }
         }
 
         cameraExecutor // initialize
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        cameraExecutor.shutdown()
     }
 
     private fun startCamera() {
@@ -52,7 +69,7 @@ class ScanQrCodeFragment : Fragment(R.layout.scan_qr_code_fragment) {
             val preview = Preview.Builder()
                 .build()
                 .also { preview ->
-                    preview.setSurfaceProvider(viewFinder.createSurfaceProvider())
+                    preview.setSurfaceProvider(binding.viewFinder.createSurfaceProvider())
                 }
 
             val imageAnalyzer = ImageAnalysis.Builder()
@@ -60,11 +77,7 @@ class ScanQrCodeFragment : Fragment(R.layout.scan_qr_code_fragment) {
                 .also { analysis ->
                     analysis.setAnalyzer(cameraExecutor, QrCodeAnalyzer { text ->
                         // TODO: implement on scanning
-                        Snackbar.make(
-                            requireView().rootView,
-                            "scanned: $text",
-                            Snackbar.LENGTH_SHORT
-                        ).show()
+                        println("QRCode scanned: $text")
                     })
                 }
 
@@ -74,8 +87,9 @@ class ScanQrCodeFragment : Fragment(R.layout.scan_qr_code_fragment) {
                 cameraProvider.unbindAll()
 
                 cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageAnalyzer)
-            } catch (exc: Exception) {
+            } catch (ex: Exception) {
                 // TODO: handle errors
+                ex.printStackTrace()
             }
 
         }, ContextCompat.getMainExecutor(requireContext()))
@@ -110,9 +124,7 @@ class ScanQrCodeFragment : Fragment(R.layout.scan_qr_code_fragment) {
                         ?.rawValue
                         ?.also { text -> onScan(text) }
                 }
-                .addOnCompleteListener {
-                    proxy.close()
-                }
+                .addOnCompleteListener { proxy.close() }
         }
 
     }

@@ -96,6 +96,8 @@ dependencies {
     androidTestImplementation 'androidx.navigation:navigation-testing:2.3.1'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
+    implementation 'androidx.activity:activity-ktx:1.2.0'
+    implementation 'androidx.fragment:fragment-ktx:1.3.0'
 
     // viewbinding-ktx
     implementation 'com.github.wada811:ViewBinding-ktx:1.1.1'

@@ -26,6 +26,10 @@ class AddBoxFragment : Fragment(R.layout.add_box_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.buttonScan.setOnClickListener {
+            findNavController().navigate(AddBoxFragmentDirections.actionAddBoxFragmentToScanQrCodeFragment())
+        }
+
         binding.buttonAdd.setOnClickListener {
             viewModel.addBox(
                 name = binding.editItemName.text?.toString()?.trim() ?: "",

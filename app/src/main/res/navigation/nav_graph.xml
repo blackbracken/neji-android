@@ -102,6 +102,9 @@
         <argument
             android:name="region"
             app:argType="black.bracken.neji.model.Region" />
+        <action
+            android:id="@+id/action_addBoxFragment_to_scanQrCodeFragment"
+            app:destination="@id/scanQrCodeFragment" />
     </fragment>
     <fragment
         android:id="@+id/itemListFragment"
@@ -128,4 +131,8 @@
             android:name="box"
             app:argType="black.bracken.neji.model.Box" />
     </fragment>
+    <fragment
+        android:id="@+id/scanQrCodeFragment"
+        android:name="black.bracken.neji.ui.scanqrcode.ScanQrCodeFragment"
+        android:label="ScanQrCodeFragment" />
 </navigation>
