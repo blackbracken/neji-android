@@ -99,7 +99,10 @@ class BoxListFragment : Fragment(R.layout.box_list_fragment) {
         when (item.itemId) {
             R.id.add_box -> {
                 val action =
-                    BoxListFragmentDirections.actionBoxListFragmentToAddBoxFragment(args.region)
+                    BoxListFragmentDirections.actionBoxListFragmentToAddBoxFragment(
+                        args.region,
+                        null
+                    )
                 findNavController().navigate(action)
                 true
             }

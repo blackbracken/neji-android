@@ -105,6 +105,10 @@
         <action
             android:id="@+id/action_addBoxFragment_to_scanQrCodeFragment"
             app:destination="@id/scanQrCodeFragment" />
+        <argument
+            android:name="qrCodeValue"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/itemListFragment"
@@ -134,5 +138,11 @@
     <fragment
         android:id="@+id/scanQrCodeFragment"
         android:name="black.bracken.neji.ui.scanqrcode.ScanQrCodeFragment"
-        android:label="ScanQrCodeFragment" />
+        android:label="ScanQrCodeFragment">
+        <action
+            android:id="@+id/action_scanQrCodeFragment_to_addBoxFragment"
+            app:destination="@id/addBoxFragment"
+            app:popUpTo="@id/addBoxFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

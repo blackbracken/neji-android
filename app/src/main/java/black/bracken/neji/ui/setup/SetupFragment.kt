@@ -48,7 +48,6 @@ class SetupFragment : Fragment(R.layout.setup_fragment) {
 
                     when (state.result) {
                         is FirebaseSignInResult.Success -> {
-                            // TODO: consider to set to viewModel from fragment :/
                             userViewModel.setFirebaseApp(state.result.firebaseApp)
 
                             findNavController().navigate(
