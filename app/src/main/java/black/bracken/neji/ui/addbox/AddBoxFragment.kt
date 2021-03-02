@@ -1,5 +1,6 @@
 package black.bracken.neji.ui.addbox
 
+import android.Manifest
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -14,8 +15,13 @@ import com.google.android.material.snackbar.Snackbar
 import com.wada811.viewbinding.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
+import permissions.dispatcher.NeedsPermission
+import permissions.dispatcher.OnNeverAskAgain
+import permissions.dispatcher.OnPermissionDenied
+import permissions.dispatcher.RuntimePermissions
 
 @AndroidEntryPoint
+@RuntimePermissions
 class AddBoxFragment : Fragment(R.layout.add_box_fragment) {
 
     private val binding: AddBoxFragmentBinding by viewBinding(AddBoxFragmentBinding::bind)
@@ -28,11 +34,7 @@ class AddBoxFragment : Fragment(R.layout.add_box_fragment) {
 
         binding.textNoData.visibility = View.VISIBLE
 
-        binding.buttonScan.setOnClickListener {
-            findNavController().navigate(
-                AddBoxFragmentDirections.actionAddBoxFragmentToScanQrCodeFragment(args.region)
-            )
-        }
+        binding.buttonScan.setOnClickListener { scanQrCodeWithPermissionCheck() }
 
         binding.buttonAdd.setOnClickListener {
             viewModel.addBox(
@@ -65,6 +67,34 @@ class AddBoxFragment : Fragment(R.layout.add_box_fragment) {
 
         args.qrCodeValue
             ?.also { qrCodeValue -> viewModel.genQrCode(requireContext(), qrCodeValue) }
+    }
+
+    @Suppress("DEPRECATION")
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        onRequestPermissionsResult(requestCode, grantResults)
+    }
+
+    @NeedsPermission(Manifest.permission.CAMERA)
+    fun scanQrCode() {
+        findNavController().navigate(
+            AddBoxFragmentDirections.actionAddBoxFragmentToScanQrCodeFragment(args.region)
+        )
+    }
+
+    @OnPermissionDenied(Manifest.permission.CAMERA)
+    @OnNeverAskAgain(Manifest.permission.CAMERA)
+    fun requestPermissions() {
+        Snackbar.make(
+            requireView().rootView,
+            "scanning needs a permission to use camera!",
+            Snackbar.LENGTH_SHORT
+        ).show()
     }
 
 }
