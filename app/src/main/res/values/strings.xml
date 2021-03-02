@@ -44,4 +44,5 @@
     <string name="nav_name_scan_qrcode">QRコードスキャン</string>
     <string name="menu_item_add_region">リージョンの追加</string>
     <string name="menu_item_add_item">アイテムの追加</string>
+    <string name="menu_item_show_qr_code">QRコードの表示</string>
 </resources>

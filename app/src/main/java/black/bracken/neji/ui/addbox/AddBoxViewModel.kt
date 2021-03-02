@@ -5,12 +5,10 @@ import android.graphics.Bitmap
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import black.bracken.neji.R
 import black.bracken.neji.ext.toUnit
 import black.bracken.neji.model.Region
 import black.bracken.neji.repository.FirebaseRepository
-import com.google.zxing.BarcodeFormat
-import com.journeyapps.barcodescanner.BarcodeEncoder
+import black.bracken.neji.util.createQrCode
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -45,10 +43,8 @@ class AddBoxViewModel @ViewModelInject constructor(
     }
 
     fun genQrCode(context: Context, text: String) {
-        val size = context.resources.getDimension(R.dimen.qrcode_size).toInt()
-
         viewModelScope.launch {
-            _qrCode.emit(BarcodeEncoder().encodeBitmap(text, BarcodeFormat.QR_CODE, size, size))
+            _qrCode.emit(createQrCode(context, text))
         }
     }
 
