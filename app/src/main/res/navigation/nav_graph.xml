@@ -138,7 +138,7 @@
     <fragment
         android:id="@+id/scanQrCodeFragment"
         android:name="black.bracken.neji.ui.scanqrcode.ScanQrCodeFragment"
-        android:label="ScanQrCodeFragment">
+        android:label="@string/nav_name_scan_qrcode">
         <action
             android:id="@+id/action_scanQrCodeFragment_to_addBoxFragment"
             app:destination="@id/addBoxFragment"
