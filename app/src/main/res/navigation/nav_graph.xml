@@ -144,5 +144,8 @@
             app:destination="@id/addBoxFragment"
             app:popUpTo="@id/addBoxFragment"
             app:popUpToInclusive="true" />
+        <argument
+            android:name="region"
+            app:argType="black.bracken.neji.model.Region" />
     </fragment>
 </navigation>

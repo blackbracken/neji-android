@@ -26,16 +26,30 @@ class AddBoxFragment : Fragment(R.layout.add_box_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.textNoData.visibility = View.VISIBLE
+
         binding.buttonScan.setOnClickListener {
-            findNavController().navigate(AddBoxFragmentDirections.actionAddBoxFragmentToScanQrCodeFragment())
+            findNavController().navigate(
+                AddBoxFragmentDirections.actionAddBoxFragmentToScanQrCodeFragment(args.region)
+            )
         }
 
         binding.buttonAdd.setOnClickListener {
             viewModel.addBox(
                 name = binding.editItemName.text?.toString()?.trim() ?: "",
+                qrCodeText = args.qrCodeValue,
                 region = args.region
             )
             closeSoftKeyboard(view)
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.qrCode.collect { qrCode ->
+                if (qrCode != null) {
+                    binding.imageQrcode.setImageBitmap(qrCode)
+                    binding.textNoData.visibility = View.INVISIBLE
+                }
+            }
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
@@ -48,6 +62,9 @@ class AddBoxFragment : Fragment(R.layout.add_box_fragment) {
                 }
             }
         }
+
+        args.qrCodeValue
+            ?.also { qrCodeValue -> viewModel.genQrCode(requireContext(), qrCodeValue) }
     }
 
 }

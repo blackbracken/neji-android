@@ -52,7 +52,7 @@ interface FirebaseRepository {
 
     suspend fun addRegion(name: String): Region?
 
-    suspend fun addBox(name: String, region: Region): Box?
+    suspend fun addBox(name: String, qrCodeText: String?, region: Region): Box?
 
     suspend fun updateItemAmount(item: Item, newAmount: Int): Item?
 
@@ -278,9 +278,9 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         }
     }
 
-    override suspend fun addBox(name: String, region: Region): Box? {
+    override suspend fun addBox(name: String, qrCodeText: String?, region: Region): Box? {
         val id = UUID.randomUUID().toString()
-        val entity = BoxEntity(name = name, regionId = region.id)
+        val entity = BoxEntity(name = name, qrCodeText = qrCodeText, regionId = region.id)
 
         val hasSuccessfulAdding = suspendCoroutine<Boolean> { continuation ->
             firestore

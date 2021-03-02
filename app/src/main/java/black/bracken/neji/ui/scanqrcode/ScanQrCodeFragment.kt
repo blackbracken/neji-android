@@ -14,6 +14,8 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import black.bracken.neji.R
 import black.bracken.neji.databinding.ScanQrCodeFragmentBinding
 import com.google.android.material.snackbar.Snackbar
@@ -31,6 +33,8 @@ class ScanQrCodeFragment : Fragment(R.layout.scan_qr_code_fragment) {
 
     private val viewModel: ScanQrCodeViewModel by viewModels()
     private val binding by viewBinding(ScanQrCodeFragmentBinding::bind)
+
+    private val args: ScanQrCodeFragmentArgs by navArgs()
 
     private val cameraExecutor: ExecutorService by lazy { Executors.newSingleThreadExecutor() }
 
@@ -76,8 +80,13 @@ class ScanQrCodeFragment : Fragment(R.layout.scan_qr_code_fragment) {
                 .build()
                 .also { analysis ->
                     analysis.setAnalyzer(cameraExecutor, QrCodeAnalyzer { text ->
-                        // TODO: implement on scanning
                         println("QRCode scanned: $text")
+
+                        val action = ScanQrCodeFragmentDirections
+                            .actionScanQrCodeFragmentToAddBoxFragment(args.region, text)
+                        requireView().post {
+                            findNavController().navigate(action)
+                        }
                     })
                 }
 
