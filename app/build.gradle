@@ -152,4 +152,8 @@ dependencies {
 
     // compressor
     implementation 'id.zelory:compressor:3.0.0'
+
+    // permissions-dispatcher
+    implementation "com.github.permissions-dispatcher:permissionsdispatcher:4.8.0"
+    kapt "com.github.permissions-dispatcher:permissionsdispatcher-processor:4.8.0"
 }
