@@ -7,6 +7,11 @@
         android:title="@string/menu_item_show_qr_code"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/find_qr_code"
+        android:icon="@drawable/ic_baseline_qr_code_scanner_24"
+        android:title="QRコードをカメラで探す"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/add_item"
         android:icon="@drawable/ic_baseline_add_24"
         android:title="@string/menu_item_add_region"

@@ -51,7 +51,7 @@ class ScanQrCodeFragment : Fragment(R.layout.scan_qr_code_fragment) {
             val imageAnalyzer = ImageAnalysis.Builder()
                 .build()
                 .also { analysis ->
-                    analysis.setAnalyzer(cameraExecutor, QrCodeAnalyzer { text ->
+                    analysis.setAnalyzer(cameraExecutor, SingleQrCodeAnalyzer { text ->
                         println("QRCode scanned: $text")
 
                         val action = ScanQrCodeFragmentDirections

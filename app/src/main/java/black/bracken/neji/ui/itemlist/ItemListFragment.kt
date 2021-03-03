@@ -92,7 +92,6 @@ class ItemListFragment : Fragment(R.layout.item_list_fragment) {
                 findNavController().navigate(action)
                 true
             }
-
             R.id.show_qr_code -> {
                 args.box.qrCodeText
                     ?.also { qrCodeValue -> showQrCode(qrCodeValue) }
@@ -101,6 +100,13 @@ class ItemListFragment : Fragment(R.layout.item_list_fragment) {
                             .make(requireView(), "No qrcode found", Snackbar.LENGTH_SHORT)
                             .show()
                     }
+                true
+            }
+            R.id.find_qr_code -> {
+                val action = ItemListFragmentDirections.actionItemListFragmentToQrSearchFragment(
+                    args.box
+                )
+                findNavController().navigate(action)
                 true
             }
             else -> super.onOptionsItemSelected(item)

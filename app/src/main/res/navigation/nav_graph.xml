@@ -126,6 +126,9 @@
         <action
             android:id="@+id/action_itemListFragment_to_addItemFragment"
             app:destination="@id/addItemFragment" />
+        <action
+            android:id="@+id/action_itemListFragment_to_qrSearchFragment"
+            app:destination="@id/qrSearchFragment" />
     </fragment>
     <fragment
         android:id="@+id/addItemFragment"
@@ -147,5 +150,13 @@
         <argument
             android:name="region"
             app:argType="black.bracken.neji.model.Region" />
+    </fragment>
+    <fragment
+        android:id="@+id/qrSearchFragment"
+        android:name="black.bracken.neji.ui.qrsearch.QrSearchFragment"
+        android:label="QrSearchFragment" >
+        <argument
+            android:name="targetBox"
+            app:argType="black.bracken.neji.model.Box" />
     </fragment>
 </navigation>

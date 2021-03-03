@@ -1,4 +1,4 @@
-package black.bracken.neji.ui.scanqrcode
+package black.bracken.neji.ui.qrsearch
 
 import android.annotation.SuppressLint
 import androidx.camera.core.ImageAnalysis
@@ -10,9 +10,11 @@ import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
 
-class ScanQrCodeViewModel @ViewModelInject constructor() : ViewModel()
 
-class SingleQrCodeAnalyzer(private val onScan: (String) -> Unit) : ImageAnalysis.Analyzer {
+class QrSearchViewModel @ViewModelInject constructor() : ViewModel()
+
+class MultiQrCodeAnalyzer(private val onFind: (Int, Int, List<Barcode>) -> Unit) :
+    ImageAnalysis.Analyzer {
 
     private val scanner = BarcodeScanning.getClient(
         BarcodeScannerOptions.Builder()
@@ -26,13 +28,9 @@ class SingleQrCodeAnalyzer(private val onScan: (String) -> Unit) : ImageAnalysis
         val image = InputImage.fromMediaImage(media, proxy.imageInfo.rotationDegrees)
 
         scanner.process(image)
-            .addOnSuccessListener { qrCodes ->
-                qrCodes
-                    .firstOrNull()
-                    ?.rawValue
-                    ?.also { text -> onScan(text) }
-            }
+            .addOnSuccessListener { qrCodes -> onFind(media.width, media.height, qrCodes) }
             .addOnCompleteListener { proxy.close() }
     }
 
 }
+
