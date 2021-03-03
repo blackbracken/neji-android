@@ -1,10 +1,12 @@
 package black.bracken.neji.ui.itemlist
 
+import android.app.Dialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
+import android.widget.ImageView
+import android.widget.RelativeLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -15,6 +17,7 @@ import black.bracken.neji.R
 import black.bracken.neji.databinding.ItemListFragmentBinding
 import black.bracken.neji.ui.itemlist.item.ItemCardItem
 import black.bracken.neji.util.ItemOffsetDecoration
+import black.bracken.neji.util.createQrCode
 import com.google.android.material.snackbar.Snackbar
 import com.wada811.viewbinding.viewBinding
 import com.xwray.groupie.GroupAdapter
@@ -89,7 +92,45 @@ class ItemListFragment : Fragment(R.layout.item_list_fragment) {
                 findNavController().navigate(action)
                 true
             }
+            R.id.show_qr_code -> {
+                args.box.qrCodeText
+                    ?.also { qrCodeValue -> showQrCode(qrCodeValue) }
+                    ?: run {
+                        Snackbar
+                            .make(requireView(), "No qrcode found", Snackbar.LENGTH_SHORT)
+                            .show()
+                    }
+                true
+            }
+            R.id.find_qr_code -> {
+                val action = ItemListFragmentDirections.actionItemListFragmentToQrSearchFragment(
+                    args.box
+                )
+                findNavController().navigate(action)
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
+
+    private fun showQrCode(qrCodeValue: String) {
+        val imageView = ImageView(requireContext())
+            .apply {
+                setImageBitmap(createQrCode(requireContext(), qrCodeValue))
+            }
+
+        Dialog(requireContext())
+            .apply {
+                requestWindowFeature(Window.FEATURE_NO_TITLE)
+                window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                setOnDismissListener { /* do nothing */ }
+                addContentView(
+                    imageView, RelativeLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                    )
+                )
+            }
+            .show()
+    }
 
 }

@@ -9,5 +9,6 @@ import java.util.*
 data class BoxEntity(
     var name: String = "",
     var regionId: String = "",
+    var qrCodeText: String? = null,
     @JvmField @ServerTimestamp var updatedAt: Date = Date()
 ) : Serializable
