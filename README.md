@@ -1,8 +1,16 @@
 # neji
 
-* MVVM
-* according to Material Design
-* ViewBinding
-* gradle(not .kts)
+An app to manage your items using QR code for Android.
+
+## tech
+* Kotlin Coroutines and Flows
+* Dagger Hilt
+* DataStore
+* Firebase (Auth, Firestore, Storage)
+* CameraX
+* ML Kit (barcode)
+
+* MVVM with ViewBinding
+* gradle (not .kts)
 * single-module
-* doen't i18n
+* doesn't i18n
