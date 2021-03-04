@@ -58,7 +58,7 @@ class EditItemViewModel @ViewModelInject constructor(
         val region = regions.value?.getOrNull(regionPosition) ?: return
 
         viewModelScope.launch {
-            _boxes.postValue(firebaseRepository.boxesInRegion(region))
+            _boxes.postValue(firebaseRepository.boxesInRegionOnce(region))
         }
     }
 

@@ -19,6 +19,7 @@ class SearchItemViewModel @ViewModelInject constructor(
 
     val itemTypes = firebaseRepository.itemTypes()
     val regions = firebaseRepository.regions()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), listOf())
 
     private var collectBoxJob: Job? = null
     private val _boxesAtSelectedRegion = MutableSharedFlow<List<Box>?>(replay = 0)
@@ -28,14 +29,12 @@ class SearchItemViewModel @ViewModelInject constructor(
         collectBoxJob?.cancel()
 
         viewModelScope.launch {
-            println("called sukoya")
-            println("sukoya regions ${regions.single()}")
             regions
-                .singleOrNull()
+                .value
                 ?.getOrNull(regionIndex)
                 ?.also { region ->
                     collectBoxJob = launch {
-                        firebaseRepository._boxesInRegion(region).collect { boxes ->
+                        firebaseRepository.boxesInRegion(region).collect { boxes ->
                             _boxesAtSelectedRegion.emit(boxes)
                         }
                     }

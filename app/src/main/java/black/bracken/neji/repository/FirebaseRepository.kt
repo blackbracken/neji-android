@@ -35,9 +35,9 @@ interface FirebaseRepository {
 
     suspend fun findRegionByName(name: String): Region?
 
-    fun _boxesInRegion(region: Region): Flow<List<Box>?>
+    fun boxesInRegion(region: Region): Flow<List<Box>?>
 
-    suspend fun boxesInRegion(region: Region): List<Box>?
+    suspend fun boxesInRegionOnce(region: Region): List<Box>?
 
     suspend fun itemsInBox(box: Box): List<Item>?
 
@@ -136,8 +136,8 @@ class FirebaseRepositoryImpl : FirebaseRepository {
                 }
         }
 
-    override fun _boxesInRegion(region: Region): Flow<List<Box>?> = channelFlow {
-        firestore
+    override fun boxesInRegion(region: Region): Flow<List<Box>?> = callbackFlow {
+        val registration = firestore
             .collection("boxes")
             .whereIn("regionId", listOf(region.id))
             .addSnapshotListener { snapshot, error ->
@@ -153,9 +153,13 @@ class FirebaseRepositoryImpl : FirebaseRepository {
 
                 offer(entities)
             }
+
+        awaitClose {
+            registration.remove()
+        }
     }.mapLatest { map -> map?.mapNotNull { (id, entity) -> Box(entity, id) { region } } }
 
-    override suspend fun boxesInRegion(region: Region): List<Box>? {
+    override suspend fun boxesInRegionOnce(region: Region): List<Box>? {
         val entityMap = suspendCoroutine<Map<String, BoxEntity>?> { continuation ->
             firestore
                 .collection("boxes")
