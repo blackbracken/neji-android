@@ -1,10 +1,14 @@
 package black.bracken.neji.ui.iteminfo
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import black.bracken.neji.R
 import black.bracken.neji.databinding.ItemInfoFragmentBinding
@@ -22,6 +26,8 @@ class ItemInfoFragment : Fragment(R.layout.item_info_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        setHasOptionsMenu(true)
 
         viewModel.item.observe(viewLifecycleOwner) { item ->
             with(binding) {
@@ -46,5 +52,24 @@ class ItemInfoFragment : Fragment(R.layout.item_info_fragment) {
 
         viewModel.addItem(args.item)
     }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+
+        inflater.inflate(R.menu.item_info_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean =
+        when (item.itemId) {
+            R.id.edit_item -> {
+                val action =
+                    ItemInfoFragmentDirections.actionItemInfoFragmentToEditItemFragment()
+
+                findNavController().navigate(action)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+
 
 }
