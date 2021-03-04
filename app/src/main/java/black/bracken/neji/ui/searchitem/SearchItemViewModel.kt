@@ -3,15 +3,49 @@ package black.bracken.neji.ui.searchitem
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import black.bracken.neji.model.Box
 import black.bracken.neji.model.ItemSearchQuery
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import black.bracken.neji.repository.FirebaseRepository
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class SearchItemViewModel @ViewModelInject constructor() : ViewModel() {
+class SearchItemViewModel @ViewModelInject constructor(
+    private val firebaseRepository: FirebaseRepository
+) : ViewModel() {
 
     private val _searchQuery = MutableSharedFlow<ItemSearchQuery>(replay = 0)
     val searchQuery get() = _searchQuery.asSharedFlow()
+
+    val itemTypes = firebaseRepository.itemTypes()
+    val regions = firebaseRepository.regions()
+
+    private var collectBoxJob: Job? = null
+    private val _boxesAtSelectedRegion = MutableSharedFlow<List<Box>?>(replay = 0)
+    val boxesAtSelectedRegion get() = _boxesAtSelectedRegion.asSharedFlow()
+
+    fun selectRegion(regionIndex: Int) {
+        collectBoxJob?.cancel()
+
+        viewModelScope.launch {
+            println("called sukoya")
+            println("sukoya regions ${regions.single()}")
+            regions
+                .singleOrNull()
+                ?.getOrNull(regionIndex)
+                ?.also { region ->
+                    collectBoxJob = launch {
+                        firebaseRepository._boxesInRegion(region).collect { boxes ->
+                            _boxesAtSelectedRegion.emit(boxes)
+                        }
+                    }
+                }
+                ?: run {
+                    collectBoxJob = null
+                    _boxesAtSelectedRegion.emit(null)
+                }
+        }
+    }
 
     fun emitQuery(
         itemName: String,

@@ -89,7 +89,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
             }
 
         awaitClose { registration.remove() }
-    }.shareIn(coroutineScope, SharingStarted.WhileSubscribed(), 1)
+    }
 
     override fun itemTypes(): Flow<List<ItemType>?> = callbackFlow {
         val registration = firestore
@@ -102,7 +102,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
             }
 
         awaitClose { registration.remove() }
-    }.shareIn(coroutineScope, SharingStarted.WhileSubscribed(), 1)
+    }
 
     override suspend fun itemTypesOnce(): List<ItemType>? =
         suspendCoroutine { continuation ->

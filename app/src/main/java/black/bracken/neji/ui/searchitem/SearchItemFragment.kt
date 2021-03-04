@@ -2,13 +2,14 @@ package black.bracken.neji.ui.searchitem
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.widget.doOnTextChanged
+import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import black.bracken.neji.R
 import black.bracken.neji.databinding.SearchItemFragmentBinding
+import com.google.android.material.snackbar.Snackbar
 import com.wada811.viewbinding.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -22,8 +23,90 @@ class SearchItemFragment : Fragment(R.layout.search_item_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.autoCompleteTextElementRegion.doOnTextChanged { _, _, _, _ ->
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.searchQuery.collect { query ->
+                val action =
+                    SearchItemFragmentDirections.actionSearchItemFragmentToSearchResultFragment(
+                        query
+                    )
+
+                // TODO: show error if fails
+                findNavController().navigate(action)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.itemTypes.collect { itemTypes ->
+                if (itemTypes == null) {
+                    Snackbar
+                        .make(
+                            requireView().rootView,
+                            "Failed to get itemTypes",
+                            Snackbar.LENGTH_SHORT
+                        )
+                        .show()
+                    return@collect
+                }
+
+                binding.autoCompleteTextElementItemType.setAdapter(
+                    ArrayAdapter(
+                        requireContext(),
+                        R.layout.list_item,
+                        itemTypes
+                    )
+                )
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.regions.collect { regions ->
+                if (regions == null) {
+                    Snackbar
+                        .make(
+                            requireView().rootView,
+                            "Failed to get regions",
+                            Snackbar.LENGTH_SHORT
+                        )
+                        .show()
+                    return@collect
+                }
+
+                binding.autoCompleteTextElementRegion.setAdapter(
+                    ArrayAdapter(
+                        requireContext(),
+                        R.layout.list_item,
+                        regions
+                    )
+                )
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.boxesAtSelectedRegion.collect { boxes ->
+                if (boxes == null) {
+                    Snackbar
+                        .make(
+                            requireView().rootView,
+                            "Failed to get boxes",
+                            Snackbar.LENGTH_SHORT
+                        )
+                        .show()
+                    return@collect
+                }
+
+                binding.autoCompleteTextElementBox.setAdapter(
+                    ArrayAdapter(
+                        requireContext(),
+                        R.layout.list_item,
+                        boxes
+                    )
+                )
+            }
+        }
+
+        binding.autoCompleteTextElementRegion.setOnItemClickListener { _, _, position, _ ->
             binding.autoCompleteTextElementBox.text.clear()
+            viewModel.selectRegion(position)
         }
 
         binding.buttonSearch.setOnClickListener {
@@ -38,17 +121,6 @@ class SearchItemFragment : Fragment(R.layout.search_item_fragment) {
                     boxName = autoCompleteTextElementBox.text?.toString()
                         ?.takeIf { it.isNotBlank() }
                 )
-            }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.searchQuery.collect { query ->
-                val action =
-                    SearchItemFragmentDirections.actionSearchItemFragmentToSearchResultFragment(
-                        query
-                    )
-
-                findNavController().navigate(action)
             }
         }
     }
