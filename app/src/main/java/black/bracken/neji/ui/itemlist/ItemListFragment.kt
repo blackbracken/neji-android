@@ -103,10 +103,20 @@ class ItemListFragment : Fragment(R.layout.item_list_fragment) {
                 true
             }
             R.id.find_qr_code -> {
-                val action = ItemListFragmentDirections.actionItemListFragmentToQrSearchFragment(
-                    args.box
-                )
-                findNavController().navigate(action)
+                args.box
+                    .takeIf { it.qrCodeText != null }
+                    ?.also {
+                        val action =
+                            ItemListFragmentDirections.actionItemListFragmentToQrSearchFragment(
+                                args.box
+                            )
+                        findNavController().navigate(action)
+                    }
+                    ?: run {
+                        Snackbar
+                            .make(requireView(), "No qrcode found", Snackbar.LENGTH_SHORT)
+                            .show()
+                    }
                 true
             }
             else -> super.onOptionsItemSelected(item)
