@@ -38,18 +38,13 @@ class AddItemViewModel @ViewModelInject constructor(
     fun addItem(
         context: Context,
         name: String,
-        itemTypeName: String,
+        itemTypeName: String?,
         amount: Int,
         comment: String,
         box: Box
     ) {
         viewModelScope.launch {
-            val itemType = firebaseRepository.itemTypesOnce()
-                ?.find { it.name == itemTypeName }
-                ?: run {
-                    _registrationResult.emit(null)
-                    return@launch
-                }
+            val itemType = firebaseRepository.itemTypesOnce()?.find { it.name == itemTypeName }
 
             _registrationResult.emit(
                 firebaseRepository.addItem(
@@ -89,15 +84,8 @@ class AddItemViewModel @ViewModelInject constructor(
         }
     }
 
-    fun validateItemTypeText(context: Context, text: String?): ValidatedResult<String> {
-        return when {
-            text.isNullOrBlank() -> {
-                ValidatedResult.Failure(context.getString(R.string.error_must_not_be_blank))
-            }
-            else -> {
-                ValidatedResult.Success(text)
-            }
-        }
+    fun validateItemTypeText(context: Context, text: String?): ValidatedResult<String?> {
+        return ValidatedResult.Success(text)
     }
 
 }

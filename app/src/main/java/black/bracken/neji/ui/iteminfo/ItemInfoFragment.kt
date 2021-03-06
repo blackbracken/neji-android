@@ -38,8 +38,8 @@ class ItemInfoFragment : Fragment(R.layout.item_info_fragment) {
                 }
 
                 textName.text = item.name
-                textType.text = Math.random().toString()
-                // TODO: i18n
+                textType.text = item.itemType ?: "カテゴリ無し"
+                // TODO: separate into string.xml
                 textPath.text = "${item.box.region.name} > ${item.box.name}"
                 pickerAmount.progress = item.amount
                 textComment.text = item.comment
@@ -63,7 +63,7 @@ class ItemInfoFragment : Fragment(R.layout.item_info_fragment) {
         when (item.itemId) {
             R.id.edit_item -> {
                 val action =
-                    ItemInfoFragmentDirections.actionItemInfoFragmentToEditItemFragment()
+                    ItemInfoFragmentDirections.actionItemInfoFragmentToEditItemFragment(args.item)
 
                 findNavController().navigate(action)
                 true
