@@ -12,11 +12,12 @@ import black.bracken.neji.model.Box
 import black.bracken.neji.model.Item
 import black.bracken.neji.model.Region
 import black.bracken.neji.repository.FirebaseRepository
+import black.bracken.neji.util.Failure
+import black.bracken.neji.util.Resource
+import black.bracken.neji.util.Success
 import id.zelory.compressor.Compressor
 import id.zelory.compressor.constraint.default
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -24,13 +25,16 @@ class EditItemViewModel @ViewModelInject constructor(
     private val firebaseRepository: FirebaseRepository
 ) : ViewModel() {
 
+    private val _editResult = MutableSharedFlow<Item?>(replay = 0)
+    val editResult get() = _editResult.asSharedFlow()
+
     val regions = firebaseRepository.regions()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), listOf())
     val itemTypes = firebaseRepository.itemTypes()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), listOf())
 
-    private val _boxes: MutableLiveData<List<Box>?> = MutableLiveData()
-    val boxes: LiveData<List<Box>?> get() = _boxes
+    private val _boxes = MutableStateFlow<Resource<List<Box>>>(Failure())
+    val boxes get() = _boxes.asStateFlow()
 
     private val _imageUri: MutableLiveData<Uri?> = MutableLiveData(null)
     val imageUri: LiveData<Uri?> get() = _imageUri
@@ -53,12 +57,15 @@ class EditItemViewModel @ViewModelInject constructor(
         boxText: String?,
         comment: String?
     ) {
-        // TODO: handle error rightly
-        val itemType = itemTypes.value?.find { it.toString() == itemTypeText } ?: return
-        val box = boxes.value?.find { it.toString() == boxText } ?: return
+        val itemType = itemTypes.value
+            ?.find { it.toString() == itemTypeText }
+            ?: return
+        val box = (boxes.value as? Success)?.value
+            ?.find { it.toString() == boxText }
+            ?: return
 
         viewModelScope.launch {
-            firebaseRepository.editItem(
+            val item = firebaseRepository.editItem(
                 item = source,
                 name = name,
                 amount = amount,
@@ -70,6 +77,8 @@ class EditItemViewModel @ViewModelInject constructor(
                 box = box,
                 comment = comment
             )
+
+            _editResult.emit(item)
         }
     }
 
@@ -83,7 +92,9 @@ class EditItemViewModel @ViewModelInject constructor(
 
     private fun updateBoxesByRegion(region: Region) {
         viewModelScope.launch {
-            _boxes.postValue(firebaseRepository.boxesInRegionOnce(region))
+            val boxes = firebaseRepository.boxesInRegionOnce(region)
+
+            _boxes.emit(boxes?.let { Success(it) } ?: Failure())
         }
     }
 

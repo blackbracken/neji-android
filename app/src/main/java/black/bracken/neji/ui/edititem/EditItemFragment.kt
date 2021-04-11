@@ -12,6 +12,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import black.bracken.neji.R
 import black.bracken.neji.databinding.EditItemFragmentBinding
+import black.bracken.neji.util.Failure
+import black.bracken.neji.util.Loading
+import black.bracken.neji.util.Success
 import coil.load
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.material.snackbar.Snackbar
@@ -30,6 +33,22 @@ class EditItemFragment : Fragment(R.layout.edit_item_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.editResult.collect { result ->
+                if (result != null) {
+                    val action =
+                        EditItemFragmentDirections.actionEditItemFragmentToItemInfoFragment(result)
+
+                    findNavController().navigate(action)
+                } else {
+                    Snackbar
+                        .make(binding.root, "failed to edit", Snackbar.LENGTH_SHORT)
+                        .setBackgroundTint(Color.RED)
+                        .show()
+                }
+            }
+        }
 
         viewModel.imageUri.observe(viewLifecycleOwner) { imageUri ->
             if (imageUri != null) {
@@ -69,18 +88,28 @@ class EditItemFragment : Fragment(R.layout.edit_item_fragment) {
             }
         }
 
-        viewModel.boxes.observe(viewLifecycleOwner) { boxes ->
-            if (boxes != null) {
-                binding.inputBoxToSave.isEnabled = true
-                binding.autoCompleteTextBoxToSave.text.clear()
-                binding.autoCompleteTextBoxToSave.setAdapter(
-                    ArrayAdapter(requireContext(), R.layout.list_item, boxes)
-                )
-            } else {
-                Snackbar
-                    .make(binding.root, "failed to get boxes", Snackbar.LENGTH_SHORT)
-                    .setBackgroundTint(Color.RED)
-                    .show()
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.boxes.collect { result ->
+                when (result) {
+                    is Loading -> {
+                        /* do nothing */
+                    }
+                    is Success -> {
+                        val boxes = result.value
+
+                        binding.inputBoxToSave.isEnabled = true
+                        binding.autoCompleteTextBoxToSave.text.clear()
+                        binding.autoCompleteTextBoxToSave.setAdapter(
+                            ArrayAdapter(requireContext(), R.layout.list_item, boxes)
+                        )
+                    }
+                    is Failure -> {
+                        Snackbar
+                            .make(binding.root, "failed to get boxes", Snackbar.LENGTH_SHORT)
+                            .setBackgroundTint(Color.RED)
+                            .show()
+                    }
+                }
             }
         }
 
@@ -164,7 +193,6 @@ class EditItemFragment : Fragment(R.layout.edit_item_fragment) {
                 boxText = binding.autoCompleteTextBoxToSave.text.toString(),
                 comment = binding.editItemComment.text.toString().takeIf { it.isNotBlank() }
             )
-            findNavController().popBackStack()
         } else {
             errors.forEach { error -> error() }
         }
