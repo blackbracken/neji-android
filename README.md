@@ -2,7 +2,7 @@
 
 An app to manage your items using QR code for Android.
 
-## tech
+## tech stack
 * Kotlin Coroutines and Flows
 * Dagger Hilt
 * DataStore
