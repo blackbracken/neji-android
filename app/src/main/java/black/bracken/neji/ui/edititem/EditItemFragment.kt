@@ -74,18 +74,19 @@ class EditItemFragment : Fragment(R.layout.edit_item_fragment) {
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.regions.collect { regions ->
-                if (regions != null) {
-                    binding.autoCompleteTextRegionOfBox.setAdapter(
-                        ArrayAdapter(requireContext(), R.layout.list_item, regions)
-                    )
-                } else {
-                    Snackbar
-                        .make(binding.root, "failed to get regions", Snackbar.LENGTH_SHORT)
-                        .setBackgroundTint(Color.RED)
-                        .show()
+            viewModel.regions
+                .collect { regions ->
+                    if (regions != null) {
+                        binding.autoCompleteTextRegionOfBox.setAdapter(
+                            ArrayAdapter(requireContext(), R.layout.list_item, regions)
+                        )
+                    } else {
+                        Snackbar
+                            .make(binding.root, "failed to get regions", Snackbar.LENGTH_SHORT)
+                            .setBackgroundTint(Color.RED)
+                            .show()
+                    }
                 }
-            }
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
@@ -96,12 +97,17 @@ class EditItemFragment : Fragment(R.layout.edit_item_fragment) {
                     }
                     is Success -> {
                         val boxes = result.value
+                        val input = binding.autoCompleteTextBoxToSave.text?.toString() ?: ""
 
                         binding.inputBoxToSave.isEnabled = true
                         binding.autoCompleteTextBoxToSave.text.clear()
                         binding.autoCompleteTextBoxToSave.setAdapter(
                             ArrayAdapter(requireContext(), R.layout.list_item, boxes)
                         )
+
+                        if (input in boxes.map { box -> box.name }) {
+                            binding.autoCompleteTextBoxToSave.setText(input)
+                        }
                     }
                     is Failure -> {
                         Snackbar
@@ -141,7 +147,6 @@ class EditItemFragment : Fragment(R.layout.edit_item_fragment) {
         binding.editItemName.setText(origin.name)
         binding.editItemAmount.setText(origin.amount.toString())
         binding.autoCompleteTextItemType.setText(origin.itemType)
-
         binding.autoCompleteTextRegionOfBox.setText(origin.box.region.name)
         viewModel.updateBoxesByRegionName(origin.box.region.name)
 

@@ -13,6 +13,7 @@ import black.bracken.neji.model.Item
 import black.bracken.neji.model.Region
 import black.bracken.neji.repository.FirebaseRepository
 import black.bracken.neji.util.Failure
+import black.bracken.neji.util.Loading
 import black.bracken.neji.util.Resource
 import black.bracken.neji.util.Success
 import id.zelory.compressor.Compressor
@@ -33,7 +34,7 @@ class EditItemViewModel @ViewModelInject constructor(
     val itemTypes = firebaseRepository.itemTypes()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), listOf())
 
-    private val _boxes = MutableStateFlow<Resource<List<Box>>>(Failure())
+    private val _boxes = MutableStateFlow<Resource<List<Box>>>(Loading)
     val boxes get() = _boxes.asStateFlow()
 
     private val _imageUri: MutableLiveData<Uri?> = MutableLiveData(null)
