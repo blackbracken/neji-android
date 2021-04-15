@@ -37,8 +37,14 @@ class EditItemFragment : Fragment(R.layout.edit_item_fragment) {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.editResult.collect { result ->
                 if (result != null) {
-                    val action =
+                    val newBox = result.box
+                    val oldBox = args.item.box
+
+                    val action = if (newBox != oldBox) {
+                        EditItemFragmentDirections.actionEditItemFragmentToItemListFragment(oldBox)
+                    } else {
                         EditItemFragmentDirections.actionEditItemFragmentToItemInfoFragment(result)
+                    }
 
                     findNavController().navigate(action)
                 } else {
