@@ -61,6 +61,11 @@ class EditItemFragment : Fragment(R.layout.edit_item_fragment) {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.itemTypes.collect { itemTypes ->
                 if (itemTypes != null) {
+                    val oldInput = binding.autoCompleteTextItemType.text?.toString() ?: ""
+                    if (oldInput !in itemTypes.map { it.name }) {
+                        binding.autoCompleteTextItemType.text.clear()
+                    }
+
                     binding.autoCompleteTextItemType.setAdapter(
                         ArrayAdapter(requireContext(), R.layout.list_item, itemTypes)
                     )
@@ -97,17 +102,17 @@ class EditItemFragment : Fragment(R.layout.edit_item_fragment) {
                     }
                     is Success -> {
                         val boxes = result.value
-                        val input = binding.autoCompleteTextBoxToSave.text?.toString() ?: ""
+
+                        val oldInput = binding.autoCompleteTextBoxToSave.text?.toString() ?: ""
+                        if (oldInput !in boxes.map { box -> box.name }) {
+                            binding.autoCompleteTextBoxToSave.text.clear()
+                        }
 
                         binding.inputBoxToSave.isEnabled = true
-                        binding.autoCompleteTextBoxToSave.text.clear()
+
                         binding.autoCompleteTextBoxToSave.setAdapter(
                             ArrayAdapter(requireContext(), R.layout.list_item, boxes)
                         )
-
-                        if (input in boxes.map { box -> box.name }) {
-                            binding.autoCompleteTextBoxToSave.setText(input)
-                        }
                     }
                     is Failure -> {
                         Snackbar
@@ -146,8 +151,8 @@ class EditItemFragment : Fragment(R.layout.edit_item_fragment) {
 
         binding.editItemName.setText(origin.name)
         binding.editItemAmount.setText(origin.amount.toString())
-        binding.autoCompleteTextItemType.setText(origin.itemType)
-        binding.autoCompleteTextRegionOfBox.setText(origin.box.region.name)
+        binding.autoCompleteTextItemType.setText(origin.itemType, false)
+        binding.autoCompleteTextRegionOfBox.setText(origin.box.region.name, false)
         viewModel.updateBoxesByRegionName(origin.box.region.name)
 
         binding.autoCompleteTextBoxToSave.setText(origin.box.name)
