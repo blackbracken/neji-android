@@ -71,8 +71,6 @@ interface FirebaseRepository {
 @Singleton
 class FirebaseRepositoryImpl : FirebaseRepository {
 
-    private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
-
     private val firestore: FirebaseFirestore by lazy {
         FirebaseFirestore.getInstance(firebaseApp)
     }
@@ -290,7 +288,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         val diff = mapOf(
             "name" to newItem.name.takeIf { it != item.name },
             "amount" to newItem.amount.takeIf { it != item.amount },
-            "box" to newItem.box.takeIf { it != item.box },
+            "boxId" to newItem.box.takeIf { it != item.box }?.id,
             "imageReference" to newItem.imageReference.takeIf { it != item.imageReference },
             "itemType" to newItem.itemType.takeIf { it != item.itemType },
             "comment" to newItem.comment.takeIf { it != item.comment }
