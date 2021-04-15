@@ -147,7 +147,7 @@ class EditItemFragment : Fragment(R.layout.edit_item_fragment) {
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            delay(1000L) // TODO: set values after collecting valid data from some flows
+            delay(500L) // TODO: set values after collecting valid data from some flows
             setOriginValues()
         }
     }
@@ -159,6 +159,7 @@ class EditItemFragment : Fragment(R.layout.edit_item_fragment) {
         binding.editItemAmount.setText(origin.amount.toString())
         binding.autoCompleteTextItemType.setText(origin.itemType, false)
         binding.autoCompleteTextRegionOfBox.setText(origin.box.region.name, false)
+        binding.editItemComment.setText(origin.comment)
         viewModel.updateBoxesByRegionName(origin.box.region.name)
 
         binding.autoCompleteTextBoxToSave.setText(origin.box.name)
@@ -172,6 +173,7 @@ class EditItemFragment : Fragment(R.layout.edit_item_fragment) {
         val inputItemType = binding.inputItemType.apply { error = null }
         val inputRegionOfBox = binding.inputRegionOfBox.apply { error = null }
         val inputBoxToSave = binding.inputBoxToSave.apply { error = null }
+        val inputComment = binding.inputItemComment.apply { error = null }
 
         val errors: List<() -> Unit> = mutableListOf<() -> Unit>()
             .apply {
