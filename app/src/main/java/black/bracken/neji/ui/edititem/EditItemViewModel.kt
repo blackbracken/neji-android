@@ -40,12 +40,9 @@ class EditItemViewModel @ViewModelInject constructor(
     private val _imageUri: MutableLiveData<Uri?> = MutableLiveData(null)
     val imageUri: LiveData<Uri?> get() = _imageUri
 
-    private val changedImage get() = MutableStateFlow(false)
-
     fun setItemImage(uri: Uri?) {
         viewModelScope.launch {
             _imageUri.value = uri
-            changedImage.emit(true)
         }
     }
 
@@ -71,10 +68,7 @@ class EditItemViewModel @ViewModelInject constructor(
                 name = name,
                 amount = amount,
                 itemType = itemType,
-                image = imageUri.value
-                    ?.takeIf { changedImage.value }
-                    ?.also { compressImage(context, it) }
-                    ?.toFile(),
+                image = imageUri.value?.also { compressImage(context, it) }?.toFile(),
                 box = box,
                 comment = comment
             )
