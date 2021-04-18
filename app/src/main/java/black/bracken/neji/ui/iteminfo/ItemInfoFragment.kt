@@ -13,6 +13,7 @@ import androidx.navigation.fragment.navArgs
 import black.bracken.neji.R
 import black.bracken.neji.databinding.ItemInfoFragmentBinding
 import coil.load
+import coil.request.CachePolicy
 import com.wada811.viewbinding.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.rosariopfernandes.firecoil.load
@@ -32,9 +33,15 @@ class ItemInfoFragment : Fragment(R.layout.item_info_fragment) {
         viewModel.item.observe(viewLifecycleOwner) { item ->
             with(binding) {
                 if (item.imageReference != null) {
-                    imageItem.load(item.imageReference)
+                    imageItem.load(item.imageReference) {
+                        diskCachePolicy(CachePolicy.DISABLED)
+                        memoryCachePolicy(CachePolicy.DISABLED)
+                    }
                 } else {
-                    imageItem.load(R.drawable.ic_baseline_memory_24)
+                    imageItem.load(R.drawable.ic_baseline_memory_24) {
+                        diskCachePolicy(CachePolicy.DISABLED)
+                        memoryCachePolicy(CachePolicy.DISABLED)
+                    }
                 }
 
                 textName.text = item.name

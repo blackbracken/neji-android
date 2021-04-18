@@ -163,7 +163,9 @@ class EditItemFragment : Fragment(R.layout.edit_item_fragment) {
         viewModel.updateBoxesByRegionName(origin.box.region.name)
 
         binding.autoCompleteTextBoxToSave.setText(origin.box.name)
-        origin.imageReference?.also { binding.imageItem.load(it) }
+        if (origin.imageReference != null) {
+            binding.imageItem.load(origin.imageReference)
+        }
     }
 
     private fun onPushButtonToAdd() {
