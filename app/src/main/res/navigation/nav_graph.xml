@@ -53,10 +53,18 @@
         android:name="black.bracken.neji.ui.edititem.EditItemFragment"
         android:label="@string/nav_name_edit_item">
         <argument
-            android:name="target"
-            android:defaultValue="@null"
-            app:argType="black.bracken.neji.model.Region"
-            app:nullable="true" />
+            android:name="item"
+            app:argType="black.bracken.neji.model.Item" />
+        <action
+            android:id="@+id/action_editItemFragment_to_itemInfoFragment"
+            app:destination="@id/itemInfoFragment"
+            app:popUpTo="@id/itemInfoFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_editItemFragment_to_itemListFragment"
+            app:destination="@id/itemListFragment"
+            app:popUpTo="@id/itemListFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/searchItemFragment"
@@ -154,7 +162,7 @@
     <fragment
         android:id="@+id/qrSearchFragment"
         android:name="black.bracken.neji.ui.qrsearch.QrSearchFragment"
-        android:label="QrSearchFragment" >
+        android:label="QrSearchFragment">
         <argument
             android:name="targetBox"
             app:argType="black.bracken.neji.model.Box" />

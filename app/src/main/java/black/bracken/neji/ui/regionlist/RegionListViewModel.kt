@@ -20,7 +20,7 @@ class RegionListViewModel @ViewModelInject constructor(
             regions
                 ?.map { region ->
                     // TODO: improve performance (this curse N + 1 problem)
-                    region to (firebaseRepository.boxesInRegion(region)?.size ?: 0)
+                    region to (firebaseRepository.boxesInRegionOnce(region)?.size ?: 0)
                 }
                 ?.toMap()
         }

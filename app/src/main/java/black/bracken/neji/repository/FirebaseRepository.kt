@@ -13,10 +13,7 @@ import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
 import java.io.File
@@ -35,18 +32,28 @@ interface FirebaseRepository {
 
     suspend fun findRegionByName(name: String): Region?
 
-    fun _boxesInRegion(region: Region): Flow<List<Box>?>
+    fun boxesInRegion(region: Region): Flow<List<Box>?>
 
-    suspend fun boxesInRegion(region: Region): List<Box>?
+    suspend fun boxesInRegionOnce(region: Region): List<Box>?
 
     suspend fun itemsInBox(box: Box): List<Item>?
 
     suspend fun addItem(
         name: String,
         amount: Int,
-        itemType: ItemType,
+        itemType: ItemType?,
         box: Box,
         image: File?,
+        comment: String?
+    ): Item?
+
+    suspend fun editItem(
+        item: Item,
+        name: String,
+        amount: Int,
+        itemType: ItemType?,
+        image: File?,
+        box: Box,
         comment: String?
     ): Item?
 
@@ -63,8 +70,6 @@ interface FirebaseRepository {
 @ExperimentalCoroutinesApi
 @Singleton
 class FirebaseRepositoryImpl : FirebaseRepository {
-
-    private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     private val firestore: FirebaseFirestore by lazy {
         FirebaseFirestore.getInstance(firebaseApp)
@@ -89,7 +94,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
             }
 
         awaitClose { registration.remove() }
-    }.shareIn(coroutineScope, SharingStarted.WhileSubscribed(), 1)
+    }
 
     override fun itemTypes(): Flow<List<ItemType>?> = callbackFlow {
         val registration = firestore
@@ -102,7 +107,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
             }
 
         awaitClose { registration.remove() }
-    }.shareIn(coroutineScope, SharingStarted.WhileSubscribed(), 1)
+    }
 
     override suspend fun itemTypesOnce(): List<ItemType>? =
         suspendCoroutine { continuation ->
@@ -136,8 +141,8 @@ class FirebaseRepositoryImpl : FirebaseRepository {
                 }
         }
 
-    override fun _boxesInRegion(region: Region): Flow<List<Box>?> = channelFlow {
-        firestore
+    override fun boxesInRegion(region: Region): Flow<List<Box>?> = callbackFlow {
+        val registration = firestore
             .collection("boxes")
             .whereIn("regionId", listOf(region.id))
             .addSnapshotListener { snapshot, error ->
@@ -153,9 +158,13 @@ class FirebaseRepositoryImpl : FirebaseRepository {
 
                 offer(entities)
             }
+
+        awaitClose {
+            registration.remove()
+        }
     }.mapLatest { map -> map?.mapNotNull { (id, entity) -> Box(entity, id) { region } } }
 
-    override suspend fun boxesInRegion(region: Region): List<Box>? {
+    override suspend fun boxesInRegionOnce(region: Region): List<Box>? {
         val entityMap = suspendCoroutine<Map<String, BoxEntity>?> { continuation ->
             firestore
                 .collection("boxes")
@@ -209,53 +218,89 @@ class FirebaseRepositoryImpl : FirebaseRepository {
     override suspend fun addItem(
         name: String,
         amount: Int,
-        itemType: ItemType,
+        itemType: ItemType?,
         box: Box,
         image: File?,
         comment: String?
     ): Item? {
         val id = UUID.randomUUID().toString()
-        val imagePath = suspendCoroutine<Pair<String, StorageReference>?> { continuation ->
-            if (image == null) {
-                continuation.resume(null)
-            } else {
-                val path = "items/$id/image.jpg"
-                storage.child(path)
-                    .putFile(image.toUri())
-                    .addOnCompleteListener { task ->
-                        continuation.resume(
-                            task.result?.let { result -> path to result.storage }
-                        )
-                    }
-            }
+        val imagePath = imagePathOf(id)
+
+        @Suppress("RedundantReturnLabel")
+        val imageReference = if (image != null) {
+            updateImage(imagePath, image) ?: return@addItem null
+        } else {
+            null
         }
 
         val entity = ItemEntity(
             name = name,
             amount = amount,
             boxId = box.id,
-            imageUrl = imagePath?.first,
-            itemType = itemType.name,
+            imageUrl = imagePath,
+            itemType = itemType?.name,
             comment = comment
         )
 
-        val hasSuccessfulAdding = suspendCoroutine<Boolean> { continuation ->
+        suspendCoroutine<Unit?> { continuation ->
             firestore
                 .collection("items")
                 .document(id)
                 .set(entity)
-                .addOnCompleteListener { task -> continuation.resume(task.isSuccessful) }
-        }
+                .addOnSuccessListener { continuation.resume(Unit) }
+                .addOnFailureListener { continuation.resume(null) }
+        } ?: return null
 
-        return if (hasSuccessfulAdding) {
-            Item(
-                entity = entity,
-                id = id,
-                getBox = { box },
-                getImageReference = { imagePath?.second }
-            )
+        return Item(
+            entity = entity,
+            id = id,
+            getBox = { box },
+            getImageReference = { imageReference }
+        )
+    }
+
+    override suspend fun editItem(
+        item: Item,
+        name: String,
+        amount: Int,
+        itemType: ItemType?,
+        image: File?,
+        box: Box,
+        comment: String?
+    ): Item? {
+        val imageReference = if (image != null) {
+            @Suppress("RedundantReturnLabel")
+            updateImage(imagePathOf(item.id), image) ?: return@editItem null
         } else {
             null
+        }
+
+        val newItem = item.copy(
+            name = name,
+            amount = amount,
+            itemType = itemType?.name,
+            imageReference = imageReference,
+            box = box,
+            comment = comment
+        )
+
+        // HACK: consider whether to use reflection to get properties
+        val diff = mapOf(
+            "name" to newItem.name.takeIf { it != item.name },
+            "amount" to newItem.amount.takeIf { it != item.amount },
+            "boxId" to newItem.box.takeIf { it != item.box }?.id,
+            "imageReference" to newItem.imageReference.takeIf { it != item.imageReference },
+            "itemType" to newItem.itemType.takeIf { it != item.itemType },
+            "comment" to newItem.comment.takeIf { it != item.comment }
+        ).filterValues { it != null }
+
+        return suspendCoroutine { continuation ->
+            firestore
+                .collection("items")
+                .document(item.id)
+                .update(diff)
+                .addOnSuccessListener { continuation.resume(newItem) }
+                .addOnFailureListener { continuation.resume(null) }
         }
     }
 
@@ -397,6 +442,22 @@ class FirebaseRepositoryImpl : FirebaseRepository {
             getRegion = { getRegion(boxEntity.regionId) }
         )
     }
+
+    private suspend fun updateImage(path: String, image: File): StorageReference? {
+        suspendCoroutine<Unit> { continuation ->
+            storage.child(path)
+                .delete()
+                .addOnCompleteListener { continuation.resume(Unit) }
+        }
+
+        return suspendCoroutine { continuation ->
+            storage.child(path)
+                .putFile(image.toUri())
+                .addOnCompleteListener { task -> continuation.resume(task.result?.storage) }
+        }
+    }
+
+    private fun imagePathOf(id: String) = "items/$id/image.jpg"
 
     private inline fun <T : Any, reified E : Any> QuerySnapshot?.buildWithId(build: (E, String) -> T): List<T>? {
         return this

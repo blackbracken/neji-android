@@ -24,7 +24,7 @@ class BoxListViewModel @ViewModelInject constructor(
     fun fetchBoxes(region: Region) {
         viewModelScope.launch {
             val result = firebaseRepository
-                .boxesInRegion(region)
+                .boxesInRegionOnce(region)
                 ?.map { box ->
                     // TODO: improve performance (this curse N + 1 problem)
                     box to (firebaseRepository.itemsInBox(box)?.size ?: 0) }

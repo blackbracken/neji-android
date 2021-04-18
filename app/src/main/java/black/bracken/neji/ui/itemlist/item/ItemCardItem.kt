@@ -4,6 +4,7 @@ import android.view.View
 import black.bracken.neji.R
 import black.bracken.neji.databinding.ItemCardBinding
 import black.bracken.neji.model.Item
+import coil.request.CachePolicy
 import com.google.firebase.storage.StorageReference
 import com.xwray.groupie.viewbinding.BindableItem
 import io.github.rosariopfernandes.firecoil.load
@@ -26,7 +27,10 @@ class ItemCardItem(
             viewBinding.textName.text = item.name
 
             imageRef?.also { ref ->
-                viewBinding.imageItem.load(ref)
+                viewBinding.imageItem.load(ref) {
+                    diskCachePolicy(CachePolicy.DISABLED)
+                    memoryCachePolicy(CachePolicy.DISABLED)
+                }
             }
         }
     }

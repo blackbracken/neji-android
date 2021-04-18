@@ -32,7 +32,7 @@ class AddBoxViewModel @ViewModelInject constructor(
                 return@launch
             }
 
-            if (firebaseRepository.boxesInRegion(region)?.none { it.name == name } == true) {
+            if (firebaseRepository.boxesInRegionOnce(region)?.none { it.name == name } == true) {
                 _registrationResult.emit(
                     firebaseRepository.addBox(name, qrCodeText, region)?.toUnit()
                 )

@@ -1,14 +1,19 @@
 package black.bracken.neji.ui.iteminfo
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import black.bracken.neji.R
 import black.bracken.neji.databinding.ItemInfoFragmentBinding
 import coil.load
+import coil.request.CachePolicy
 import com.wada811.viewbinding.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.rosariopfernandes.firecoil.load
@@ -23,17 +28,25 @@ class ItemInfoFragment : Fragment(R.layout.item_info_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setHasOptionsMenu(true)
+
         viewModel.item.observe(viewLifecycleOwner) { item ->
             with(binding) {
                 if (item.imageReference != null) {
-                    imageItem.load(item.imageReference)
+                    imageItem.load(item.imageReference) {
+                        diskCachePolicy(CachePolicy.DISABLED)
+                        memoryCachePolicy(CachePolicy.DISABLED)
+                    }
                 } else {
-                    imageItem.load(R.drawable.ic_baseline_memory_24)
+                    imageItem.load(R.drawable.ic_baseline_memory_24) {
+                        diskCachePolicy(CachePolicy.DISABLED)
+                        memoryCachePolicy(CachePolicy.DISABLED)
+                    }
                 }
 
                 textName.text = item.name
-                textType.text = Math.random().toString()
-                // TODO: i18n
+                textType.text = item.itemType ?: "カテゴリ無し"
+                // TODO: separate into string.xml
                 textPath.text = "${item.box.region.name} > ${item.box.name}"
                 pickerAmount.progress = item.amount
                 textComment.text = item.comment
@@ -46,5 +59,24 @@ class ItemInfoFragment : Fragment(R.layout.item_info_fragment) {
 
         viewModel.addItem(args.item)
     }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+
+        inflater.inflate(R.menu.item_info_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean =
+        when (item.itemId) {
+            R.id.edit_item -> {
+                val action =
+                    ItemInfoFragmentDirections.actionItemInfoFragmentToEditItemFragment(args.item)
+
+                findNavController().navigate(action)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+
 
 }

@@ -23,13 +23,15 @@ data class Item(
     val updatedAt: LocalDateTime
 ) : Parcelable
 
-object StorageReferenceParceler : Parceler<StorageReference> {
+object StorageReferenceParceler : Parceler<StorageReference?> {
     // TODO: you shouldn't depend on `firebaseStorage`
-    override fun create(parcel: Parcel): StorageReference =
+    override fun create(parcel: Parcel): StorageReference? =
         firebaseStorage.reference.child(parcel.readString() ?: throw IllegalStateException())
 
-    override fun StorageReference.write(parcel: Parcel, flags: Int) {
-        parcel.writeString(path)
+    override fun StorageReference?.write(parcel: Parcel, flags: Int) {
+        if (this != null) {
+            parcel.writeString(path)
+        }
     }
 
 }
