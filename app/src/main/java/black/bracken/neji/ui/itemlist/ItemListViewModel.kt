@@ -19,7 +19,13 @@ class ItemListViewModel @ViewModelInject constructor(
 
     fun fetchItems(box: Box) {
         viewModelScope.launch {
-            _items.emit(firebaseRepository.itemsInBox(box))
+            _items.emit(firebaseRepository.itemsInBox(box.id))
+        }
+    }
+
+    fun deleteItem(item: Item) {
+        viewModelScope.launch {
+            firebaseRepository.deleteItem(item.id)
         }
     }
 

@@ -15,9 +15,12 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import black.bracken.neji.R
 import black.bracken.neji.databinding.ItemListFragmentBinding
+import black.bracken.neji.ext.setOnSwipeItemToSideways
+import black.bracken.neji.model.Item
 import black.bracken.neji.ui.itemlist.item.ItemCardItem
 import black.bracken.neji.util.ItemOffsetDecoration
 import black.bracken.neji.util.createQrCode
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.wada811.viewbinding.viewBinding
 import com.xwray.groupie.GroupAdapter
@@ -47,6 +50,10 @@ class ItemListFragment : Fragment(R.layout.item_list_fragment) {
             addItemDecoration(
                 DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
             )
+
+            setOnSwipeItemToSideways<ItemCardItem> { cardItem, pos ->
+                onDeleteItem(cardItem.item, pos)
+            }
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
@@ -121,6 +128,18 @@ class ItemListFragment : Fragment(R.layout.item_list_fragment) {
             }
             else -> super.onOptionsItemSelected(item)
         }
+
+    private fun onDeleteItem(item: Item, position: Int) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.dialog_title_delete)
+            .setMessage(R.string.dialog_alert_on_deleting_item)
+            .setCancelable(true)
+            .setPositiveButton(R.string.button_delete) { _, _ ->
+                adapter.removeGroupAtAdapterPosition(position)
+                viewModel.deleteItem(item)
+            }
+            .show()
+    }
 
     private fun showQrCode(qrCodeValue: String) {
         val imageView = ImageView(requireContext())

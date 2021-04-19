@@ -1,6 +1,7 @@
 package black.bracken.neji.ui.itemlist.item
 
 import android.view.View
+import androidx.recyclerview.widget.ItemTouchHelper
 import black.bracken.neji.R
 import black.bracken.neji.databinding.ItemCardBinding
 import black.bracken.neji.model.Item
@@ -26,13 +27,15 @@ class ItemCardItem(
             root.setOnClickListener { onClick(item) }
             viewBinding.textName.text = item.name
 
-            imageRef?.also { ref ->
-                viewBinding.imageItem.load(ref) {
+            if (imageRef != null) {
+                viewBinding.imageItem.load(imageRef) {
                     diskCachePolicy(CachePolicy.DISABLED)
                     memoryCachePolicy(CachePolicy.DISABLED)
                 }
             }
         }
     }
+
+    override fun getSwipeDirs(): Int = ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
 
 }

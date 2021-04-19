@@ -13,14 +13,15 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import black.bracken.neji.R
 import black.bracken.neji.databinding.RegionListFragmentBinding
+import black.bracken.neji.ext.setOnSwipeItemToSideways
 import black.bracken.neji.model.Region
 import black.bracken.neji.ui.UserViewModel
 import black.bracken.neji.ui.regionlist.item.RegionCardItem
 import black.bracken.neji.util.ItemOffsetDecoration
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.wada811.viewbinding.viewBinding
 import com.xwray.groupie.GroupAdapter
@@ -79,7 +80,10 @@ class RegionListFragment : Fragment(R.layout.region_list_fragment) {
             addItemDecoration(
                 DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
             )
-            ItemTouchHelper(touchCallback).attachToRecyclerView(this)
+
+            setOnSwipeItemToSideways<RegionCardItem> { item, pos ->
+                onDeleteRegion(item.region, pos)
+            }
         }
     }
 
@@ -129,6 +133,18 @@ class RegionListFragment : Fragment(R.layout.region_list_fragment) {
         binding.fabEditItem.setOnClickListener {
             findNavController().navigate(RegionListFragmentDirections.actionRegionListFragmentToSearchItemFragment())
         }
+    }
+
+    private fun onDeleteRegion(region: Region, position: Int) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.dialog_title_delete)
+            .setMessage(R.string.dialog_alert_on_deleting_region)
+            .setCancelable(true)
+            .setPositiveButton(R.string.button_delete) { _, _ ->
+                adapter.removeGroupAtAdapterPosition(position)
+                viewModel.deleteRegion(region)
+            }
+            .show()
     }
 
     interface RegionListItemClickListener {

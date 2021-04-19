@@ -13,6 +13,7 @@ data class ItemEntity constructor(
     var name: String = "",
     var amount: Int = 0,
     var boxId: String = "",
+    // TODO: URLではなくてURI、何ならPathで良い
     var imageUrl: String? = null,
     var itemType: String? = null,
     var comment: String? = null,

@@ -5,9 +5,12 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
+import black.bracken.neji.model.Region
 import black.bracken.neji.repository.FirebaseRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
 class RegionListViewModel @ViewModelInject constructor(
@@ -25,5 +28,11 @@ class RegionListViewModel @ViewModelInject constructor(
                 ?.toMap()
         }
         .asLiveData()
+
+    fun deleteRegion(region: Region) {
+        viewModelScope.launch {
+            firebaseRepository.deleteRegion(region.id)
+        }
+    }
 
 }
