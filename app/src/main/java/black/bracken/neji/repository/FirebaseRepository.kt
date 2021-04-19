@@ -30,13 +30,23 @@ interface FirebaseRepository {
 
     suspend fun itemTypesOnce(): List<ItemType>?
 
+    suspend fun region(regionId: String): Region?
+
+    suspend fun box(boxId: String): Box?
+
     suspend fun findRegionByName(name: String): Region?
 
     fun boxesInRegion(region: Region): Flow<List<Box>?>
 
     suspend fun boxesInRegionOnce(region: Region): List<Box>?
 
-    suspend fun itemsInBox(box: Box): List<Item>?
+    suspend fun itemsInBox(boxId: String): List<Item>?
+
+    suspend fun addRegion(name: String): Region?
+
+    suspend fun addBox(name: String, qrCodeText: String?, region: Region): Box?
+
+    suspend fun deleteBox(boxId: String): Boolean
 
     suspend fun addItem(
         name: String,
@@ -60,10 +70,6 @@ interface FirebaseRepository {
     suspend fun deleteItem(
         itemId: String
     ): Boolean
-
-    suspend fun addRegion(name: String): Region?
-
-    suspend fun addBox(name: String, qrCodeText: String?, region: Region): Box?
 
     suspend fun updateItemAmount(item: Item, newAmount: Int): Item?
 
@@ -130,6 +136,39 @@ class FirebaseRepositoryImpl : FirebaseRepository {
                 }
         }
 
+    override suspend fun region(regionId: String): Region? =
+        suspendCoroutine { continuation ->
+            firestore
+                .collection("regions")
+                .document(regionId)
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    val entity = snapshot.toObject<RegionEntity>() ?: run {
+                        continuation.resume(null)
+                        return@addOnSuccessListener
+                    }
+
+                    continuation.resume(Region(entity, regionId))
+                }
+        }
+
+    override suspend fun box(boxId: String): Box? {
+        val boxEntity = suspendCoroutine<BoxEntity?> { continuation ->
+            firestore
+                .collection("boxes")
+                .document(boxId)
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    continuation.resume(snapshot.toObject<BoxEntity>())
+                }
+                .addOnFailureListener {
+                    continuation.resume(null)
+                }
+        } ?: return null
+
+        return Box(boxEntity, boxId) { region(it) }
+    }
+
     override suspend fun findRegionByName(name: String): Region? =
         suspendCoroutine { continuation ->
             firestore
@@ -189,11 +228,11 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         return entityMap?.mapNotNull { (id, entity) -> Box(entity, id) { region } }
     }
 
-    override suspend fun itemsInBox(box: Box): List<Item>? {
+    override suspend fun itemsInBox(boxId: String): List<Item>? {
         val entityMap = suspendCoroutine<Map<String, ItemEntity>?> { continuation ->
             firestore
                 .collection("items")
-                .whereIn("boxId", listOf(box.id))
+                .whereIn("boxId", listOf(boxId))
                 .get()
                 .addOnSuccessListener { snapshot ->
                     continuation.resume(
@@ -206,6 +245,8 @@ class FirebaseRepositoryImpl : FirebaseRepository {
                 }
                 .addOnFailureListener { continuation.resume(null) }
         }
+
+        val box = box(boxId) ?: return null
 
         return entityMap?.mapNotNull { (id, entity) ->
             Item(
@@ -369,6 +410,20 @@ class FirebaseRepositoryImpl : FirebaseRepository {
             Box(entity, id) { region }
         } else {
             null
+        }
+    }
+
+    override suspend fun deleteBox(boxId: String): Boolean {
+        itemsInBox(boxId)?.forEach { item ->
+            deleteItem(item.id)
+        }
+
+        return suspendCoroutine { continuation ->
+            firestore
+                .collection("boxes")
+                .document(boxId)
+                .delete()
+                .addOnCompleteListener { task -> continuation.resume(task.isSuccessful) }
         }
     }
 

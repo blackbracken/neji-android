@@ -2,6 +2,7 @@ package black.bracken.neji.ui.boxlist.item
 
 import android.content.Context
 import android.view.View
+import androidx.recyclerview.widget.ItemTouchHelper
 import black.bracken.neji.R
 import black.bracken.neji.databinding.BoxListCardBinding
 import black.bracken.neji.model.Box
@@ -10,7 +11,7 @@ import com.xwray.groupie.viewbinding.BindableItem
 
 class BoxCardItem(
     private val context: Context,
-    private val box: Box,
+    val box: Box,
     private val itemAmountInBox: Int,
     private val listener: BoxListViewModel.BoxListItemClickListener
 ) : BindableItem<BoxListCardBinding>() {
@@ -29,5 +30,7 @@ class BoxCardItem(
                 context.getString(R.string.box_list_card_item_amount, itemAmountInBox)
         }
     }
+
+    override fun getSwipeDirs(): Int = ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
 
 }

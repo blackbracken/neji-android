@@ -131,7 +131,8 @@ class ItemListFragment : Fragment(R.layout.item_list_fragment) {
 
     private fun onDeleteItem(item: Item, position: Int) {
         MaterialAlertDialogBuilder(requireContext())
-            .setMessage(R.string.dialog_are_you_sure_to_delete)
+            .setTitle(R.string.dialog_title_delete)
+            .setMessage(R.string.dialog_alert_on_deleting_item)
             .setCancelable(true)
             .setPositiveButton(R.string.button_delete) { _, _ ->
                 adapter.removeGroupAtAdapterPosition(position)

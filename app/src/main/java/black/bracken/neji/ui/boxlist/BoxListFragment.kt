@@ -13,11 +13,13 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import black.bracken.neji.R
 import black.bracken.neji.databinding.BoxListFragmentBinding
+import black.bracken.neji.ext.setOnSwipeItemToSideways
 import black.bracken.neji.ui.boxlist.item.BoxCardItem
 import black.bracken.neji.util.Failure
 import black.bracken.neji.util.ItemOffsetDecoration
 import black.bracken.neji.util.Loading
 import black.bracken.neji.util.Success
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.wada811.viewbinding.viewBinding
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
@@ -82,6 +84,10 @@ class BoxListFragment : Fragment(R.layout.box_list_fragment) {
                     DividerItemDecoration.VERTICAL
                 )
             )
+
+            setOnSwipeItemToSideways<BoxCardItem> { cardItem, pos ->
+                onDeleteBox(cardItem, pos)
+            }
         }
 
         binding.fabSearchItem.setOnClickListener {
@@ -108,5 +114,17 @@ class BoxListFragment : Fragment(R.layout.box_list_fragment) {
             }
             else -> super.onOptionsItemSelected(item)
         }
+
+    private fun onDeleteBox(cardItem: BoxCardItem, position: Int) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.dialog_title_delete)
+            .setMessage(R.string.dialog_alert_on_deleting_box)
+            .setCancelable(true)
+            .setPositiveButton(R.string.button_delete) { _, _ ->
+                adapter.removeGroupAtAdapterPosition(position)
+                viewModel.deleteBox(cardItem.box)
+            }
+            .show()
+    }
 
 }

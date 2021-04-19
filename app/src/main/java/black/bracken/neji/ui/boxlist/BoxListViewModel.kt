@@ -27,12 +27,18 @@ class BoxListViewModel @ViewModelInject constructor(
                 .boxesInRegionOnce(region)
                 ?.map { box ->
                     // TODO: improve performance (this curse N + 1 problem)
-                    box to (firebaseRepository.itemsInBox(box)?.size ?: 0) }
+                    box to (firebaseRepository.itemsInBox(box.id)?.size ?: 0) }
                 ?.toMap()
                 ?.let { boxAndAmounts -> Success(boxAndAmounts) }
                 ?: Failure()
 
             _boxAndItemCounts.postValue(result)
+        }
+    }
+
+    fun deleteBox(box: Box) {
+        viewModelScope.launch {
+            firebaseRepository.deleteBox(box.id)
         }
     }
 
