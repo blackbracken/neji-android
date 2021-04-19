@@ -44,6 +44,8 @@ interface FirebaseRepository {
 
     suspend fun addRegion(name: String): Region?
 
+    suspend fun deleteRegion(regionId: String): Boolean
+
     suspend fun addBox(name: String, qrCodeText: String?, region: Region): Box?
 
     suspend fun deleteBox(boxId: String): Boolean
@@ -391,6 +393,21 @@ class FirebaseRepositoryImpl : FirebaseRepository {
             Region(entity, id)
         } else {
             null
+        }
+    }
+
+    override suspend fun deleteRegion(regionId: String): Boolean {
+        val region = region(regionId) ?: return false
+        val boxes = boxesInRegionOnce(region) ?: return false
+
+        boxes.forEach { box -> deleteBox(box.id) }
+
+        return suspendCoroutine { continuation ->
+            firestore
+                .collection("regions")
+                .document(regionId)
+                .delete()
+                .addOnCompleteListener { task -> continuation.resume(task.isSuccessful) }
         }
     }
 

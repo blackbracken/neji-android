@@ -34,6 +34,7 @@
     <string name="dialog_title_delete">削除</string>
     <string name="dialog_alert_on_deleting_item">本当に削除しますか?</string>
     <string name="dialog_alert_on_deleting_box">このボックスが持つアイテムはすべて削除されますが、本当に削除しますか?</string>
+    <string name="dialog_alert_on_deleting_region">このリージョンが持つボックス及びアイテムはすべて削除されますが、本当に削除しますか?</string>
     <string name="button_delete">削除する</string>
     <string name="nav_name_region_list">場所一覧</string>
     <string name="nav_name_box_list">ボックス一覧</string>
