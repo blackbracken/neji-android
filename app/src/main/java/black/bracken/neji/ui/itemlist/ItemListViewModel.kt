@@ -23,4 +23,10 @@ class ItemListViewModel @ViewModelInject constructor(
         }
     }
 
+    fun deleteItem(item: Item) {
+        viewModelScope.launch {
+            firebaseRepository.deleteItem(item.id)
+        }
+    }
+
 }

@@ -57,6 +57,10 @@ interface FirebaseRepository {
         comment: String?
     ): Item?
 
+    suspend fun deleteItem(
+        itemId: String
+    ): Boolean
+
     suspend fun addRegion(name: String): Region?
 
     suspend fun addBox(name: String, qrCodeText: String?, region: Region): Box?
@@ -304,6 +308,32 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         }
     }
 
+    override suspend fun deleteItem(itemId: String): Boolean {
+        val imagePath = suspendCoroutine<String?> { continuation ->
+            firestore
+                .collection("boxes")
+                .document(itemId)
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    val url = snapshot.getString("imageUrl")
+
+                    continuation.resume(url?.let { imagePathOf(it) })
+                }
+                .addOnFailureListener { continuation.resume(null) }
+        }
+        if (imagePath != null) {
+            deleteImage(imagePath)
+        }
+
+        return suspendCoroutine { continuation ->
+            firestore
+                .collection("items")
+                .document(itemId)
+                .delete()
+                .addOnCompleteListener { task -> continuation.resume(task.isSuccessful) }
+        }
+    }
+
     override suspend fun addRegion(name: String): Region? {
         val id = UUID.randomUUID().toString()
         val entity = RegionEntity(name = name)
@@ -444,11 +474,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
     }
 
     private suspend fun updateImage(path: String, image: File): StorageReference? {
-        suspendCoroutine<Unit> { continuation ->
-            storage.child(path)
-                .delete()
-                .addOnCompleteListener { continuation.resume(Unit) }
-        }
+        deleteImage(path)
 
         return suspendCoroutine { continuation ->
             storage.child(path)
@@ -457,6 +483,15 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         }
     }
 
+    private suspend fun deleteImage(path: String): Boolean {
+        return suspendCoroutine { continuation ->
+            storage.child(path)
+                .delete()
+                .addOnCompleteListener { task -> continuation.resume(task.isSuccessful) }
+        }
+    }
+
+    // TODO: 専用の型を用意する
     private fun imagePathOf(id: String) = "items/$id/image.jpg"
 
     private inline fun <T : Any, reified E : Any> QuerySnapshot?.buildWithId(build: (E, String) -> T): List<T>? {
