@@ -7,6 +7,7 @@ import black.bracken.neji.firebase.document.ItemTypeEntity
 import black.bracken.neji.firebase.document.RegionEntity
 import black.bracken.neji.model.*
 import com.google.firebase.FirebaseApp
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.toObject
@@ -298,6 +299,15 @@ class FirebaseRepositoryImpl : FirebaseRepository {
                 .addOnFailureListener { continuation.resume(null) }
         } ?: return null
 
+        suspendCoroutine<Unit?> { continuation ->
+            firestore
+                .collection("boxes")
+                .document(box.id)
+                .update("itemKindAmount", FieldValue.increment(1L))
+                .addOnSuccessListener { continuation.resume(Unit) }
+                .addOnFailureListener { continuation.resume(null) }
+        } ?: return null
+
         return Item(
             entity = entity,
             id = id,
@@ -352,9 +362,22 @@ class FirebaseRepositoryImpl : FirebaseRepository {
     }
 
     override suspend fun deleteItem(itemId: String): Boolean {
+        val boxId = suspendCoroutine<String?> { continuation ->
+            firestore
+                .collection("items")
+                .document(itemId)
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    continuation.resume(snapshot.getString("boxId"))
+                }
+                .addOnFailureListener {
+                    continuation.resume(null)
+                }
+        } ?: return false
+
         val imagePath = suspendCoroutine<String?> { continuation ->
             firestore
-                .collection("boxes")
+                .collection("items")
                 .document(itemId)
                 .get()
                 .addOnSuccessListener { snapshot ->
@@ -362,11 +385,22 @@ class FirebaseRepositoryImpl : FirebaseRepository {
 
                     continuation.resume(url?.let { imagePathOf(it) })
                 }
-                .addOnFailureListener { continuation.resume(null) }
+                .addOnFailureListener {
+                    continuation.resume(null)
+                }
         }
         if (imagePath != null) {
             deleteImage(imagePath)
         }
+
+        suspendCoroutine<Unit?> { continuation ->
+            firestore
+                .collection("boxes")
+                .document(boxId)
+                .update("itemKindAmount", FieldValue.increment(-1L))
+                .addOnSuccessListener { continuation.resume(Unit) }
+                .addOnFailureListener { continuation.resume(null) }
+        } ?: return false
 
         return suspendCoroutine { continuation ->
             firestore
