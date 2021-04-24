@@ -495,7 +495,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
             firestore
                 .collection("regions")
                 .document(regionId)
-                .update("boxAmount", FieldValue.increment(1L))
+                .update("boxAmount", FieldValue.increment(-1L))
                 .addOnSuccessListener { continuation.resume(Unit) }
                 .addOnFailureListener { continuation.resume(null) }
         } ?: return false

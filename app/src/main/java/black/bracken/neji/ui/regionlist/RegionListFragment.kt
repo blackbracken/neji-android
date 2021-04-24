@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -29,6 +30,7 @@ import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.TouchCallback
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
@@ -86,29 +88,30 @@ class RegionListFragment : Fragment(R.layout.region_list_fragment) {
     private fun onSuccessInSigningIn() {
         Snackbar.make(binding.root, R.string.snackbar_success_sign_in, Snackbar.LENGTH_SHORT).show()
 
-        viewModel.regionAndAmounts.observe(viewLifecycleOwner) { regionAndAmount ->
-            adapter.clear()
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.regions.collect { regions ->
+                adapter.clear()
+                regions
+                    ?.map { region ->
+                        val listener = RegionListItemClickListener { newRegion ->
+                            val action = RegionListFragmentDirections
+                                .actionRegionListFragmentToBoxListFragment(newRegion)
 
-            regionAndAmount
-                ?.map { (region, amount) ->
-                    val listener = RegionListItemClickListener { newRegion ->
-                        val action = RegionListFragmentDirections
-                            .actionRegionListFragmentToBoxListFragment(newRegion)
+                            findNavController().navigate(action)
+                        }
 
-                        findNavController().navigate(action)
+                        RegionCardItem(requireContext(), region, listener)
+                    }
+                    ?.forEach { regionCard -> adapter.add(regionCard) }
+                    ?: run {
+                        Snackbar
+                            .make(binding.root, "failed to get regions", Snackbar.LENGTH_SHORT)
+                            .setBackgroundTint(Color.RED)
+                            .show()
                     }
 
-                    RegionCardItem(requireContext(), region, amount, listener)
-                }
-                ?.forEach { regionCard -> adapter.add(regionCard) }
-                ?: run {
-                    Snackbar
-                        .make(binding.root, "failed to get regions", Snackbar.LENGTH_SHORT)
-                        .setBackgroundTint(Color.RED)
-                        .show()
-                }
-
-            binding.indicator.isIndeterminate = false
+                binding.indicator.isIndeterminate = false
+            }
         }
 
         binding.fabEditItem.setOnClickListener {
