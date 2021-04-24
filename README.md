@@ -86,4 +86,4 @@ Login with the app using the firebase project.
 
 The `Firebase Web API key` is the value of the `Web API Key` in the `Project settings`.
 
-<img src="https://raw.githubusercontent.com/blackbracken/neji-android/feature/54/images/login.png" width="50%" height="50%" align="center"/>
+<img src="https://raw.githubusercontent.com/blackbracken/neji-android/master/images/login.png" width="50%" height="50%" align="middle"/>
