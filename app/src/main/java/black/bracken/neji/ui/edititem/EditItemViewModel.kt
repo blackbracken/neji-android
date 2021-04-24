@@ -31,7 +31,7 @@ class EditItemViewModel @ViewModelInject constructor(
 
     val regions = firebaseRepository.regions()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), listOf())
-    val itemTypes = firebaseRepository.itemTypes()
+    val itemCategories = firebaseRepository.itemCategories()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), listOf())
 
     private val _boxes = MutableStateFlow<Resource<List<Box>>>(Loading)
@@ -51,12 +51,12 @@ class EditItemViewModel @ViewModelInject constructor(
         source: Item,
         name: String,
         amount: Int,
-        itemTypeText: String?,
+        itemCategoryText: String?,
         boxText: String?,
         comment: String?
     ) {
-        val itemType = itemTypes.value
-            ?.find { it.toString() == itemTypeText }
+        val itemCategory = itemCategories.value
+            ?.find { it.toString() == itemCategoryText }
             ?: return
         val box = (boxes.value as? Success)?.value
             ?.find { it.toString() == boxText }
@@ -67,7 +67,7 @@ class EditItemViewModel @ViewModelInject constructor(
                 item = source,
                 name = name,
                 amount = amount,
-                itemType = itemType,
+                itemCategory = itemCategory,
                 image = imageUri.value?.also { compressImage(context, it) }?.toFile(),
                 box = box,
                 comment = comment

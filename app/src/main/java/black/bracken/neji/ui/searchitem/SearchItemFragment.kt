@@ -36,23 +36,23 @@ class SearchItemFragment : Fragment(R.layout.search_item_fragment) {
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.itemTypes.collect { itemTypes ->
-                if (itemTypes == null) {
+            viewModel.itemCategories.collect { itemCategories ->
+                if (itemCategories == null) {
                     Snackbar
                         .make(
                             requireView().rootView,
-                            "Failed to get itemTypes",
+                            "Failed to get itemCategories",
                             Snackbar.LENGTH_SHORT
                         )
                         .show()
                     return@collect
                 }
 
-                binding.autoCompleteTextElementItemType.setAdapter(
+                binding.autoCompleteTextElementItemCategory.setAdapter(
                     ArrayAdapter(
                         requireContext(),
                         R.layout.list_item,
-                        itemTypes
+                        itemCategories
                     )
                 )
             }
@@ -114,7 +114,7 @@ class SearchItemFragment : Fragment(R.layout.search_item_fragment) {
                 viewModel.emitQuery(
                     itemName = editElementName.text?.toString()
                         ?: "", // TODO: handle if the string is blank or null
-                    itemType = autoCompleteTextElementItemType.text?.toString()
+                    itemCategory = autoCompleteTextElementItemCategory.text?.toString()
                         ?.takeIf { it.isNotBlank() },
                     regionName = autoCompleteTextElementRegion.text?.toString()
                         ?.takeIf { it.isNotBlank() },

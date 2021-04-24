@@ -17,7 +17,7 @@ class SearchItemViewModel @ViewModelInject constructor(
     private val _searchQuery = MutableSharedFlow<ItemSearchQuery>(replay = 0)
     val searchQuery get() = _searchQuery.asSharedFlow()
 
-    val itemTypes = firebaseRepository.itemTypes()
+    val itemCategories = firebaseRepository.itemCategories()
     val regions = firebaseRepository.regions()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), listOf())
 
@@ -48,12 +48,12 @@ class SearchItemViewModel @ViewModelInject constructor(
 
     fun emitQuery(
         itemName: String,
-        itemType: String?,
+        itemCategory: String?,
         regionName: String?,
         boxName: String?
     ) {
         viewModelScope.launch {
-            _searchQuery.emit(ItemSearchQuery(itemName, itemType, regionName, boxName))
+            _searchQuery.emit(ItemSearchQuery(itemName, itemCategory, regionName, boxName))
         }
     }
 

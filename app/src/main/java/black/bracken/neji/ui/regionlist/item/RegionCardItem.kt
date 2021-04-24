@@ -12,7 +12,6 @@ import com.xwray.groupie.viewbinding.BindableItem
 class RegionCardItem(
     private val context: Context,
     val region: Region,
-    private val boxAmountInRegion: Int,
     private val listener: RegionListFragment.RegionListItemClickListener
 ) : BindableItem<RegionListCardBinding>() {
 
@@ -27,7 +26,7 @@ class RegionCardItem(
             root.setOnClickListener { listener.onClick(region) }
             textName.text = region.name
             textAmount.text =
-                context.getString(R.string.region_list_card_box_amount, boxAmountInRegion)
+                context.getString(R.string.region_list_card_box_amount, region.boxAmount)
         }
     }
 

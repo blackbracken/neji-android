@@ -2,11 +2,12 @@ package black.bracken.neji.repository
 
 import androidx.core.net.toUri
 import black.bracken.neji.firebase.document.BoxEntity
+import black.bracken.neji.firebase.document.ItemCategoryEntity
 import black.bracken.neji.firebase.document.ItemEntity
-import black.bracken.neji.firebase.document.ItemTypeEntity
 import black.bracken.neji.firebase.document.RegionEntity
 import black.bracken.neji.model.*
 import com.google.firebase.FirebaseApp
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.toObject
@@ -24,11 +25,11 @@ import kotlin.coroutines.suspendCoroutine
 
 interface FirebaseRepository {
 
-    fun itemTypes(): Flow<List<ItemType>?>
+    fun itemCategories(): Flow<List<ItemCategory>?>
 
     fun regions(): Flow<List<Region>?>
 
-    suspend fun itemTypesOnce(): List<ItemType>?
+    suspend fun itemCategoriesOnce(): List<ItemCategory>?
 
     suspend fun region(regionId: String): Region?
 
@@ -53,7 +54,7 @@ interface FirebaseRepository {
     suspend fun addItem(
         name: String,
         amount: Int,
-        itemType: ItemType?,
+        itemCategory: ItemCategory?,
         box: Box,
         image: File?,
         comment: String?
@@ -63,7 +64,7 @@ interface FirebaseRepository {
         item: Item,
         name: String,
         amount: Int,
-        itemType: ItemType?,
+        itemCategory: ItemCategory?,
         image: File?,
         box: Box,
         comment: String?
@@ -108,30 +109,30 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         awaitClose { registration.remove() }
     }
 
-    override fun itemTypes(): Flow<List<ItemType>?> = callbackFlow {
+    override fun itemCategories(): Flow<List<ItemCategory>?> = callbackFlow {
         val registration = firestore
-            .collection("itemTypes")
+            .collection("itemCategories")
             .addSnapshotListener { value, error ->
-                val itemTypes = value
+                val itemCategories = value
                     ?.takeIf { error == null }
-                    ?.buildWithId { entity: ItemTypeEntity, _ -> ItemType(entity) }
-                offer(itemTypes)
+                    ?.buildWithId { entity: ItemCategoryEntity, _ -> ItemCategory(entity) }
+                offer(itemCategories)
             }
 
         awaitClose { registration.remove() }
     }
 
-    override suspend fun itemTypesOnce(): List<ItemType>? =
+    override suspend fun itemCategoriesOnce(): List<ItemCategory>? =
         suspendCoroutine { continuation ->
             firestore
-                .collection("itemTypes")
+                .collection("itemCategories")
                 .get()
                 .addOnSuccessListener { snapshot ->
-                    val itemTypes = snapshot
-                        .toObjects<ItemTypeEntity>()
-                        .map { entity -> ItemType(entity) }
+                    val itemCategories = snapshot
+                        .toObjects<ItemCategoryEntity>()
+                        .map { entity -> ItemCategory(entity) }
 
-                    continuation.resume(itemTypes)
+                    continuation.resume(itemCategories)
                 }
                 .addOnFailureListener {
                     continuation.resume(null)
@@ -265,7 +266,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
     override suspend fun addItem(
         name: String,
         amount: Int,
-        itemType: ItemType?,
+        itemCategory: ItemCategory?,
         box: Box,
         image: File?,
         comment: String?
@@ -285,7 +286,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
             amount = amount,
             boxId = box.id,
             imageUrl = imagePath,
-            itemType = itemType?.name,
+            itemCategory = itemCategory?.name,
             comment = comment
         )
 
@@ -294,6 +295,15 @@ class FirebaseRepositoryImpl : FirebaseRepository {
                 .collection("items")
                 .document(id)
                 .set(entity)
+                .addOnSuccessListener { continuation.resume(Unit) }
+                .addOnFailureListener { continuation.resume(null) }
+        } ?: return null
+
+        suspendCoroutine<Unit?> { continuation ->
+            firestore
+                .collection("boxes")
+                .document(box.id)
+                .update("itemTypeAmount", FieldValue.increment(1L))
                 .addOnSuccessListener { continuation.resume(Unit) }
                 .addOnFailureListener { continuation.resume(null) }
         } ?: return null
@@ -310,7 +320,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         item: Item,
         name: String,
         amount: Int,
-        itemType: ItemType?,
+        itemCategory: ItemCategory?,
         image: File?,
         box: Box,
         comment: String?
@@ -325,7 +335,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         val newItem = item.copy(
             name = name,
             amount = amount,
-            itemType = itemType?.name,
+            itemCategory = itemCategory,
             imageReference = imageReference,
             box = box,
             comment = comment
@@ -337,7 +347,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
             "amount" to newItem.amount.takeIf { it != item.amount },
             "boxId" to newItem.box.takeIf { it != item.box }?.id,
             "imageReference" to newItem.imageReference.takeIf { it != item.imageReference },
-            "itemType" to newItem.itemType.takeIf { it != item.itemType },
+            "itemCategory" to newItem.itemCategory.takeIf { it != item.itemCategory },
             "comment" to newItem.comment.takeIf { it != item.comment }
         ).filterValues { it != null }
 
@@ -352,9 +362,22 @@ class FirebaseRepositoryImpl : FirebaseRepository {
     }
 
     override suspend fun deleteItem(itemId: String): Boolean {
+        val boxId = suspendCoroutine<String?> { continuation ->
+            firestore
+                .collection("items")
+                .document(itemId)
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    continuation.resume(snapshot.getString("boxId"))
+                }
+                .addOnFailureListener {
+                    continuation.resume(null)
+                }
+        } ?: return false
+
         val imagePath = suspendCoroutine<String?> { continuation ->
             firestore
-                .collection("boxes")
+                .collection("items")
                 .document(itemId)
                 .get()
                 .addOnSuccessListener { snapshot ->
@@ -362,11 +385,22 @@ class FirebaseRepositoryImpl : FirebaseRepository {
 
                     continuation.resume(url?.let { imagePathOf(it) })
                 }
-                .addOnFailureListener { continuation.resume(null) }
+                .addOnFailureListener {
+                    continuation.resume(null)
+                }
         }
         if (imagePath != null) {
             deleteImage(imagePath)
         }
+
+        suspendCoroutine<Unit?> { continuation ->
+            firestore
+                .collection("boxes")
+                .document(boxId)
+                .update("itemTypeAmount", FieldValue.increment(-1L))
+                .addOnSuccessListener { continuation.resume(Unit) }
+                .addOnFailureListener { continuation.resume(null) }
+        } ?: return false
 
         return suspendCoroutine { continuation ->
             firestore
@@ -423,6 +457,15 @@ class FirebaseRepositoryImpl : FirebaseRepository {
                 .addOnCompleteListener { task -> continuation.resume(task.isSuccessful) }
         }
 
+        suspendCoroutine<Unit?> { continuation ->
+            firestore
+                .collection("regions")
+                .document(region.id)
+                .update("boxAmount", FieldValue.increment(1L))
+                .addOnSuccessListener { continuation.resume(Unit) }
+                .addOnFailureListener { continuation.resume(null) }
+        } ?: return null
+
         return if (hasSuccessfulAdding) {
             Box(entity, id) { region }
         } else {
@@ -431,9 +474,31 @@ class FirebaseRepositoryImpl : FirebaseRepository {
     }
 
     override suspend fun deleteBox(boxId: String): Boolean {
+        val regionId = suspendCoroutine<String?> { continuation ->
+            firestore
+                .collection("boxes")
+                .document(boxId)
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    continuation.resume(snapshot.getString("regionId"))
+                }
+                .addOnFailureListener {
+                    continuation.resume(null)
+                }
+        } ?: return false
+
         itemsInBox(boxId)?.forEach { item ->
             deleteItem(item.id)
         }
+
+        suspendCoroutine<Unit?> { continuation ->
+            firestore
+                .collection("regions")
+                .document(regionId)
+                .update("boxAmount", FieldValue.increment(-1L))
+                .addOnSuccessListener { continuation.resume(Unit) }
+                .addOnFailureListener { continuation.resume(null) }
+        } ?: return false
 
         return suspendCoroutine { continuation ->
             firestore
@@ -460,9 +525,9 @@ class FirebaseRepositoryImpl : FirebaseRepository {
             val registration = firestore
                 .collection("items")
                 .let {
-                    // filter by itemType
-                    if (query.byType != null) {
-                        it.whereEqualTo("itemType", query.byType)
+                    // filter by item category
+                    if (query.byCategory != null) {
+                        it.whereEqualTo("itemCategory", query.byCategory)
                     } else {
                         it
                     }

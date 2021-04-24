@@ -7,7 +7,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.observe
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -15,16 +15,13 @@ import black.bracken.neji.R
 import black.bracken.neji.databinding.BoxListFragmentBinding
 import black.bracken.neji.ext.setOnSwipeItemToSideways
 import black.bracken.neji.ui.boxlist.item.BoxCardItem
-import black.bracken.neji.util.Failure
 import black.bracken.neji.util.ItemOffsetDecoration
-import black.bracken.neji.util.Loading
-import black.bracken.neji.util.Success
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.wada811.viewbinding.viewBinding
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
+import kotlinx.coroutines.flow.collect
 
 @AndroidEntryPoint
 class BoxListFragment : Fragment(R.layout.box_list_fragment) {
@@ -43,35 +40,25 @@ class BoxListFragment : Fragment(R.layout.box_list_fragment) {
         binding.indicator.isIndeterminate = true
         viewModel.fetchBoxes(args.region)
 
-        viewModel.boxAndAmounts.observe(viewLifecycleOwner) { boxesResource ->
-            adapter.clear()
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.boxes.collect { boxes ->
+                adapter.clear()
+                boxes.forEach { box ->
+                    val card = BoxCardItem(
+                        requireContext(),
+                        box,
+                        BoxListViewModel.BoxListItemClickListener { newBox ->
+                            val action = BoxListFragmentDirections
+                                .actionBoxListFragmentToItemListFragment(newBox)
 
-            when (boxesResource) {
-                is Success -> {
-                    boxesResource.value.forEach { (box, amount) ->
-                        val card = BoxCardItem(
-                            requireContext(),
-                            box,
-                            amount,
-                            BoxListViewModel.BoxListItemClickListener { newBox ->
-                                val action =
-                                    BoxListFragmentDirections.actionBoxListFragmentToItemListFragment(
-                                        newBox
-                                    )
+                            findNavController().navigate(action)
+                        }
+                    )
 
-                                findNavController().navigate(action)
-                            }
-                        )
-
-                        adapter.add(card)
-                    }
-                    binding.indicator.isIndeterminate = false
+                    adapter.add(card)
                 }
-                is Failure -> {
-                    Timber.e("failed to get box, error: ${boxesResource.error}")
-                    binding.indicator.isIndeterminate = false
-                }
-                is Loading -> Unit /* do nothing */
+
+                binding.indicator.isIndeterminate = false
             }
         }
 
