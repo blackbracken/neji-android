@@ -85,3 +85,5 @@ The `App ID` will now be shown in the `Your apps` column.
 Login with the app using the firebase project.
 
 The `Firebase Web API key` is the value of the `Web API Key` in the `Project settings`.
+
+<img src="https://raw.githubusercontent.com/blackbracken/neji-android/feature/54/images/login.png" width="70%" height="70%"/>
