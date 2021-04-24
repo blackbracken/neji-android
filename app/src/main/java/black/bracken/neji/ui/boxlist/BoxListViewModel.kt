@@ -12,27 +12,24 @@ import black.bracken.neji.util.Failure
 import black.bracken.neji.util.Loading
 import black.bracken.neji.util.Resource
 import black.bracken.neji.util.Success
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
 class BoxListViewModel @ViewModelInject constructor(
     private val firebaseRepository: FirebaseRepository
 ) : ViewModel() {
 
-    private val _boxAndItemCounts = MutableLiveData<Resource<Map<Box, Int>>>(Loading)
-    val boxAndAmounts: LiveData<Resource<Map<Box, Int>>> get() = _boxAndItemCounts
+    private val _boxes: MutableStateFlow<List<Box>> = MutableStateFlow(listOf())
+    val boxes: StateFlow<List<Box>> get() = _boxes
 
     fun fetchBoxes(region: Region) {
         viewModelScope.launch {
-            val result = firebaseRepository
-                .boxesInRegionOnce(region)
-                ?.map { box ->
-                    // TODO: improve performance (this curse N + 1 problem)
-                    box to (firebaseRepository.itemsInBox(box.id)?.size ?: 0) }
-                ?.toMap()
-                ?.let { boxAndAmounts -> Success(boxAndAmounts) }
-                ?: Failure()
-
-            _boxAndItemCounts.postValue(result)
+            firebaseRepository.boxesInRegion(region)
+                .filterNotNull()
+                .collect { box -> _boxes.emit(box) }
         }
     }
 

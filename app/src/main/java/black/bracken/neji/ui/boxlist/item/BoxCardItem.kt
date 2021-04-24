@@ -12,7 +12,6 @@ import com.xwray.groupie.viewbinding.BindableItem
 class BoxCardItem(
     private val context: Context,
     val box: Box,
-    private val itemAmountInBox: Int,
     private val listener: BoxListViewModel.BoxListItemClickListener
 ) : BindableItem<BoxListCardBinding>() {
 
@@ -27,7 +26,7 @@ class BoxCardItem(
             root.setOnClickListener { listener.onClick(box) }
             textName.text = box.name
             textAmount.text =
-                context.getString(R.string.box_list_card_item_amount, itemAmountInBox)
+                context.getString(R.string.box_list_card_item_amount, box.itemKindAmount)
         }
     }
 
