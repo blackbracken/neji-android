@@ -10,7 +10,7 @@ import java.time.LocalDateTime
 data class Region(
     val id: String,
     val name: String,
-    val boxTypeAmount: Int,
+    val boxAmount: Int,
     val updatedAt: LocalDateTime
 ) : Parcelable {
 
@@ -22,7 +22,7 @@ fun Region(entity: RegionEntity, id: String): Region {
     return Region(
         id = id,
         name = entity.name,
-        boxTypeAmount = entity.boxTypeAmount,
+        boxAmount = entity.boxAmount,
         updatedAt = entity.updatedAt.toLocalTimeDate()
     )
 }

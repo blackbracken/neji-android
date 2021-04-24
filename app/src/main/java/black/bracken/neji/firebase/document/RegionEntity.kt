@@ -8,6 +8,6 @@ import java.util.*
 @IgnoreExtraProperties
 data class RegionEntity(
     var name: String = "",
-    val boxTypeAmount: Int = 0,
+    val boxAmount: Int = 0,
     @JvmField @ServerTimestamp var updatedAt: Date = Date()
 ) : Serializable
