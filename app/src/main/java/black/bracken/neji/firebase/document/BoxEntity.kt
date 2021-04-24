@@ -10,6 +10,6 @@ data class BoxEntity(
     var name: String = "",
     var regionId: String = "",
     var qrCodeText: String? = null,
-    var itemKindAmount: Int = 0,
+    var itemTypeAmount: Int = 0,
     @JvmField @ServerTimestamp var updatedAt: Date = Date()
 ) : Serializable

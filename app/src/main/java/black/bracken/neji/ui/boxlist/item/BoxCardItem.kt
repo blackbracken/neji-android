@@ -26,7 +26,7 @@ class BoxCardItem(
             root.setOnClickListener { listener.onClick(box) }
             textName.text = box.name
             textAmount.text =
-                context.getString(R.string.box_list_card_item_amount, box.itemKindAmount)
+                context.getString(R.string.box_list_card_item_amount, box.itemTypeAmount)
         }
     }
 

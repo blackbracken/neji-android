@@ -303,7 +303,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
             firestore
                 .collection("boxes")
                 .document(box.id)
-                .update("itemKindAmount", FieldValue.increment(1L))
+                .update("itemTypeAmount", FieldValue.increment(1L))
                 .addOnSuccessListener { continuation.resume(Unit) }
                 .addOnFailureListener { continuation.resume(null) }
         } ?: return null
@@ -397,7 +397,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
             firestore
                 .collection("boxes")
                 .document(boxId)
-                .update("itemKindAmount", FieldValue.increment(-1L))
+                .update("itemTypeAmount", FieldValue.increment(-1L))
                 .addOnSuccessListener { continuation.resume(Unit) }
                 .addOnFailureListener { continuation.resume(null) }
         } ?: return false

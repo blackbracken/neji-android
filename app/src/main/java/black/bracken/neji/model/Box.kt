@@ -12,7 +12,7 @@ data class Box(
     val name: String,
     val region: Region,
     val qrCodeText: String?,
-    val itemKindAmount: Int,
+    val itemTypeAmount: Int,
     val updatedAt: LocalDateTime
 ) : Parcelable {
 
@@ -33,7 +33,7 @@ suspend fun Box(
         name = entity.name,
         region = region,
         qrCodeText = entity.qrCodeText,
-        itemKindAmount = entity.itemKindAmount,
+        itemTypeAmount = entity.itemTypeAmount,
         updatedAt = entity.updatedAt.toLocalTimeDate()
     )
 }
