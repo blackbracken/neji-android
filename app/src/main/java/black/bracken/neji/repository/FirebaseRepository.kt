@@ -457,6 +457,15 @@ class FirebaseRepositoryImpl : FirebaseRepository {
                 .addOnCompleteListener { task -> continuation.resume(task.isSuccessful) }
         }
 
+        suspendCoroutine<Unit?> { continuation ->
+            firestore
+                .collection("regions")
+                .document(region.id)
+                .update("boxTypeAmount", FieldValue.increment(1L))
+                .addOnSuccessListener { continuation.resume(Unit) }
+                .addOnFailureListener { continuation.resume(null) }
+        } ?: return null
+
         return if (hasSuccessfulAdding) {
             Box(entity, id) { region }
         } else {
@@ -465,9 +474,31 @@ class FirebaseRepositoryImpl : FirebaseRepository {
     }
 
     override suspend fun deleteBox(boxId: String): Boolean {
+        val regionId = suspendCoroutine<String?> { continuation ->
+            firestore
+                .collection("boxes")
+                .document(boxId)
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    continuation.resume(snapshot.getString("regionId"))
+                }
+                .addOnFailureListener {
+                    continuation.resume(null)
+                }
+        } ?: return false
+
         itemsInBox(boxId)?.forEach { item ->
             deleteItem(item.id)
         }
+
+        suspendCoroutine<Unit?> { continuation ->
+            firestore
+                .collection("regions")
+                .document(regionId)
+                .update("boxTypeAmount", FieldValue.increment(1L))
+                .addOnSuccessListener { continuation.resume(Unit) }
+                .addOnFailureListener { continuation.resume(null) }
+        } ?: return false
 
         return suspendCoroutine { continuation ->
             firestore
