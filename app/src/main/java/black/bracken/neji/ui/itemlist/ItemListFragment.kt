@@ -88,6 +88,13 @@ class ItemListFragment : Fragment(R.layout.item_list_fragment) {
         super.onCreateOptionsMenu(menu, inflater)
 
         inflater.inflate(R.menu.item_list_menu, menu)
+
+        if (args.box.qrCodeText == null) {
+            (0 until menu.size())
+                .map { idx -> menu.getItem(idx) }
+                .filter { item -> item.itemId in setOf(R.id.show_qr_code, R.id.find_qr_code) }
+                .forEach { item -> menu.removeItem(item.itemId) }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean =
