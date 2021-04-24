@@ -60,7 +60,7 @@
             android:layout_marginTop="@dimen/margin_medium"
             android:layout_marginEnd="@dimen/margin_small"
             android:hint="@string/edit_item_amount"
-            app:layout_constraintEnd_toStartOf="@id/input_item_type"
+            app:layout_constraintEnd_toStartOf="@id/input_item_category"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/input_item_name">
 
@@ -75,19 +75,19 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/input_item_type"
+            android:id="@+id/input_item_category"
             style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/margin_medium"
-            android:hint="@string/edit_item_type"
+            android:hint="@string/edit_item_category"
             app:layout_constraintBottom_toBottomOf="@id/input_item_amount"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/input_item_amount"
             app:layout_constraintTop_toTopOf="@id/input_item_amount">
 
             <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                android:id="@+id/auto_complete_text_item_type"
+                android:id="@+id/auto_complete_text_item_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"

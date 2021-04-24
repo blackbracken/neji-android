@@ -45,7 +45,7 @@ class ItemInfoFragment : Fragment(R.layout.item_info_fragment) {
                 }
 
                 textName.text = item.name
-                textType.text = item.itemType ?: "カテゴリ無し"
+                textType.text = item.itemCategory?.name ?: "カテゴリ無し"
                 // TODO: separate into string.xml
                 textPath.text = "${item.box.region.name} > ${item.box.name}"
                 pickerAmount.progress = item.amount

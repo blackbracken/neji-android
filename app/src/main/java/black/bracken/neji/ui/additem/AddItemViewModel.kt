@@ -21,7 +21,7 @@ class AddItemViewModel @ViewModelInject constructor(
     private val firebaseRepository: FirebaseRepository
 ) : ViewModel() {
 
-    val itemTypes = firebaseRepository.itemTypes()
+    val itemCategories = firebaseRepository.itemCategories()
 
     private val _registrationResult = MutableSharedFlow<Unit?>(replay = 0)
     val registrationResult = _registrationResult.asSharedFlow()
@@ -38,19 +38,19 @@ class AddItemViewModel @ViewModelInject constructor(
     fun addItem(
         context: Context,
         name: String,
-        itemTypeName: String?,
+        itemCategoryName: String?,
         amount: Int,
         comment: String,
         box: Box
     ) {
         viewModelScope.launch {
-            val itemType = firebaseRepository.itemTypesOnce()?.find { it.name == itemTypeName }
+            val itemCategory = firebaseRepository.itemCategoriesOnce()?.find { it.name == itemCategoryName }
 
             _registrationResult.emit(
                 firebaseRepository.addItem(
                     name = name,
                     amount = amount,
-                    itemType = itemType,
+                    itemCategory = itemCategory,
                     box = box,
                     image = _imageUri.value?.let { compressImage(context, it) },
                     comment = comment
@@ -84,7 +84,7 @@ class AddItemViewModel @ViewModelInject constructor(
         }
     }
 
-    fun validateItemTypeText(context: Context, text: String?): ValidatedResult<String?> {
+    fun validateItemCategoryText(text: String?): ValidatedResult<String?> {
         return ValidatedResult.Success(text)
     }
 

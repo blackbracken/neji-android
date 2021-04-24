@@ -18,13 +18,14 @@ data class Item(
     val amount: Int,
     val box: Box,
     val imageReference: @WriteWith<StorageReferenceParceler> StorageReference?,
-    val itemType: String?,
+    val itemCategory: ItemCategory?,
     val comment: String?,
     val updatedAt: LocalDateTime
 ) : Parcelable
 
 object StorageReferenceParceler : Parceler<StorageReference?> {
     // TODO: you shouldn't depend on `firebaseStorage`
+    @Suppress("RedundantNullableReturnType")
     override fun create(parcel: Parcel): StorageReference? =
         firebaseStorage.reference.child(parcel.readString() ?: throw IllegalStateException())
 
@@ -52,7 +53,7 @@ suspend fun Item(
         amount = entity.amount,
         box = box,
         imageReference = imageReference,
-        itemType = entity.itemType,
+        itemCategory = entity.itemCategory?.let { ItemCategory(it) },
         comment = entity.comment,
         updatedAt = entity.updatedAt.toLocalTimeDate()
     )

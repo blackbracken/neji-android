@@ -15,13 +15,13 @@
     <string name="box_list_card_item_amount">%d種</string>
     <string name="edit_item_name">アイテム名</string>
     <string name="edit_item_amount">個数</string>
-    <string name="edit_item_type">アイテムの種類</string>
+    <string name="edit_item_category">アイテムのカテゴリ</string>
     <string name="edit_item_comment">コメント</string>
     <string name="edit_item_region_of_box">ボックスのある場所</string>
     <string name="edit_item_box_to_save">保存するボックス</string>
     <string name="edit_item_complete">完了</string>
     <string name="search_element_name">検索要素 - 名前</string>
-    <string name="search_element_item_type">検索要素 - アイテムの種類</string>
+    <string name="search_element_item_category">検索要素 - アイテムのカテゴリ</string>
     <string name="search_element_region">検索要素 - アイテムのある場所</string>
     <string name="search_element_box">検索要素 - アイテムのあるボックス</string>
     <string name="search_searching">検索</string>
