@@ -71,7 +71,11 @@ class AddItemFragment : Fragment(R.layout.add_item_fragment) {
                 .cropSquare()
                 .compress(2048)
                 .maxResultSize(512, 512)
-                .start { _, data -> viewModel.setImageUri(data?.data) }
+                .start { code, data ->
+                    if (code != ImagePicker.RESULT_ERROR) {
+                        viewModel.setImageUri(data?.data)
+                    }
+                }
         }
 
         binding.buttonAdd.setOnClickListener { tryToAddItem() }

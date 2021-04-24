@@ -347,7 +347,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
             "amount" to newItem.amount.takeIf { it != item.amount },
             "boxId" to newItem.box.takeIf { it != item.box }?.id,
             "imageReference" to newItem.imageReference.takeIf { it != item.imageReference },
-            "itemCategory" to newItem.itemCategory.takeIf { it != item.itemCategory },
+            "itemCategory" to newItem.itemCategory?.name.takeIf { it != item.itemCategory?.name },
             "comment" to newItem.comment.takeIf { it != item.comment }
         ).filterValues { it != null }
 

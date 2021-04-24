@@ -24,10 +24,10 @@ class AddItemViewModel @ViewModelInject constructor(
     val itemCategories = firebaseRepository.itemCategories()
 
     private val _registrationResult = MutableSharedFlow<Unit?>(replay = 0)
-    val registrationResult = _registrationResult.asSharedFlow()
+    val registrationResult get() = _registrationResult.asSharedFlow()
 
     private val _imageUri = MutableStateFlow<Uri?>(null)
-    val imageUri = _imageUri.asStateFlow()
+    val imageUri get() = _imageUri.asStateFlow()
 
     fun setImageUri(uri: Uri?) {
         viewModelScope.launch {
@@ -44,7 +44,8 @@ class AddItemViewModel @ViewModelInject constructor(
         box: Box
     ) {
         viewModelScope.launch {
-            val itemCategory = firebaseRepository.itemCategoriesOnce()?.find { it.name == itemCategoryName }
+            val itemCategory =
+                firebaseRepository.itemCategoriesOnce()?.find { it.name == itemCategoryName }
 
             _registrationResult.emit(
                 firebaseRepository.addItem(
