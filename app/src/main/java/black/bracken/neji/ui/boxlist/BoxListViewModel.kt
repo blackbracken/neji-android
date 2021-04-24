@@ -1,17 +1,11 @@
 package black.bracken.neji.ui.boxlist
 
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import black.bracken.neji.model.Box
 import black.bracken.neji.model.Region
 import black.bracken.neji.repository.FirebaseRepository
-import black.bracken.neji.util.Failure
-import black.bracken.neji.util.Loading
-import black.bracken.neji.util.Resource
-import black.bracken.neji.util.Success
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
