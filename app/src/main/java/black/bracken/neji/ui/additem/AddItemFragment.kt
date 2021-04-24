@@ -32,14 +32,14 @@ class AddItemFragment : Fragment(R.layout.add_item_fragment) {
         super.onViewCreated(view, savedInstanceState)
 
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.itemTypes.collect { itemTypes ->
-                if (itemTypes != null) {
-                    binding.autoCompleteTextItemType.setAdapter(
-                        ArrayAdapter(requireContext(), R.layout.list_item, itemTypes)
+            viewModel.itemCategories.collect { itemCategories ->
+                if (itemCategories != null) {
+                    binding.autoCompleteTextItemCategory.setAdapter(
+                        ArrayAdapter(requireContext(), R.layout.list_item, itemCategories)
                     )
                 } else {
                     Snackbar
-                        .make(binding.root, "failed to get itemTypes", Snackbar.LENGTH_SHORT)
+                        .make(binding.root, "failed to get itemCategories", Snackbar.LENGTH_SHORT)
                         .setBackgroundTint(Color.RED)
                         .show()
                 }
@@ -80,7 +80,7 @@ class AddItemFragment : Fragment(R.layout.add_item_fragment) {
     private fun tryToAddItem() {
         val inputItemName = binding.inputItemName.apply { error = null }
         val inputItemAmount = binding.inputItemAmount.apply { error = null }
-        val inputItemType = binding.inputItemType.apply { error = null }
+        val inputItemCategory = binding.inputItemCategory.apply { error = null }
 
         val nameResult = viewModel.validateName(
             requireContext(),
@@ -98,19 +98,18 @@ class AddItemFragment : Fragment(R.layout.add_item_fragment) {
             inputItemAmount.error = amountResult.error
         }
 
-        val itemTypeResult = viewModel.validateItemTypeText(
-            requireContext(),
-            binding.autoCompleteTextItemType.text?.toString()
+        val itemCategoryResult = viewModel.validateItemCategoryText(
+            binding.autoCompleteTextItemCategory.text?.toString()
         )
-        if (itemTypeResult is ValidatedResult.Failure) {
-            inputItemType.error = itemTypeResult.error
+        if (itemCategoryResult is ValidatedResult.Failure) {
+            inputItemCategory.error = itemCategoryResult.error
         }
 
         viewModel.addItem(
             context = requireContext(),
             name = nameResult.let { it as? ValidatedResult.Success }?.value
                 ?: return,
-            itemTypeName = itemTypeResult.let { it as? ValidatedResult.Success }?.value
+            itemCategoryName = itemCategoryResult.let { it as? ValidatedResult.Success }?.value
                 ?: return,
             amount = amountResult.let { it as? ValidatedResult.Success }?.value
                 ?: return,

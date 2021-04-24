@@ -15,7 +15,7 @@ data class ItemEntity constructor(
     var boxId: String = "",
     // TODO: URLではなくてURI、何ならPathで良い
     var imageUrl: String? = null,
-    var itemType: String? = null,
+    var itemCategory: String? = null,
     var comment: String? = null,
     @JvmField @ServerTimestamp var updatedAt: Date = Date()
 ) : Parcelable, Serializable

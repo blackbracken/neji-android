@@ -65,19 +65,19 @@ class EditItemFragment : Fragment(R.layout.edit_item_fragment) {
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.itemTypes.collect { itemTypes ->
-                if (itemTypes != null) {
-                    val oldInput = binding.autoCompleteTextItemType.text?.toString() ?: ""
-                    if (oldInput !in itemTypes.map { it.name }) {
-                        binding.autoCompleteTextItemType.text.clear()
+            viewModel.itemCategories.collect { itemCategories ->
+                if (itemCategories != null) {
+                    val oldInput = binding.autoCompleteTextItemCategory.text?.toString() ?: ""
+                    if (oldInput !in itemCategories.map { it.name }) {
+                        binding.autoCompleteTextItemCategory.text.clear()
                     }
 
-                    binding.autoCompleteTextItemType.setAdapter(
-                        ArrayAdapter(requireContext(), R.layout.list_item, itemTypes)
+                    binding.autoCompleteTextItemCategory.setAdapter(
+                        ArrayAdapter(requireContext(), R.layout.list_item, itemCategories)
                     )
                 } else {
                     Snackbar
-                        .make(binding.root, "failed to get itemTypes", Snackbar.LENGTH_SHORT)
+                        .make(binding.root, "failed to get itemCategories", Snackbar.LENGTH_SHORT)
                         .setBackgroundTint(Color.RED)
                         .show()
                 }
@@ -157,7 +157,7 @@ class EditItemFragment : Fragment(R.layout.edit_item_fragment) {
 
         binding.editItemName.setText(origin.name)
         binding.editItemAmount.setText(origin.amount.toString())
-        binding.autoCompleteTextItemType.setText(origin.itemType, false)
+        binding.autoCompleteTextItemCategory.setText(origin.itemCategory?.name, false)
         binding.autoCompleteTextRegionOfBox.setText(origin.box.region.name, false)
         binding.editItemComment.setText(origin.comment)
         viewModel.updateBoxesByRegionName(origin.box.region.name)
@@ -172,7 +172,7 @@ class EditItemFragment : Fragment(R.layout.edit_item_fragment) {
         // TODO: validate in viewModel
         val inputItemName = binding.inputItemName.apply { error = null }
         val inputItemAmount = binding.inputItemAmount.apply { error = null }
-        val inputItemType = binding.inputItemType.apply { error = null }
+        val inputItemCategory = binding.inputItemCategory.apply { error = null }
         val inputRegionOfBox = binding.inputRegionOfBox.apply { error = null }
         val inputBoxToSave = binding.inputBoxToSave.apply { error = null }
         val inputComment = binding.inputItemComment.apply { error = null }
@@ -192,8 +192,8 @@ class EditItemFragment : Fragment(R.layout.edit_item_fragment) {
                     }
                 }
 
-                if (binding.autoCompleteTextItemType.text?.toString().isNullOrBlank())
-                    add { inputItemType.error = getString(R.string.error_must_not_be_blank) }
+                if (binding.autoCompleteTextItemCategory.text?.toString().isNullOrBlank())
+                    add { inputItemCategory.error = getString(R.string.error_must_not_be_blank) }
 
                 if (binding.autoCompleteTextRegionOfBox.text?.toString().isNullOrBlank())
                     add { inputRegionOfBox.error = getString(R.string.error_must_not_be_blank) }
@@ -209,7 +209,7 @@ class EditItemFragment : Fragment(R.layout.edit_item_fragment) {
                 source = args.item,
                 name = binding.editItemName.text.toString(),
                 amount = binding.editItemAmount.text.toString().toInt(),
-                itemTypeText = binding.autoCompleteTextItemType.text.toString(),
+                itemCategoryText = binding.autoCompleteTextItemCategory.text.toString(),
                 boxText = binding.autoCompleteTextBoxToSave.text.toString(),
                 comment = binding.editItemComment.text.toString().takeIf { it.isNotBlank() }
             )

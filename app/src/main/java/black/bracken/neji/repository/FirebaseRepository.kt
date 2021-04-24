@@ -2,8 +2,8 @@ package black.bracken.neji.repository
 
 import androidx.core.net.toUri
 import black.bracken.neji.firebase.document.BoxEntity
+import black.bracken.neji.firebase.document.ItemCategoryEntity
 import black.bracken.neji.firebase.document.ItemEntity
-import black.bracken.neji.firebase.document.ItemTypeEntity
 import black.bracken.neji.firebase.document.RegionEntity
 import black.bracken.neji.model.*
 import com.google.firebase.FirebaseApp
@@ -25,11 +25,11 @@ import kotlin.coroutines.suspendCoroutine
 
 interface FirebaseRepository {
 
-    fun itemTypes(): Flow<List<ItemType>?>
+    fun itemCategories(): Flow<List<ItemCategory>?>
 
     fun regions(): Flow<List<Region>?>
 
-    suspend fun itemTypesOnce(): List<ItemType>?
+    suspend fun itemCategoriesOnce(): List<ItemCategory>?
 
     suspend fun region(regionId: String): Region?
 
@@ -54,7 +54,7 @@ interface FirebaseRepository {
     suspend fun addItem(
         name: String,
         amount: Int,
-        itemType: ItemType?,
+        itemCategory: ItemCategory?,
         box: Box,
         image: File?,
         comment: String?
@@ -64,7 +64,7 @@ interface FirebaseRepository {
         item: Item,
         name: String,
         amount: Int,
-        itemType: ItemType?,
+        itemCategory: ItemCategory?,
         image: File?,
         box: Box,
         comment: String?
@@ -109,30 +109,30 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         awaitClose { registration.remove() }
     }
 
-    override fun itemTypes(): Flow<List<ItemType>?> = callbackFlow {
+    override fun itemCategories(): Flow<List<ItemCategory>?> = callbackFlow {
         val registration = firestore
-            .collection("itemTypes")
+            .collection("itemCategories")
             .addSnapshotListener { value, error ->
-                val itemTypes = value
+                val itemCategories = value
                     ?.takeIf { error == null }
-                    ?.buildWithId { entity: ItemTypeEntity, _ -> ItemType(entity) }
-                offer(itemTypes)
+                    ?.buildWithId { entity: ItemCategoryEntity, _ -> ItemCategory(entity) }
+                offer(itemCategories)
             }
 
         awaitClose { registration.remove() }
     }
 
-    override suspend fun itemTypesOnce(): List<ItemType>? =
+    override suspend fun itemCategoriesOnce(): List<ItemCategory>? =
         suspendCoroutine { continuation ->
             firestore
-                .collection("itemTypes")
+                .collection("itemCategories")
                 .get()
                 .addOnSuccessListener { snapshot ->
-                    val itemTypes = snapshot
-                        .toObjects<ItemTypeEntity>()
-                        .map { entity -> ItemType(entity) }
+                    val itemCategories = snapshot
+                        .toObjects<ItemCategoryEntity>()
+                        .map { entity -> ItemCategory(entity) }
 
-                    continuation.resume(itemTypes)
+                    continuation.resume(itemCategories)
                 }
                 .addOnFailureListener {
                     continuation.resume(null)
@@ -266,7 +266,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
     override suspend fun addItem(
         name: String,
         amount: Int,
-        itemType: ItemType?,
+        itemCategory: ItemCategory?,
         box: Box,
         image: File?,
         comment: String?
@@ -286,7 +286,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
             amount = amount,
             boxId = box.id,
             imageUrl = imagePath,
-            itemType = itemType?.name,
+            itemCategory = itemCategory?.name,
             comment = comment
         )
 
@@ -320,7 +320,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         item: Item,
         name: String,
         amount: Int,
-        itemType: ItemType?,
+        itemCategory: ItemCategory?,
         image: File?,
         box: Box,
         comment: String?
@@ -335,7 +335,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         val newItem = item.copy(
             name = name,
             amount = amount,
-            itemType = itemType?.name,
+            itemCategory = itemCategory,
             imageReference = imageReference,
             box = box,
             comment = comment
@@ -347,7 +347,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
             "amount" to newItem.amount.takeIf { it != item.amount },
             "boxId" to newItem.box.takeIf { it != item.box }?.id,
             "imageReference" to newItem.imageReference.takeIf { it != item.imageReference },
-            "itemType" to newItem.itemType.takeIf { it != item.itemType },
+            "itemCategory" to newItem.itemCategory.takeIf { it != item.itemCategory },
             "comment" to newItem.comment.takeIf { it != item.comment }
         ).filterValues { it != null }
 
@@ -494,9 +494,9 @@ class FirebaseRepositoryImpl : FirebaseRepository {
             val registration = firestore
                 .collection("items")
                 .let {
-                    // filter by itemType
-                    if (query.byType != null) {
-                        it.whereEqualTo("itemType", query.byType)
+                    // filter by item category
+                    if (query.byCategory != null) {
+                        it.whereEqualTo("itemCategory", query.byCategory)
                     } else {
                         it
                     }
