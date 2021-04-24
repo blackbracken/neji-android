@@ -40,25 +40,6 @@ class RegionListFragment : Fragment(R.layout.region_list_fragment) {
     private val binding by viewBinding(RegionListFragmentBinding::bind)
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
-    private val touchCallback: TouchCallback by lazy {
-        object : TouchCallback() {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean = false
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val position = viewHolder.adapterPosition
-                val item = adapter.getItem(position) as RegionCardItem
-
-                adapter.removeGroupAtAdapterPosition(position)
-                Toast.makeText(requireContext(), "削除未実装: ${item.region.name}", Toast.LENGTH_SHORT)
-                    .show()
-                // TODO: implement
-            }
-        }
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
