@@ -78,6 +78,12 @@ class AddItemFragment : Fragment(R.layout.add_item_fragment) {
                 }
         }
 
+        binding.buttonRemoveCategory.setOnClickListener {
+            binding.autoCompleteTextItemCategory.text = null
+
+            binding.inputItemCategory.clearFocus()
+        }
+
         binding.buttonAdd.setOnClickListener { tryToAddItem() }
     }
 
