@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import black.bracken.neji.R
 import black.bracken.neji.databinding.BoxListFragmentBinding
 import black.bracken.neji.ext.setOnSwipeItemToSideways
+import black.bracken.neji.ext.viewcomponent.disableAndHide
 import black.bracken.neji.ui.boxlist.item.BoxCardItem
 import black.bracken.neji.util.ItemOffsetDecoration
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -58,7 +59,7 @@ class BoxListFragment : Fragment(R.layout.box_list_fragment) {
                     adapter.add(card)
                 }
 
-                binding.indicator.isIndeterminate = false
+                binding.indicator.disableAndHide()
             }
         }
 

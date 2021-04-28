@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import black.bracken.neji.R
 import black.bracken.neji.databinding.RegionListFragmentBinding
 import black.bracken.neji.ext.setOnSwipeItemToSideways
+import black.bracken.neji.ext.viewcomponent.disableAndHide
 import black.bracken.neji.model.Region
 import black.bracken.neji.ui.UserViewModel
 import black.bracken.neji.ui.regionlist.item.RegionCardItem
@@ -107,7 +108,7 @@ class RegionListFragment : Fragment(R.layout.region_list_fragment) {
                             .show()
                     }
 
-                binding.indicator.isIndeterminate = false
+                binding.indicator.disableAndHide()
             }
         }
 

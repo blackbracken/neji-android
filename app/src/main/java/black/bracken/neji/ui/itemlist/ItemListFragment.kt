@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import black.bracken.neji.R
 import black.bracken.neji.databinding.ItemListFragmentBinding
 import black.bracken.neji.ext.setOnSwipeItemToSideways
+import black.bracken.neji.ext.viewcomponent.disableAndHide
 import black.bracken.neji.model.Item
 import black.bracken.neji.ui.itemlist.item.ItemCardItem
 import black.bracken.neji.util.ItemOffsetDecoration
@@ -58,7 +59,7 @@ class ItemListFragment : Fragment(R.layout.item_list_fragment) {
 
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.items.collect { items ->
-                binding.indicator.isIndeterminate = false
+                binding.indicator.disableAndHide()
                 adapter.clear()
 
                 items
