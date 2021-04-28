@@ -84,6 +84,13 @@ class AddItemFragment : Fragment(R.layout.add_item_fragment) {
             binding.inputItemCategory.clearFocus()
         }
 
+        binding.buttonEditCategories.setOnClickListener {
+            val action = AddItemFragmentDirections
+                .actionAddItemFragmentToEditItemCategoriesFragment()
+
+            findNavController().navigate(action)
+        }
+
         binding.buttonAdd.setOnClickListener { tryToAddItem() }
     }
 

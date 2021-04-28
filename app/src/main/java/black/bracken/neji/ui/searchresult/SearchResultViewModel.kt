@@ -1,17 +1,19 @@
 package black.bracken.neji.ui.searchresult
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import black.bracken.neji.model.Item
 import black.bracken.neji.model.ItemSearchQuery
 import black.bracken.neji.repository.FirebaseRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.shareIn
+import javax.inject.Inject
 
-class SearchResultViewModel @ViewModelInject constructor(
+@HiltViewModel
+class SearchResultViewModel @Inject constructor(
     private val firebaseRepository: FirebaseRepository
 ) : ViewModel() {
 

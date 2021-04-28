@@ -8,6 +8,8 @@
         <entry key="..\:/Users/blackbracken/StudioProjects/neji-android/app/src/main/res/layout/add_item_fragment.xml" value="0.33" />
         <entry key="..\:/Users/blackbracken/StudioProjects/neji-android/app/src/main/res/layout/add_region_fragment.xml" value="0.25" />
         <entry key="..\:/Users/blackbracken/StudioProjects/neji-android/app/src/main/res/layout/box_list_card.xml" value="0.30520833333333336" />
+        <entry key="..\:/Users/blackbracken/StudioProjects/neji-android/app/src/main/res/layout/box_list_fragment.xml" value="0.20052083333333334" />
+        <entry key="..\:/Users/blackbracken/StudioProjects/neji-android/app/src/main/res/layout/edit_item_categories_fragment.xml" value="0.36730072463768115" />
         <entry key="..\:/Users/blackbracken/StudioProjects/neji-android/app/src/main/res/layout/edit_item_fragment.xml" value="0.21603260869565216" />
         <entry key="..\:/Users/blackbracken/StudioProjects/neji-android/app/src/main/res/layout/item_info_fragment.xml" value="0.3875" />
         <entry key="..\:/Users/blackbracken/StudioProjects/neji-android/app/src/main/res/layout/item_list_fragment.xml" value="0.3822463768115942" />
@@ -18,6 +20,7 @@
         <entry key="..\:/Users/blackbracken/StudioProjects/neji-android/app/src/main/res/layout/scan_qr_code_fragment.xml" value="0.3875" />
         <entry key="..\:/Users/blackbracken/StudioProjects/neji-android/app/src/main/res/layout/search_item_fragment.xml" value="0.3875" />
         <entry key="..\:/Users/blackbracken/StudioProjects/neji-android/app/src/main/res/layout/search_result_card.xml" value="0.1884498480243161" />
+        <entry key="..\:/Users/blackbracken/StudioProjects/neji-android/app/src/main/res/layout/search_result_fragment.xml" value="0.20052083333333334" />
         <entry key="..\:/Users/blackbracken/StudioProjects/neji-android/app/src/main/res/menu/box_list_menu.xml" value="0.3875" />
         <entry key="..\:/Users/blackbracken/StudioProjects/neji-android/app/src/main/res/menu/item_info_menu.xml" value="0.3875" />
         <entry key="..\:/Users/blackbracken/StudioProjects/neji-android/app/src/main/res/menu/item_list_menu.xml" value="0.18" />

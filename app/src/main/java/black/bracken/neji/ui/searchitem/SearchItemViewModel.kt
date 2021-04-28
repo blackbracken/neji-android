@@ -1,16 +1,18 @@
 package black.bracken.neji.ui.searchitem
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import black.bracken.neji.model.Box
 import black.bracken.neji.model.ItemSearchQuery
 import black.bracken.neji.repository.FirebaseRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SearchItemViewModel @ViewModelInject constructor(
+@HiltViewModel
+class SearchItemViewModel @Inject constructor(
     private val firebaseRepository: FirebaseRepository
 ) : ViewModel() {
 

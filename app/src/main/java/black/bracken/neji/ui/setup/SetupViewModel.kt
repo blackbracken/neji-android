@@ -1,17 +1,17 @@
 package black.bracken.neji.ui.setup
 
-import android.content.Context
-import androidx.hilt.Assisted
-import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import black.bracken.neji.firebase.FirebaseSignInResult
 import black.bracken.neji.repository.Auth
-import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SetupViewModel @ViewModelInject constructor(
-    @ApplicationContext private val context: Context,
-    @Assisted private val savedState: SavedStateHandle,
+@HiltViewModel
+class SetupViewModel @Inject constructor(
     private val auth: Auth
 ) : ViewModel() {
 
