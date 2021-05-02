@@ -3,6 +3,7 @@ package black.bracken.neji.ui.edititem
 import android.content.Context
 import android.net.Uri
 import androidx.core.net.toFile
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,16 +16,13 @@ import black.bracken.neji.util.Failure
 import black.bracken.neji.util.Loading
 import black.bracken.neji.util.Resource
 import black.bracken.neji.util.Success
-import dagger.hilt.android.lifecycle.HiltViewModel
 import id.zelory.compressor.Compressor
 import id.zelory.compressor.constraint.default
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.io.File
-import javax.inject.Inject
 
-@HiltViewModel
-class EditItemViewModel @Inject constructor(
+class EditItemViewModel @ViewModelInject constructor(
     private val firebaseRepository: FirebaseRepository
 ) : ViewModel() {
 

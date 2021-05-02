@@ -1,17 +1,15 @@
 package black.bracken.neji.ui.iteminfo
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import black.bracken.neji.ext.toLiveData
 import black.bracken.neji.model.Item
 import black.bracken.neji.repository.FirebaseRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class ItemInfoViewModel @Inject constructor(
+class ItemInfoViewModel @ViewModelInject constructor(
     private val firebaseRepository: FirebaseRepository
 ) : ViewModel() {
 

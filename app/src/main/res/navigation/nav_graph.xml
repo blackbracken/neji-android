@@ -145,9 +145,6 @@
         <argument
             android:name="box"
             app:argType="black.bracken.neji.model.Box" />
-        <action
-            android:id="@+id/action_addItemFragment_to_editItemCategoriesFragment"
-            app:destination="@id/editItemCategoriesFragment" />
     </fragment>
     <fragment
         android:id="@+id/scanQrCodeFragment"
@@ -170,8 +167,4 @@
             android:name="targetBox"
             app:argType="black.bracken.neji.model.Box" />
     </fragment>
-    <fragment
-        android:id="@+id/editItemCategoriesFragment"
-        android:name="black.bracken.neji.ui.edititemcategories.EditItemCategoriesFragment"
-        android:label="EditItemCategoriesFragment" />
 </navigation>

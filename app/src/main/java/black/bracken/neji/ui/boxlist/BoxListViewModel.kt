@@ -1,20 +1,18 @@
 package black.bracken.neji.ui.boxlist
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import black.bracken.neji.model.Box
 import black.bracken.neji.model.Region
 import black.bracken.neji.repository.FirebaseRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class BoxListViewModel @Inject constructor(
+class BoxListViewModel @ViewModelInject constructor(
     private val firebaseRepository: FirebaseRepository
 ) : ViewModel() {
 

@@ -1,18 +1,16 @@
 package black.bracken.neji.ui.itemlist
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import black.bracken.neji.model.Box
 import black.bracken.neji.model.Item
 import black.bracken.neji.repository.FirebaseRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class ItemListViewModel @Inject constructor(
+class ItemListViewModel @ViewModelInject constructor(
     private val firebaseRepository: FirebaseRepository
 ) : ViewModel() {
 
