@@ -7,7 +7,7 @@
     tools:ignore="HardcodedText">
 
     <ImageView
-        android:id="@+id/image_box"
+        android:id="@+id/image_category"
         android:layout_width="@dimen/recycler_card_logo_length"
         android:layout_height="@dimen/recycler_card_logo_length"
         android:layout_marginVertical="@dimen/margin_small"
@@ -20,13 +20,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textName"
+        android:id="@+id/text_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_medium"
         android:text="box name"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/image_box"
+        app:layout_constraintStart_toEndOf="@id/image_category"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView

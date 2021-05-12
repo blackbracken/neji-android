@@ -1,9 +1,9 @@
 package black.bracken.neji.ext.viewcomponent
 
 import android.view.View
-import com.google.android.material.progressindicator.LinearProgressIndicator
+import com.google.android.material.progressindicator.ProgressIndicator
 
-fun LinearProgressIndicator.disableAndHide() {
+fun ProgressIndicator.disableAndHide() {
     isIndeterminate = false
     visibility = View.GONE
 }

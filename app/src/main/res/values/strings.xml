@@ -51,4 +51,5 @@
     <string name="menu_item_add_item">アイテムの追加</string>
     <string name="menu_item_show_qr_code">QRコードの表示</string>
     <string name="menu_item_edit_item">アイテムの編集</string>
+    <string name="menu_item_add_category">カテゴリーの追加</string>
 </resources>

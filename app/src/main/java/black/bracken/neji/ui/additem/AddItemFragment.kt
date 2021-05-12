@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.collect
 class AddItemFragment : Fragment(R.layout.add_item_fragment) {
 
     private val viewModel: AddItemViewModel by viewModels()
-    private val binding: AddItemFragmentBinding by viewBinding()
+    private val binding: AddItemFragmentBinding by viewBinding(AddItemFragmentBinding::bind)
 
     private val args: AddItemFragmentArgs by navArgs()
 
@@ -76,6 +76,11 @@ class AddItemFragment : Fragment(R.layout.add_item_fragment) {
                         viewModel.setImageUri(data?.data)
                     }
                 }
+        }
+
+        binding.buttonEditCategories.setOnClickListener {
+            val action = AddItemFragmentDirections.actionAddItemFragmentToCategoryListFragment()
+            findNavController().navigate(action)
         }
 
         binding.buttonUnselectCategory.setOnClickListener {
