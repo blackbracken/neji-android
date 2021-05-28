@@ -10,8 +10,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import black.bracken.neji.R
 import black.bracken.neji.databinding.CategoryListFragmentBinding
+import black.bracken.neji.ext.setOnSwipeItemToSideways
 import black.bracken.neji.ext.viewcomponent.disableAndHide
+import black.bracken.neji.ui.boxlist.item.BoxCardItem
 import black.bracken.neji.ui.categorylist.item.CategoryCardItem
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.wada811.viewbinding.viewBinding
 import com.xwray.groupie.GroupAdapter
@@ -33,9 +36,14 @@ class CategoryListFragment : Fragment(R.layout.category_list_fragment) {
 
         setHasOptionsMenu(true)
 
-        binding.recycler.adapter = adapter
-
         binding.indicator.disableAndHide()
+
+        binding.recycler.adapter = adapter
+        binding.recycler.apply {
+            setOnSwipeItemToSideways<CategoryCardItem> { categoryItem, pos ->
+                onDeleteCategory(categoryItem, pos)
+            }
+        }
 
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             adapter.clear()
@@ -44,7 +52,7 @@ class CategoryListFragment : Fragment(R.layout.category_list_fragment) {
                 .filterNotNull()
                 .map { categories ->
                     categories.map {
-                        CategoryCardItem(it) { /* do nothing */ }
+                        CategoryCardItem(it, onClick = { /* do nothing */ })
                     }
                 }
                 .collect { categoryCardItems ->
@@ -69,5 +77,17 @@ class CategoryListFragment : Fragment(R.layout.category_list_fragment) {
             }
             else -> super.onOptionsItemSelected(item)
         }
+
+    private fun onDeleteCategory(categoryItem: CategoryCardItem, position: Int) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.dialog_title_delete)
+            .setMessage(R.string.dialog_alert_on_deleting_category)
+            .setCancelable(true)
+            .setPositiveButton(R.string.button_delete) { _, _ ->
+                adapter.removeGroupAtAdapterPosition(position)
+                // TODO: delete category
+            }
+            .show()
+    }
 
 }

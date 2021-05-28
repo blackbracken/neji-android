@@ -1,6 +1,7 @@
 package black.bracken.neji.ui.categorylist.item
 
 import android.view.View
+import androidx.recyclerview.widget.ItemTouchHelper
 import black.bracken.neji.R
 import black.bracken.neji.databinding.CategoryListCardBinding
 import black.bracken.neji.model.ItemCategory
@@ -23,5 +24,7 @@ class CategoryCardItem(
             textCategory.text = category.name
         }
     }
+
+    override fun getSwipeDirs(): Int = ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
 
 }
