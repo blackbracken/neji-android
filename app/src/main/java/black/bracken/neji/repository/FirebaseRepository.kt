@@ -11,7 +11,6 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.toObject
-import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.*
@@ -42,6 +41,8 @@ interface FirebaseRepository {
     suspend fun boxesInRegionOnce(region: Region): List<Box>?
 
     suspend fun itemsInBox(boxId: String): List<Item>?
+
+    suspend fun deleteItemCategory(categoryId: String, categoryName: String): Boolean
 
     suspend fun addRegion(name: String): Region?
 
@@ -115,7 +116,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
             .addSnapshotListener { value, error ->
                 val itemCategories = value
                     ?.takeIf { error == null }
-                    ?.buildWithId { entity: ItemCategoryEntity, _ -> ItemCategory(entity) }
+                    ?.buildWithId { entity: ItemCategoryEntity, id -> ItemCategory(entity, id) }
                 offer(itemCategories)
             }
 
@@ -129,8 +130,9 @@ class FirebaseRepositoryImpl : FirebaseRepository {
                 .get()
                 .addOnSuccessListener { snapshot ->
                     val itemCategories = snapshot
-                        .toObjects<ItemCategoryEntity>()
-                        .map { entity -> ItemCategory(entity) }
+                        .buildWithId { entity: ItemCategoryEntity, id ->
+                            ItemCategory(entity, id)
+                        }
 
                     continuation.resume(itemCategories)
                 }
@@ -261,6 +263,46 @@ class FirebaseRepositoryImpl : FirebaseRepository {
                 }
             )
         }
+    }
+
+    override suspend fun deleteItemCategory(categoryId: String, categoryName: String): Boolean {
+        val associatedIds = suspendCoroutine<Set<String>> { continuation ->
+            firestore
+                .collection("items")
+                .whereEqualTo("itemCategory", categoryName)
+                .get()
+                .addOnCompleteListener { task ->
+                    continuation.resume(
+                        task.result.documents
+                            .map { snapshot -> snapshot.id }
+                            .toSet()
+                    )
+                }
+        }
+
+        val removeAssociationResult = associatedIds.all { id ->
+            suspendCancellableCoroutine { continuation ->
+                firestore
+                    .collection("items")
+                    .document(id)
+                    .update("itemCategory", null)
+                    .addOnCompleteListener { task ->
+                        continuation.resume(task.isSuccessful)
+                    }
+            }
+        }
+
+        val removeCategoryResult: Boolean = suspendCancellableCoroutine { continuation ->
+            firestore
+                .collection("itemCategories")
+                .document()
+                .delete()
+                .addOnCompleteListener { task ->
+                    continuation.resume(task.isSuccessful)
+                }
+        }
+
+        return removeAssociationResult && removeCategoryResult
     }
 
     override suspend fun addItem(

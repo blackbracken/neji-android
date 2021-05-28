@@ -85,7 +85,7 @@ class CategoryListFragment : Fragment(R.layout.category_list_fragment) {
             .setCancelable(true)
             .setPositiveButton(R.string.button_delete) { _, _ ->
                 adapter.removeGroupAtAdapterPosition(position)
-                // TODO: delete category
+                viewModel.deleteCategory(categoryItem.category)
             }
             .show()
     }

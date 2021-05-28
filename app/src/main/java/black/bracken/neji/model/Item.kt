@@ -53,7 +53,7 @@ suspend fun Item(
         amount = entity.amount,
         box = box,
         imageReference = imageReference,
-        itemCategory = entity.itemCategory?.let { ItemCategory(it) },
+        itemCategory = entity.itemCategory?.let { ItemCategory(id, it) },
         comment = entity.comment,
         updatedAt = entity.updatedAt.toLocalTimeDate()
     )

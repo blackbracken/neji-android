@@ -6,6 +6,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class ItemCategory(
+    val id: String,
     val name: String
 ) : Parcelable {
 
@@ -13,6 +14,9 @@ data class ItemCategory(
 
 }
 
-fun ItemCategory(entity: ItemCategoryEntity): ItemCategory {
-    return ItemCategory(name = entity.name)
+fun ItemCategory(entity: ItemCategoryEntity, id: String): ItemCategory {
+    return ItemCategory(
+        id = id,
+        name = entity.name
+    )
 }

@@ -8,7 +8,7 @@ import black.bracken.neji.model.ItemCategory
 import com.xwray.groupie.viewbinding.BindableItem
 
 class CategoryCardItem(
-    private val category: ItemCategory,
+    val category: ItemCategory,
     private val onClick: (ItemCategory) -> Unit
 ) : BindableItem<CategoryListCardBinding>() {
 
