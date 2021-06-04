@@ -65,6 +65,9 @@
             app:destination="@id/itemListFragment"
             app:popUpTo="@id/itemListFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_editItemFragment_to_categoryListFragment"
+            app:destination="@id/categoryListFragment" />
     </fragment>
     <fragment
         android:id="@+id/searchItemFragment"
