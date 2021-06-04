@@ -106,18 +106,6 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <ImageButton
-            android:id="@+id/button_unselect_category"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginEnd="@dimen/margin_medium"
-            android:background="@drawable/ic_baseline_remove_24"
-            app:layout_constraintBottom_toBottomOf="@id/input_item_category"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/button_edit_categories"
-            app:layout_constraintTop_toTopOf="@id/input_item_category"
-            tools:ignore="ContentDescription" />
-
-        <ImageButton
             android:id="@+id/button_edit_categories"
             android:layout_width="32dp"
             android:layout_height="32dp"
@@ -127,6 +115,18 @@
             app:layout_constraintBottom_toBottomOf="@id/input_item_category"
             app:layout_constraintEnd_toStartOf="@id/button_unselect_category"
             app:layout_constraintStart_toEndOf="@id/input_item_category"
+            app:layout_constraintTop_toTopOf="@id/input_item_category"
+            tools:ignore="ContentDescription" />
+
+        <ImageButton
+            android:id="@+id/button_unselect_category"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="@dimen/margin_medium"
+            android:background="@drawable/ic_baseline_remove_24"
+            app:layout_constraintBottom_toBottomOf="@id/input_item_category"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/button_edit_categories"
             app:layout_constraintTop_toTopOf="@id/input_item_category"
             tools:ignore="ContentDescription" />
 
