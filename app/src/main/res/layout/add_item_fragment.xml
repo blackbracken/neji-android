@@ -52,15 +52,26 @@
                 android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <Space
+            android:id="@+id/space_amount"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/margin_medium"
+            android:layout_marginEnd="@dimen/margin_small"
+            app:layout_constraintBottom_toBottomOf="@id/input_item_amount"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/input_item_amount"
+            app:layout_constraintTop_toTopOf="@id/input_item_amount" />
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_item_amount"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_medium"
             android:layout_marginTop="@dimen/margin_medium"
-            android:layout_marginEnd="@dimen/margin_small"
+            android:layout_marginEnd="@dimen/margin_medium"
             android:hint="@string/edit_item_amount"
-            app:layout_constraintEnd_toStartOf="@id/input_item_category"
+            app:layout_constraintEnd_toStartOf="@id/space_amount"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/input_item_name">
 
@@ -79,12 +90,12 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/margin_medium"
+            android:layout_marginStart="@dimen/margin_medium"
+            android:layout_marginTop="@dimen/margin_medium"
             android:hint="@string/edit_item_category"
-            app:layout_constraintBottom_toBottomOf="@id/input_item_amount"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/input_item_amount"
-            app:layout_constraintTop_toTopOf="@id/input_item_amount">
+            app:layout_constraintEnd_toStartOf="@id/button_edit_categories"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/input_item_amount">
 
             <com.google.android.material.textfield.MaterialAutoCompleteTextView
                 android:id="@+id/auto_complete_text_item_category"
@@ -93,6 +104,31 @@
                 android:inputType="none"
                 tools:ignore="LabelFor" />
         </com.google.android.material.textfield.TextInputLayout>
+
+        <ImageButton
+            android:id="@+id/button_edit_categories"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="@dimen/margin_small"
+            android:layout_marginEnd="@dimen/margin_large"
+            android:background="@drawable/ic_baseline_edit_24"
+            app:layout_constraintBottom_toBottomOf="@id/input_item_category"
+            app:layout_constraintEnd_toStartOf="@id/button_unselect_category"
+            app:layout_constraintStart_toEndOf="@id/input_item_category"
+            app:layout_constraintTop_toTopOf="@id/input_item_category"
+            tools:ignore="ContentDescription" />
+
+        <ImageButton
+            android:id="@+id/button_unselect_category"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="@dimen/margin_medium"
+            android:background="@drawable/ic_baseline_remove_24"
+            app:layout_constraintBottom_toBottomOf="@id/input_item_category"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/button_edit_categories"
+            app:layout_constraintTop_toTopOf="@id/input_item_category"
+            tools:ignore="ContentDescription" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_item_comment"
@@ -103,7 +139,7 @@
             android:hint="@string/edit_item_comment"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/input_item_amount">
+            app:layout_constraintTop_toBottomOf="@id/input_item_category">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edit_item_comment"

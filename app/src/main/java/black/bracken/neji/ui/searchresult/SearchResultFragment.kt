@@ -10,6 +10,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import black.bracken.neji.R
 import black.bracken.neji.databinding.SearchResultFragmentBinding
+import black.bracken.neji.ext.viewcomponent.disableAndHide
 import black.bracken.neji.ui.searchresult.item.SearchResultCardItem
 import black.bracken.neji.util.ItemOffsetDecoration
 import com.google.android.material.snackbar.Snackbar
@@ -44,7 +45,7 @@ class SearchResultFragment : Fragment(R.layout.search_result_fragment) {
 
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.searchedItems.collect { results ->
-                binding.indicator.isIndeterminate = false
+                binding.indicator.disableAndHide()
                 results
                     ?.map { item ->
                         SearchResultCardItem(item, item.imageReference) { newItem ->

@@ -142,6 +142,18 @@ class EditItemFragment : Fragment(R.layout.edit_item_fragment) {
                 .start { _, data -> viewModel.setItemImage(data?.data) }
         }
 
+        binding.buttonEditCategories.setOnClickListener {
+            val action = EditItemFragmentDirections.actionEditItemFragmentToCategoryListFragment()
+
+            findNavController().navigate(action)
+        }
+
+        binding.buttonUnselectCategory.setOnClickListener {
+            binding.autoCompleteTextItemCategory.text = null
+
+            binding.inputItemCategory.clearFocus()
+        }
+
         binding.buttonAdd.setOnClickListener {
             onPushButtonToAdd()
         }

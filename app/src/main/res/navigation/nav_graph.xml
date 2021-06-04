@@ -65,6 +65,9 @@
             app:destination="@id/itemListFragment"
             app:popUpTo="@id/itemListFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_editItemFragment_to_categoryListFragment"
+            app:destination="@id/categoryListFragment" />
     </fragment>
     <fragment
         android:id="@+id/searchItemFragment"
@@ -145,6 +148,9 @@
         <argument
             android:name="box"
             app:argType="black.bracken.neji.model.Box" />
+        <action
+            android:id="@+id/action_addItemFragment_to_categoryListFragment"
+            app:destination="@id/categoryListFragment" />
     </fragment>
     <fragment
         android:id="@+id/scanQrCodeFragment"
@@ -167,4 +173,8 @@
             android:name="targetBox"
             app:argType="black.bracken.neji.model.Box" />
     </fragment>
+    <fragment
+        android:id="@+id/categoryListFragment"
+        android:name="black.bracken.neji.ui.categorylist.CategoryListFragment"
+        android:label="@string/nav_name_category_list" />
 </navigation>
