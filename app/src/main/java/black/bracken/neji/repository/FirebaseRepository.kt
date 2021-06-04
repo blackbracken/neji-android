@@ -295,7 +295,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         val removeCategoryResult: Boolean = suspendCancellableCoroutine { continuation ->
             firestore
                 .collection("itemCategories")
-                .document()
+                .document(categoryId)
                 .delete()
                 .addOnCompleteListener { task ->
                     continuation.resume(task.isSuccessful)

@@ -12,7 +12,6 @@ import black.bracken.neji.R
 import black.bracken.neji.databinding.CategoryListFragmentBinding
 import black.bracken.neji.ext.setOnSwipeItemToSideways
 import black.bracken.neji.ext.viewcomponent.disableAndHide
-import black.bracken.neji.ui.boxlist.item.BoxCardItem
 import black.bracken.neji.ui.categorylist.item.CategoryCardItem
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -46,8 +45,6 @@ class CategoryListFragment : Fragment(R.layout.category_list_fragment) {
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            adapter.clear()
-
             viewModel.categories
                 .filterNotNull()
                 .map { categories ->
@@ -56,6 +53,8 @@ class CategoryListFragment : Fragment(R.layout.category_list_fragment) {
                     }
                 }
                 .collect { categoryCardItems ->
+                    adapter.clear()
+
                     categoryCardItems.forEach { cardItem ->
                         adapter.add(cardItem)
                     }
