@@ -341,14 +341,9 @@ class FirebaseRepositoryImpl : FirebaseRepository {
                 .addOnFailureListener { continuation.resume(null) }
         } ?: return null
 
-        suspendCoroutine<Unit?> { continuation ->
-            firestore
-                .collection("boxes")
-                .document(box.id)
-                .update("itemTypeAmount", FieldValue.increment(1L))
-                .addOnSuccessListener { continuation.resume(Unit) }
-                .addOnFailureListener { continuation.resume(null) }
-        } ?: return null
+        if (!incrementItemAmountInBox(box.id, 1)) {
+            return null
+        }
 
         return Item(
             entity = entity,
@@ -393,6 +388,14 @@ class FirebaseRepositoryImpl : FirebaseRepository {
             "comment" to newItem.comment.takeIf { it != item.comment }
         ).filterValues { it != null }
 
+        if ("boxId" in diff.keys) {
+            val oldBox = item.box
+            val newBox = newItem.box
+
+            incrementItemAmountInBox(oldBox.id, -1)
+            incrementItemAmountInBox(newBox.id, 1)
+        }
+
         return suspendCoroutine { continuation ->
             firestore
                 .collection("items")
@@ -435,14 +438,9 @@ class FirebaseRepositoryImpl : FirebaseRepository {
             deleteImage(imagePath)
         }
 
-        suspendCoroutine<Unit?> { continuation ->
-            firestore
-                .collection("boxes")
-                .document(boxId)
-                .update("itemTypeAmount", FieldValue.increment(-1L))
-                .addOnSuccessListener { continuation.resume(Unit) }
-                .addOnFailureListener { continuation.resume(null) }
-        } ?: return false
+        if (!incrementItemAmountInBox(boxId, -1)) {
+            return false
+        }
 
         return suspendCoroutine { continuation ->
             firestore
@@ -667,6 +665,17 @@ class FirebaseRepositoryImpl : FirebaseRepository {
             storage.child(path)
                 .delete()
                 .addOnCompleteListener { task -> continuation.resume(task.isSuccessful) }
+        }
+    }
+
+    private suspend fun incrementItemAmountInBox(boxId: String, diff: Int): Boolean {
+        return suspendCancellableCoroutine { continuation ->
+            firestore
+                .collection("boxes")
+                .document(boxId)
+                .update("itemTypeAmount", FieldValue.increment(diff.toLong()))
+                .addOnSuccessListener { continuation.resume(true) }
+                .addOnFailureListener { continuation.resume(false) }
         }
     }
 
