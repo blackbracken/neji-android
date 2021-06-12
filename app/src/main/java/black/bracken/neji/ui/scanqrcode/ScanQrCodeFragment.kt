@@ -52,8 +52,6 @@ class ScanQrCodeFragment : Fragment(R.layout.scan_qr_code_fragment) {
                 .build()
                 .also { analysis ->
                     analysis.setAnalyzer(cameraExecutor, SingleQrCodeAnalyzer { text ->
-                        println("QRCode scanned: $text")
-
                         val action = ScanQrCodeFragmentDirections
                             .actionScanQrCodeFragmentToAddBoxFragment(args.region, text)
                         requireView().post {
