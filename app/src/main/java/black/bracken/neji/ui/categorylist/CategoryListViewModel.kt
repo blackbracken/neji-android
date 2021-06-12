@@ -14,9 +14,7 @@ class CategoryListViewModel @ViewModelInject constructor(
 
     fun deleteCategory(category: ItemCategory) {
         viewModelScope.launch {
-            val result = firebaseRepository.deleteItemCategory(category.id, category.name)
-
-            println("delete category result: $result")
+            firebaseRepository.deleteItemCategory(category.id, category.name)
         }
     }
 }

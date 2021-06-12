@@ -77,7 +77,7 @@ interface FirebaseRepository {
 
     suspend fun updateItemAmount(item: Item, newAmount: Int): Item?
 
-    fun searchItems(query: ItemSearchQuery): Flow<List<Item>?>
+    suspend fun searchItems(query: ItemSearchQuery): List<Item>?
 
 }
 
@@ -560,58 +560,61 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         }
     }
 
-    override fun searchItems(query: ItemSearchQuery): Flow<List<Item>?> =
-        callbackFlow {
-            val registration = firestore
-                .collection("items")
-                .let {
-                    // filter by item category
-                    if (query.byCategory != null) {
-                        it.whereEqualTo("itemCategory", query.byCategory)
-                    } else {
-                        it
-                    }
-                }
-                .addSnapshotListener { snapshot, error ->
-                    val result =
-                        if (snapshot == null || error != null) {
-                            null
+    override suspend fun searchItems(query: ItemSearchQuery): List<Item>? {
+        val itemIdAndEntities: List<Pair<String, ItemEntity>> =
+            suspendCancellableCoroutine { cont ->
+                firestore
+                    .collection("items")
+                    .let {
+                        // filter by category
+                        if (query.byCategory != null) {
+                            it.whereEqualTo("itemCategory", query.byCategory)
                         } else {
-                            snapshot
-                                .documents
-                                .mapNotNull {
-                                    val key = it.id
-                                    val value = it.toObject<ItemEntity>() ?: return@mapNotNull null
-                                    key to value
-                                }
-                                .filter { (_, entity) ->
-                                    // filter by ItemName, this order is O(N * M).
-                                    query.byName
-                                        ?.split(" ", "　")
-                                        ?.any { it in entity.name }
-                                        ?: true
-                                }
-                                // TODO: filter with regionId and boxId
-                                .toMap()
+                            it
                         }
+                    }
+                    .get()
+                    .addOnSuccessListener { snapshot ->
+                        val result = snapshot
+                            .documents
+                            .mapNotNull {
+                                val key = it.id
+                                val value = it.toObject<ItemEntity>() ?: return@mapNotNull null
 
-                    offer(result)
-                }
+                                key to value
+                            }
+                            .toList()
 
-            awaitClose { registration.remove() }
-        }
-            .map { entities ->
-                entities?.mapNotNull { (id, entity) ->
-                    Item(
-                        entity = entity,
-                        id = id,
-                        getBox = { getBox(entity.boxId) },
-                        getImageReference = { imagePath ->
-                            FirebaseStorage.getInstance(firebaseApp).getReference(imagePath)
-                        }
-                    )
-                }
+                        cont.resume(result)
+                    }
+                    .addOnFailureListener { cont.resume(null) }
+            } ?: return null
+
+        return itemIdAndEntities
+            .mapNotNull { (id, entity) ->
+                Item(
+                    entity,
+                    id,
+                    { getBox(it) },
+                    { FirebaseStorage.getInstance(firebaseApp).getReference(it) }
+                )
             }
+            .filter { item ->
+                // filter by ItemName which is O(N * M).
+                query.byName
+                    ?.split(" ", "　")
+                    ?.all { it in item.name }
+                    ?: true
+            }
+            .filter { item ->
+                // filter by RegionName
+                query.byRegionName == null || query.byRegionName == item.box.region.name
+            }
+            .filter { item ->
+                // filter by BoxName
+                query.byBoxName == null || query.byBoxName == item.box.name
+            }
+    }
 
     private suspend fun getRegion(id: String): Region? = suspendCoroutine { continuation ->
         firestore

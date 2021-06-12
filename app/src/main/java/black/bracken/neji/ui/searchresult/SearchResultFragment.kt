@@ -58,7 +58,9 @@ class SearchResultFragment : Fragment(R.layout.search_result_fragment) {
                     }
                     ?.forEach { searchedItemCard -> adapter.add(searchedItemCard) }
                     ?: run {
-                        Snackbar.make(view.rootView, "Failed to search", Snackbar.LENGTH_SHORT)
+                        Snackbar
+                            .make(view.rootView, "Failed to search", Snackbar.LENGTH_SHORT)
+                            .show()
                     }
             }
         }

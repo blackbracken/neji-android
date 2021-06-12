@@ -7,20 +7,21 @@ import black.bracken.neji.model.Item
 import black.bracken.neji.model.ItemSearchQuery
 import black.bracken.neji.repository.FirebaseRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.launch
 
 class SearchResultViewModel @ViewModelInject constructor(
     private val firebaseRepository: FirebaseRepository
 ) : ViewModel() {
 
-    private var _searchedItems: SharedFlow<List<Item>?> = MutableSharedFlow()
+    private var _searchedItems: MutableSharedFlow<List<Item>?> = MutableSharedFlow(replay = 0)
     val searchedItems get() = _searchedItems
 
     fun search(query: ItemSearchQuery) {
-        _searchedItems = firebaseRepository.searchItems(query)
-            .shareIn(viewModelScope, SharingStarted.WhileSubscribed(), 1)
+        viewModelScope.launch {
+            val result = firebaseRepository.searchItems(query)
+
+            _searchedItems.emit(result)
+        }
     }
 
 }
