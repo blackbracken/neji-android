@@ -565,7 +565,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
             val registration = firestore
                 .collection("items")
                 .let {
-                    // filter by item category
+                    // filter by category
                     if (query.byCategory != null) {
                         it.whereEqualTo("itemCategory", query.byCategory)
                     } else {
@@ -585,10 +585,10 @@ class FirebaseRepositoryImpl : FirebaseRepository {
                                     key to value
                                 }
                                 .filter { (_, entity) ->
-                                    // filter by ItemName, this order is O(N * M).
+                                    // filter by ItemName which is O(N * M).
                                     query.byName
                                         ?.split(" ", "　")
-                                        ?.any { it in entity.name }
+                                        ?.all { it in entity.name }
                                         ?: true
                                 }
                                 // TODO: filter with regionId and boxId
