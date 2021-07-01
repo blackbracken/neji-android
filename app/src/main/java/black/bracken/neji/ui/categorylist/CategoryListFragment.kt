@@ -8,13 +8,13 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import black.bracken.neji.R
 import black.bracken.neji.databinding.CategoryListFragmentBinding
 import black.bracken.neji.ext.setOnSwipeItemToSideways
 import black.bracken.neji.ext.viewcomponent.disableAndHide
 import black.bracken.neji.ui.categorylist.item.CategoryCardItem
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
 import com.wada811.viewbinding.viewBinding
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
@@ -71,7 +71,10 @@ class CategoryListFragment : Fragment(R.layout.category_list_fragment) {
     override fun onOptionsItemSelected(item: MenuItem): Boolean =
         when (item.itemId) {
             R.id.add_category -> {
-                Snackbar.make(requireView(), "add category", Snackbar.LENGTH_SHORT).show()
+                val action =
+                    CategoryListFragmentDirections.actionCategoryListFragmentToAddCategoryFragment()
+                findNavController().navigate(action)
+
                 true
             }
             else -> super.onOptionsItemSelected(item)

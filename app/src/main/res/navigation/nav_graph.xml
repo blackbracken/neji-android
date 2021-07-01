@@ -176,5 +176,13 @@
     <fragment
         android:id="@+id/categoryListFragment"
         android:name="black.bracken.neji.ui.categorylist.CategoryListFragment"
-        android:label="@string/nav_name_category_list" />
+        android:label="@string/nav_name_category_list" >
+        <action
+            android:id="@+id/action_categoryListFragment_to_addCategoryFragment"
+            app:destination="@id/addCategoryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addCategoryFragment"
+        android:name="black.bracken.neji.ui.addcategory.AddCategoryFragment"
+        android:label="@string/add_category_name" />
 </navigation>

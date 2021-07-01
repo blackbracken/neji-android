@@ -5,6 +5,7 @@
     <string name="add_box_no_data">データなし</string>
     <string name="add_box_scan">スキャン</string>
     <string name="add_region_name">リージョン名</string>
+    <string name="add_category_name">カテゴリ名</string>
     <string name="setup_hint_firebase_project_id">FirebaseのプロジェクトID <font color='#FF0000'>*</font></string>
     <string name="setup_hint_firebase_api_key">FirebaseのAPIキー <font color='#FF0000'>*</font></string>
     <string name="setup_hint_firebase_application_id">FirebaseのアプリID <font color='#FF0000'>*</font></string>
@@ -36,6 +37,7 @@
     <string name="dialog_alert_on_deleting_box">このボックスが持つアイテムはすべて削除されますが、本当に削除しますか?</string>
     <string name="dialog_alert_on_deleting_region">このリージョンが持つボックス及びアイテムはすべて削除されますが、本当に削除しますか?</string>
     <string name="dialog_alert_on_deleting_category">このカテゴリを割り当てられているアイテムのカテゴリはなしになりますが、本当に削除しますか? </string>
+    <string name="button_complete">完了</string>
     <string name="button_delete">削除する</string>
     <string name="nav_name_region_list">場所一覧</string>
     <string name="nav_name_box_list">ボックス一覧</string>
@@ -49,6 +51,7 @@
     <string name="nav_name_add_item">アイテム追加</string>
     <string name="nav_name_scan_qrcode">QRコードスキャン</string>
     <string name="nav_name_category_list">カテゴリ一覧</string>
+    <string name="nav_name_category">カテゴリの追加</string>
     <string name="menu_item_add_region">リージョンの追加</string>
     <string name="menu_item_add_item">アイテムの追加</string>
     <string name="menu_item_show_qr_code">QRコードの表示</string>
