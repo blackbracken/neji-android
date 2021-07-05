@@ -23,6 +23,8 @@ class SearchItemFragment : Fragment(R.layout.search_item_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.inputElementBox.isEnabled = false
+
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.searchQuery.collect { query ->
                 val action =
@@ -94,6 +96,7 @@ class SearchItemFragment : Fragment(R.layout.search_item_fragment) {
                     return@collect
                 }
 
+                binding.inputElementBox.isEnabled = true
                 binding.autoCompleteTextElementBox.setAdapter(
                     ArrayAdapter(
                         requireContext(),
