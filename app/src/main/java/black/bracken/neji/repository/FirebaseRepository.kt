@@ -46,6 +46,8 @@ interface FirebaseRepository {
 
     suspend fun addRegion(name: String): Region?
 
+    suspend fun addItemCategory(name: String): ItemCategory?
+
     suspend fun deleteRegion(regionId: String): Boolean
 
     suspend fun addBox(name: String, qrCodeText: String?, region: Region): Box?
@@ -269,7 +271,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         val associatedIds = suspendCoroutine<Set<String>> { continuation ->
             firestore
                 .collection("items")
-                .whereEqualTo("itemCategory", categoryName)
+                .whereEqualTo("itemCategories", categoryName)
                 .get()
                 .addOnCompleteListener { task ->
                     continuation.resume(
@@ -285,7 +287,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
                 firestore
                     .collection("items")
                     .document(id)
-                    .update("itemCategory", null)
+                    .update("itemCategories", null)
                     .addOnCompleteListener { task ->
                         continuation.resume(task.isSuccessful)
                     }
@@ -470,6 +472,22 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         }
     }
 
+    override suspend fun addItemCategory(name: String): ItemCategory? {
+        val id = UUID.randomUUID().toString()
+        val entity = ItemCategoryEntity(name)
+
+        val succeed = suspendCancellableCoroutine<Boolean> { cont ->
+            firestore
+                .collection("itemCategories")
+                .document(id)
+                .set(entity)
+                .addOnCompleteListener { task -> cont.resume(task.isSuccessful) }
+        }
+
+        return ItemCategory(entity, id)
+            .takeIf { succeed }
+    }
+
     override suspend fun deleteRegion(regionId: String): Boolean {
         val region = region(regionId) ?: return false
         val boxes = boxesInRegionOnce(region) ?: return false
@@ -568,7 +586,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
                     .let {
                         // filter by category
                         if (query.byCategory != null) {
-                            it.whereEqualTo("itemCategory", query.byCategory)
+                            it.whereEqualTo("itemCategories", query.byCategory)
                         } else {
                             it
                         }
